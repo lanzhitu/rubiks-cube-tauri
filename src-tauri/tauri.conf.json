@@ -1,0 +1,28 @@
+{
+  "build": {
+    "beforeBuildCommand": "npm run build",
+    "beforeDevCommand": "npm run dev",
+    "devPath": "../src",
+    "distDir": "../src/dist"
+  },
+  "tauri": {
+    "allowlist": {
+      "http": {
+        "scope": ["http://127.0.0.1:8000/*"]
+      }
+    },
+    "windows": [
+      {
+        "title": "Rubik's Cube",
+        "width": 800,
+        "height": 600,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "bundle": {
+      "identifier": "com.example.rubikscube",
+      "icon": ["icons/icon.ico", "icons/icon.png"]
+    }
+  }
+}

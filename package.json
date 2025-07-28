@@ -1,0 +1,31 @@
+{
+  "name": "rubiks-cube-tauri",
+  "version": "1.0.0",
+  "description": "- `src-tauri/`：Tauri 后端与配置\r   - `python_service/`：Python 微服务，魔方算法\r   - `icons/`：各平台图标\r - `src/`：前端 TypeScript + Three.js\r   - `components/`：3D 魔方组件\r   - `services/`：前后端通信\r - `public/`：静态资源\r - `scripts/`：部署与打包脚本",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@react-three/fiber": "^9.3.0",
+    "@tauri-apps/api": "^2.7.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "three": "^0.178.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.1.0",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@types/three": "^0.178.1",
+    "typescript": "^5.8.3",
+    "vite": "^7.0.6"
+  }
+}
