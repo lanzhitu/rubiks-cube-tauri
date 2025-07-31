@@ -19,6 +19,13 @@ class CubeAdapter:
     def is_solved(self):
         return self.cube.is_done()
 
+    def reset(self):
+        self.cube.reset()
+        return self.get_state()
+    
+    def get_all_pieces(self):
+        return self.cube.get_all_pieces()
+
     def solve(self):
         # Should return a list of moves to solve the cube
         raise NotImplementedError("Implement in subclass or inject solver.")
