@@ -151,17 +151,121 @@ function App() {
           )}
         </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+
+      <div className="controls-container">
+        <h1>魔方CFOP教学与解法</h1>
+
+        <div className="control-group">
+          <h2>基本操作</h2>
+          <button onClick={randomize} disabled={isAnimating}>
+            打乱魔方
+          </button>
+          <button onClick={reset} disabled={isAnimating}>
+            重置魔方
+          </button>
+        </div>
+
+        <div className="control-group">
+          <h2>CFOP解法步骤</h2>
+          <button onClick={solveAndAnimate} disabled={isAnimating}>
+            解底部十字
+          </button>
+          <button onClick={solveAndAnimate} disabled={isAnimating}>
+            解F2L
+          </button>
+          <button onClick={solveAndAnimate} disabled={isAnimating}>
+            解顶层朝向
+          </button>
+          <button onClick={solveAndAnimate} disabled={isAnimating}>
+            解顶层排列
+          </button>
+          <button
+            onClick={solveFullWithAnimation}
+            disabled={isAnimating}
+            className="solve-full-btn"
+          >
+            完整解魔方
+          </button>
+        </div>
+
+        {/* 动画速度控制 */}
+        <div className="control-group">
+          <h2>动画速度</h2>
+          <div className="speed-controls">
+            <button
+              onClick={() => changeAnimationSpeed(0.5)}
+              className={animationSpeed === 0.5 ? "active" : ""}
+              disabled={isAnimating}
+            >
+              慢速
+            </button>
+            <button
+              onClick={() => changeAnimationSpeed(1)}
+              className={animationSpeed === 1 ? "active" : ""}
+              disabled={isAnimating}
+            >
+              正常
+            </button>
+            <button
+              onClick={() => changeAnimationSpeed(2)}
+              className={animationSpeed === 2 ? "active" : ""}
+              disabled={isAnimating}
+            >
+              快速
+            </button>
+          </div>
+        </div>
+
+        {/* 解法步骤显示已移除 */}
+
+        <div className="control-group">
+          <h2>手动操作</h2>
+          <div className="manual-moves">
+            {[..."UuDdLlRrFfBb"].map((char, index) => {
+              const move =
+                index % 2 === 0 ? char.toUpperCase() : char.toUpperCase() + "'";
+              return (
+                <button
+                  key={move}
+                  onClick={() => handleMoves([move])}
+                  disabled={isAnimating}
+                >
+                  {move}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="control-group">
+          <h2>执行公式</h2>
+          <div className="algorithm-input">
+            <input
+              type="text"
+              id="algorithm-input"
+              placeholder="例如: R U R' U'"
+            />
+            <button
+              onClick={() => {
+                const input = document.getElementById(
+                  "algorithm-input"
+                ) as HTMLInputElement;
+                if (input) {
+                  handleMoves(input.value.split(" ").filter(Boolean));
+                }
+              }}
+              ></button>
+            </div>
+
+          </div>
+        <div className="control-group">
+          <h2>调试信息</h2>
+          <button onClick={checkSync} disabled={isAnimating}>
+            检测前后端状态同步
+          </button>
+        </div>
       </div>
-      {cubeState && <pre>{JSON.stringify(cubeState, null, 2)}</pre>}
-    </>
+    </div>  
   )
 }
 
