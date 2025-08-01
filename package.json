@@ -13,6 +13,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@react-spring/three": "^10.0.1",
+    "@react-three/drei": "^10.6.1",
     "@react-three/fiber": "^9.3.0",
     "@tauri-apps/api": "^2.7.0",
     "@vitejs/plugin-react": "^4.7.0",
@@ -21,6 +23,7 @@
     "three": "^0.178.0"
   },
   "devDependencies": {
+    "@tauri-apps/cli": "^2.7.1",
     "@types/node": "^24.1.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
