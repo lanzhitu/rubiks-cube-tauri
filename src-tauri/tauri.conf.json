@@ -1,14 +1,21 @@
 {
-  "build": {
-    "beforeBuildCommand": "npm run build",
-    "beforeDevCommand": "npm run dev",
-    "devPath": "../src",
-    "distDir": "../src/dist"
+  "package": {
+    "identifier": "com.example.rubikscube",
+    "icon": ["icons/icon.ico", "icons/icon.png"]
   },
   "tauri": {
+    "build": {
+      "beforeBuildCommand": "npm run build",
+      "beforeDevCommand": "npm run dev",
+      "devPath": "../src",
+      "distDir": "../src/dist"
+    },
     "allowlist": {
       "http": {
         "scope": ["http://127.0.0.1:8000/*"]
+      },
+      "shell": {
+        "all": true
       }
     },
     "windows": [
@@ -19,10 +26,6 @@
         "resizable": true,
         "fullscreen": false
       }
-    ],
-    "bundle": {
-      "identifier": "com.example.rubikscube",
-      "icon": ["icons/icon.ico", "icons/icon.png"]
-    }
+    ]
   }
 }

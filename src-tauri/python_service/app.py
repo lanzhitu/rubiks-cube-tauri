@@ -81,3 +81,8 @@ def get_all_pieces():
 def scramble_cube():
     state = global_cube.scramble()
     return {"state": state}
+
+# 允许直接运行 app.py 启动 FastAPI 服务
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000)
