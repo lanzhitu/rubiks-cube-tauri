@@ -9,25 +9,6 @@ export const FACE_ROTATION_MAP: Record<FaceColor, { axis: [number, number, numbe
 };
 // 魔方六面顺序
 export const CUBE_FACE_ORDER: FaceColor[] = ["U", "L", "F", "R", "B", "D"];
-// 后端默认状态顺序: U O G R B Y
-// 这里L=O, F=G, D=Y，顺序无需再调整，faceMap已做映射
-
-// 魔方每面9个物理坐标（标准魔方坐标，顺序与facelet一致）
-export const CUBE_FACE_POSITIONS: Record<FaceColor, [number, number, number][]> = {
-    U: Array.from({ length: 9 }, (_, i) => [i % 3 - 1, 1, Math.floor(i / 3) - 1]),
-    D: Array.from({ length: 9 }, (_, i) => [i % 3 - 1, -1, Math.floor(i / 3) - 1]),
-    F: Array.from({ length: 9 }, (_, i) => [i % 3 - 1, 1 - Math.floor(i / 3), 1]),
-    B: Array.from({ length: 9 }, (_, i) => [1 - (i % 3), 1 - Math.floor(i / 3), -1]),
-    R: Array.from({ length: 9 }, (_, i) => [1, 1 - Math.floor(i / 3), 1 - (i % 3)]),
-    L: Array.from({ length: 9 }, (_, i) => [-1, 1 - Math.floor(i / 3), i % 3 - 1]),
-};
-
-// 魔方面向量
-export const CUBE_FACE_VECS = {
-    U: [0, 1, 0], D: [0, -1, 0], F: [0, 0, 1], B: [0, 0, -1], R: [1, 0, 0], L: [-1, 0, 0],
-};
-
-// 贴纸颜色首字母映射
 export const CUBE_COLOR_LETTER: Record<string, string> = {
     W: "W", O: "O", G: "G", R: "R", B: "B", Y: "Y",
     white: "W", orange: "O", green: "G", red: "R", blue: "B", yellow: "Y",
@@ -120,17 +101,11 @@ export const STICKER_MAP = [
     { p: [-1, -1, -1], f: "B" },
 ];
 
-export // 顺序和颜色映射到后端风格
-    // 前端顺序: U L F R B D
-    // 后端顺序: U O G R B Y (W O G R B Y)
-    // 前端: UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD
-    // 后端: WWWWWWWWWOOOOOOOOOGGGGGGGGGRRRRRRRRRBBBBBBBBBYYYYYYYYY
-    // 颜色字母映射: U=W, L=O, F=G, R=R, B=B, D=Y
-    const faceMap: Record<string, string> = {
-        U: "W", // White
-        L: "O", // Orange
-        F: "G", // Green
-        R: "R", // Red
-        B: "B", // Blue
-        D: "Y", // Yellow
-    };
+export const faceMap: Record<string, string> = {
+    U: "W", // White
+    L: "O", // Orange
+    F: "G", // Green
+    R: "R", // Red
+    B: "B", // Blue
+    D: "Y", // Yellow
+};
