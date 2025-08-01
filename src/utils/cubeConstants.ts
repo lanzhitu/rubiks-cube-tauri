@@ -9,6 +9,8 @@ export const FACE_ROTATION_MAP: Record<FaceColor, { axis: [number, number, numbe
 };
 // 魔方六面顺序
 export const CUBE_FACE_ORDER: FaceColor[] = ["U", "L", "F", "R", "B", "D"];
+// 后端默认状态顺序: U O G R B Y
+// 这里L=O, F=G, D=Y，顺序无需再调整，faceMap已做映射
 
 // 魔方每面9个物理坐标（标准魔方坐标，顺序与facelet一致）
 export const CUBE_FACE_POSITIONS: Record<FaceColor, [number, number, number][]> = {
@@ -86,7 +88,7 @@ export const STICKER_MAP = [
     { p: [-1, -1, 1], f: "F" },
     { p: [0, -1, 1], f: "F" },
     { p: [1, -1, 1], f: "F" },
-    // D face (27-35)
+    // D face (27-35) - 顺序与后端一致：z从1到-1，x从-1到1，y=-1
     { p: [-1, -1, 1], f: "D" },
     { p: [0, -1, 1], f: "D" },
     { p: [1, -1, 1], f: "D" },
@@ -96,16 +98,16 @@ export const STICKER_MAP = [
     { p: [-1, -1, -1], f: "D" },
     { p: [0, -1, -1], f: "D" },
     { p: [1, -1, -1], f: "D" },
-    // L face (36-44)
-    { p: [-1, 1, 1], f: "L" },
-    { p: [-1, 1, 0], f: "L" },
+    // L face (36-44) - 顺序reverse，保证与后端一致
     { p: [-1, 1, -1], f: "L" },
-    { p: [-1, 0, 1], f: "L" },
-    { p: [-1, 0, 0], f: "L" },
+    { p: [-1, 1, 0], f: "L" },
+    { p: [-1, 1, 1], f: "L" },
     { p: [-1, 0, -1], f: "L" },
-    { p: [-1, -1, 1], f: "L" },
-    { p: [-1, -1, 0], f: "L" },
+    { p: [-1, 0, 0], f: "L" },
+    { p: [-1, 0, 1], f: "L" },
     { p: [-1, -1, -1], f: "L" },
+    { p: [-1, -1, 0], f: "L" },
+    { p: [-1, -1, 1], f: "L" },
     // B face (45-53)
     { p: [1, 1, -1], f: "B" },
     { p: [0, 1, -1], f: "B" },

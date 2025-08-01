@@ -12,19 +12,18 @@ import { useSpring, animated } from "@react-spring/three";
 import {
   COLOR_MAP,
   CUBE_FACE_ORDER,
-  CUBE_FACE_POSITIONS,
   FACE_TO_MATERIAL_INDEX,
   CUBE_COLOR_LETTER,
   FACE_ROTATION_MAP,
   type FaceColor,
   faceMap,
+  STICKER_MAP,
 } from "../utils/cubeConstants";
 import {
   layerFilter,
   rotatePosition,
   rotateOrientation,
   getAnimatedCubies,
-  axisMap,
   getDefaultCubies,
   type CubieType,
 } from "../utils/cubeUtils";
@@ -134,10 +133,11 @@ const Cube3D = forwardRef(function Cube3D(
   // 获取魔方当前物理状态字符串
   // 映射前端顺序和颜色到后端风格
   const getCubeState = () => {
-    // 计算每个面9个贴纸的颜色（前端顺序）
+    // 统一用STICKER_MAP顺序采集所有面贴纸，保证与后端一致
     let state = "";
     for (const face of CUBE_FACE_ORDER) {
-      for (const pos of CUBE_FACE_POSITIONS[face]) {
+      const positions = STICKER_MAP.filter((s) => s.f === face).map((s) => s.p);
+      for (const pos of positions) {
         const cubie = cubies.find(
           (c) =>
             Math.round(c.position[0]) === pos[0] &&
