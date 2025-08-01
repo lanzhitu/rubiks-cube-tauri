@@ -11,13 +11,13 @@ import { OrbitControls } from "@react-three/drei";
 import { useSpring, animated } from "@react-spring/three";
 import {
   COLOR_MAP,
-  CUBE_FACE_ORDER,
   FACE_TO_MATERIAL_INDEX,
-  CUBE_COLOR_LETTER,
   FACE_ROTATION_MAP,
   type FaceColor,
-  faceMap,
+  CUBE_FACE_ORDER,
   STICKER_MAP,
+  CUBE_COLOR_LETTER,
+  faceMap,
 } from "../utils/cubeConstants";
 import {
   layerFilter,
@@ -25,9 +25,9 @@ import {
   rotateOrientation,
   getAnimatedCubies,
   getDefaultCubies,
-  type CubieType,
 } from "../utils/cubeUtils";
 import { Cubie } from "./Cubie";
+import type { CubieType } from "../utils/cubeTypes";
 
 const Cube3D = forwardRef(function Cube3D(
   { animationSpeed = 1 }: { animationSpeed?: number },

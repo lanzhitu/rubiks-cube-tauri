@@ -2,12 +2,6 @@
 import { STICKER_MAP } from "./cubeConstants";
 import type { FaceColor } from "./cubeConstants";
 
-export type CubieType = {
-  id: string;
-  position: [number, number, number];
-  stickers: Partial<Record<FaceColor, string>>;
-  orientation?: [number, number, number];
-};
 
 // 以STICKER_MAP为唯一数据源
 export function getDefaultCubies(): CubieType[] {
@@ -26,6 +20,7 @@ export function getDefaultCubies(): CubieType[] {
   return Array.from(cubieMap.values());
 }
 import * as THREE from "three";
+import type { CubieType } from "./cubeTypes";
 
 // 分层筛选器
 export const layerFilter = {
