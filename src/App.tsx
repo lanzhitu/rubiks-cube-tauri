@@ -3,6 +3,9 @@ import Cube3D from "./components/Cube3D";
 import {
   getCubeState as getBackendCubeState,
   rotateCube,
+  resetCube,
+  solveCube,
+  scrambleCube,
 } from "./services/cubeApi";
 import "./App.css";
 
@@ -27,8 +30,18 @@ function App() {
     setSyncResult(frontendState === backend ? "match" : "mismatch");
   };
 
-  // 定时刷新 CubeState
+  // 页面初始化时重置后端魔方数据，并定时刷新 CubeState
   React.useEffect(() => {
+    // 初始化时重置后端魔方
+    (async () => {
+      try {
+        await resetCube();
+        await checkSync();
+      } catch (e) {
+        console.error("后端魔方重置失败", e);
+      }
+    })();
+    // 定时刷新 CubeState
     const timer = setInterval(() => {
       if (cube3DRef.current && cube3DRef.current.getCubeState) {
         setCubeState(cube3DRef.current.getCubeState());
@@ -75,23 +88,55 @@ function App() {
     // 示例：U U' U U'
     handleMoves(["U", "U'", "U", "U'"]);
   };
-  const solveFullWithAnimation = () => {
+  // 完整解魔方：自动调用后端求解接口并动画执行
+  const solveFullWithAnimation = async () => {
     if (isAnimating) return;
-    handleMoves(["U", "U'", "U", "U'"]);
+    try {
+      const moves = await solveCube();
+      if (Array.isArray(moves) && moves.length > 0) {
+        handleMoves(moves);
+      } else {
+        alert("后端未返回解法或魔方已还原");
+      }
+    } catch (e) {
+      alert("获取解法失败");
+    }
   };
 
   const changeAnimationSpeed = (speed: number) => {
     setAnimationSpeed(speed);
   };
 
-  // 随机和重置仅做动画演示
-  const randomize = () => {
+  // 打乱魔方：同步打乱后端和前端状态
+  const randomize = async () => {
     if (isAnimating) return;
-    handleMoves(["U", "U", "U'", "U'"]);
+    try {
+      const scrambledState = await scrambleCube(); // 后端打乱，获取新状态
+      if (cube3DRef.current && cube3DRef.current.setState) {
+        cube3DRef.current.setState(scrambledState); // 前端同步新状态
+      } else {
+        window.location.reload(); // 无setState方法则刷新页面
+      }
+      await checkSync();
+    } catch (e) {
+      alert("打乱失败");
+    }
   };
-  const reset = () => {
+  // 重置魔方：同步重置后端和前端状态
+  const reset = async () => {
     if (isAnimating) return;
-    handleMoves(["U", "U'", "U", "U'"]);
+    try {
+      await resetCube(); // 后端重置
+      if (cube3DRef.current && cube3DRef.current.setToDefault) {
+        cube3DRef.current.setToDefault(); // 前端 Cubie 状态重置（需组件支持）
+      } else {
+        // 若无 setToDefault，可刷新页面或重新初始化 cubies
+        window.location.reload();
+      }
+      await checkSync();
+    } catch (e) {
+      alert("重置失败");
+    }
   };
 
   return (
@@ -254,10 +299,9 @@ function App() {
                   handleMoves(input.value.split(" ").filter(Boolean));
                 }
               }}
-              ></button>
-            </div>
-
+            ></button>
           </div>
+        </div>
         <div className="control-group">
           <h2>调试信息</h2>
           <button onClick={checkSync} disabled={isAnimating}>
@@ -265,8 +309,8 @@ function App() {
           </button>
         </div>
       </div>
-    </div>  
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;

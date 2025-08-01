@@ -1,5 +1,18 @@
-
 const API_BASE_URL = "http://127.0.0.1:8000";
+
+export async function resetCube(): Promise<any> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/cube/reset`, {
+      method: "POST"
+    });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    return data.state;
+  } catch (error) {
+    console.error("Error resetting cube:", error);
+    return null;
+  }
+}
 
 export async function getCubeState(): Promise<any> {
   try {
@@ -62,9 +75,24 @@ export async function solveCube(): Promise<string[] | null> {
     const response = await fetch(`${API_BASE_URL}/cube/solve`);
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     const data = await response.json();
-    return data.moves;
+    return data.solution;
   } catch (error) {
     console.error("Error solving cube:", error);
+    return null;
+  }
+}
+
+
+export async function scrambleCube(): Promise<any> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/cube/scramble`, {
+      method: "POST"
+    });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    return data.state;
+  } catch (error) {
+    console.error("Error scrambling cube:", error);
     return null;
   }
 }

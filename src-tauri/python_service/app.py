@@ -75,3 +75,9 @@ def get_all_pieces():
         for coord, piece in pieces.items()
     }
     return {"pieces": serializable}
+
+# 新增：打乱魔方
+@app.post("/cube/scramble")
+def scramble_cube():
+    state = global_cube.scramble()
+    return {"state": state}

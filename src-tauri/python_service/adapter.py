@@ -4,6 +4,9 @@ Define a standard interface for the core logic.
 """
 
 class CubeAdapter:
+    def scramble(self):
+        self.cube.scramble()
+        return self.get_state()
     def __init__(self, cube_impl):
         self.cube = cube_impl
 
@@ -27,5 +30,8 @@ class CubeAdapter:
         return self.cube.get_all_pieces()
 
     def solve(self):
-        # Should return a list of moves to solve the cube
-        raise NotImplementedError("Implement in subclass or inject solver.")
+        from magiccube import BasicSolver
+        solver = BasicSolver(self.cube)
+        moves = solver.solve()
+        # 转为字符串列表，确保可序列化
+        return [str(move) for move in moves]
