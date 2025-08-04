@@ -9,14 +9,10 @@ app = FastAPI()
 # 全局魔方实例，保证状态同步
 global_cube = CubeAdapter(Cube())
 
-# CORS configuration
-origins = [
-    "http://localhost:5173",
-]
-
+# 放宽 CORS 配置，允许所有来源
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

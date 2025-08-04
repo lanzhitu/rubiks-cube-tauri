@@ -26,20 +26,13 @@
   "bundle": {
     "active": true,
     "targets": "all",
-    "icon": ["icons/icon.ico"]
+    "icon": ["icons/icon.ico"],
+    "resources": ["bin/app.exe"]
   },
   "plugins": {
-    "http": {
-      "scope": ["http://127.0.0.1:8000/*"]
-    },
+    "http": null,
     "shell": {
-      "scope": [
-        {
-          "name": "python",
-          "cmd": "python",
-          "args": true
-        }
-      ]
+      "open": true
     }
   }
 }
