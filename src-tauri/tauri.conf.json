@@ -1,23 +1,15 @@
 {
-  "package": {
-    "identifier": "com.example.rubikscube",
-    "icon": ["icons/icon.ico", "icons/icon.png"]
+  "$schema": "https://schema.tauri.app/config/2.0.0",
+  "productName": "RubiksCube",
+  "version": "0.1.0",
+  "identifier": "com.example.rubikscube",
+  "build": {
+    "beforeBuildCommand": "npm run build",
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:5173",
+    "frontendDist": "../dist"
   },
-  "tauri": {
-    "build": {
-      "beforeBuildCommand": "npm run build",
-      "beforeDevCommand": "npm run dev",
-      "devPath": "../src",
-      "distDir": "../src/dist"
-    },
-    "allowlist": {
-      "http": {
-        "scope": ["http://127.0.0.1:8000/*"]
-      },
-      "shell": {
-        "all": true
-      }
-    },
+  "app": {
     "windows": [
       {
         "title": "Rubik's Cube",
@@ -26,6 +18,28 @@
         "resizable": true,
         "fullscreen": false
       }
-    ]
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": ["icons/icon.ico"]
+  },
+  "plugins": {
+    "http": {
+      "scope": ["http://127.0.0.1:8000/*"]
+    },
+    "shell": {
+      "scope": [
+        {
+          "name": "python",
+          "cmd": "python",
+          "args": true
+        }
+      ]
+    }
   }
 }

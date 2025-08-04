@@ -6,12 +6,17 @@ use tauri::Manager;
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_http::init())
         .setup(|_app| {
-            // 自动启动 Python 服务
-            Command::new("python")
+            // 自动启动 Python 服务，并输出启动结果
+            let result = Command::new("python")
                 .arg("src-tauri/python_service/app.py")
-                .spawn()
-                .expect("Failed to start Python service");
+                .spawn();
+            match result {
+                Ok(_) => println!("Python service started."),
+                Err(e) => println!("Failed to start Python service: {:?}", e),
+            }
             Ok(())
         })
         .run(tauri::generate_context!())
