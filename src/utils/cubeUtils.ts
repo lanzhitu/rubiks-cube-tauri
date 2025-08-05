@@ -117,14 +117,12 @@ export function getCubeStateFromCubies(cubies: CubieType[]): string {
   }
   // 按后端顺序重组
   let backendState = "";
-  let idx = 0;
-  for (const face of CUBE_FACE_ORDER) {
+  for (let i = 0; i < CUBE_FACE_ORDER.length; i++) {
     backendState += state
-      .slice(idx, idx + 9)
+      .slice(i * 9, i * 9 + 9)
       .split("")
       .map((c) => faceMap[c] || c)
       .join("");
-    idx += 9;
   }
   return backendState;
 }
