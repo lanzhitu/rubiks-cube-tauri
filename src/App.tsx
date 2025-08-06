@@ -27,111 +27,114 @@ function App() {
   // 解魔方状态
   const [currentProgress, setCurrentProgress] = useState(0);
   const [currentHints, setCurrentHints] = useState<string[]>([]);
-  // 校验前端与后端魔方状态是否同步
-  // 同步检测并显示前后端状态
-  // 每次旋转后自动检测同步并显示匹配提示
-  const checkSync = async () => {
+
+  // 合并同步与进度更新
+  const syncAndUpdate = async () => {
     if (!cube3DRef.current || !cube3DRef.current.getCubeState) return;
     const frontendState = cube3DRef.current.getCubeState();
     const backend = await getBackendCubeState();
     setCubeState(frontendState);
     setBackendState(backend);
     setSyncResult(frontendState === backend ? "match" : "mismatch");
-  };
-
-  // 页面初始化时重置后端魔方数据，并定时刷新状态
-  useEffect(() => {
-    // 初始化时重置后端魔方
-    (async () => {
-      try {
-        await resetCube();
-        await checkSync();
-
-        // 初始化解魔方管理器
-        solvingManager.current.reset();
-        updateSolvingProgress();
-      } catch (e) {
-        console.error("后端魔方重置失败", e);
-      }
-    })();
-
-    // 定时刷新状态
-    const timer = setInterval(async () => {
-      if (cube3DRef.current && cube3DRef.current.getCubeState) {
-        const state = cube3DRef.current.getCubeState();
-        setCubeState(state);
-        updateSolvingProgress();
-      }
-    }, 500);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  // 不再需要初始化faceColors和后端状态
-
-  // 只负责动画和交互，不再处理魔方状态
-  // 每次旋转后自动检测同步
-  // 每次旋转时，前后端都同步操作
-  // 更新解魔方进度
-  const updateSolvingProgress = async () => {
-    const state = cube3DRef.current?.getCubeState();
-    if (!state) return;
-
-    const cubeState: CubeState = {
-      raw: state,
-      faces: parseCubeState(state),
-      isSolved: state === SOLVED_STATE,
+    const cubeStateObj: CubeState = {
+      raw: frontendState,
+      faces: parseCubeState(frontendState),
+      isSolved: frontendState === SOLVED_STATE,
     };
-
-    solvingManager.current.updateProgress(cubeState);
+    solvingManager.current.updateProgress(cubeStateObj);
     setCurrentProgress(solvingManager.current.getProgress());
     setCurrentHints(solvingManager.current.getCurrentHints());
   };
 
-  const handleMoves = (moves: string[] | null) => {
+  useEffect(() => {
+    (async () => {
+      try {
+        await resetCube();
+        await syncAndUpdate();
+        solvingManager.current.reset();
+      } catch (e) {
+        console.error("后端魔方重置失败", e);
+      }
+    })();
+    const timer = setInterval(async () => {
+      if (cube3DRef.current && cube3DRef.current.getCubeState) {
+        setCubeState(cube3DRef.current.getCubeState());
+        const cubeStateObj: CubeState = {
+          raw: cube3DRef.current.getCubeState(),
+          faces: parseCubeState(cube3DRef.current.getCubeState()),
+          isSolved: cube3DRef.current.getCubeState() === SOLVED_STATE,
+        };
+        solvingManager.current.updateProgress(cubeStateObj);
+        setCurrentProgress(solvingManager.current.getProgress());
+        setCurrentHints(solvingManager.current.getCurrentHints());
+      }
+    }, 500);
+    return () => clearInterval(timer);
+  }, []);
+
+  // 支持是否同步后端
+  const handleMoves = (moves: string[] | null, syncBackend: boolean = true) => {
     if (isAnimating || !moves || moves.length === 0) return;
     let currentMoveIndex = 0;
-
     const processNextMove = async () => {
       if (currentMoveIndex >= moves.length) {
         setIsAnimating(false);
-        await checkSync();
-        await updateSolvingProgress();
+        if (syncBackend) await syncAndUpdate();
+        else {
+          // 只更新前端进度
+          const state = cube3DRef.current?.getCubeState();
+          if (state) {
+            const cubeStateObj: CubeState = {
+              raw: state,
+              faces: parseCubeState(state),
+              isSolved: state === SOLVED_STATE,
+            };
+            solvingManager.current.updateProgress(cubeStateObj);
+            setCurrentProgress(solvingManager.current.getProgress());
+            setCurrentHints(solvingManager.current.getCurrentHints());
+          }
+        }
         return;
       }
-
       setIsAnimating(true);
       const move = moves[currentMoveIndex];
-
       if (!cube3DRef.current) {
         setIsAnimating(false);
         return;
       }
-
-      // 前端动画
       cube3DRef.current.triggerRotate(move, async () => {
-        // 后端同步旋转
-        await rotateCube(move);
-        await checkSync();
-        await updateSolvingProgress();
+        if (syncBackend) await rotateCube(move);
+        if (syncBackend) await syncAndUpdate();
+        else {
+          const state = cube3DRef.current?.getCubeState();
+          if (state) {
+            const cubeStateObj: CubeState = {
+              raw: state,
+              faces: parseCubeState(state),
+              isSolved: state === SOLVED_STATE,
+            };
+            solvingManager.current.updateProgress(cubeStateObj);
+            setCurrentProgress(solvingManager.current.getProgress());
+            setCurrentHints(solvingManager.current.getCurrentHints());
+          }
+        }
         currentMoveIndex++;
         processNextMove();
       });
     };
-
     processNextMove();
   };
 
   // 演示用：CFOP和完整解法按钮仅做动画演示
   const solveAndAnimate = () => {
     if (isAnimating) return;
-    // 示例：U U' U U'
     handleMoves(["U", "U'", "U", "U'"]);
   };
   // 完整解魔方：自动调用后端求解接口并动画执行
   const solveFullWithAnimation = async () => {
     if (isAnimating) return;
     try {
+      // 可扩展：如需前置旋转 handleMoves(["X", "X"], false)
       const moves = await solveCube();
       if (Array.isArray(moves) && moves.length > 0) {
         handleMoves(moves);
@@ -143,37 +146,32 @@ function App() {
     }
   };
 
-  const changeAnimationSpeed = (speed: number) => {
-    setAnimationSpeed(speed);
-  };
+  const changeAnimationSpeed = (speed: number) => setAnimationSpeed(speed);
 
-  // 打乱魔方：同步打乱后端和前端状态
   const randomize = async () => {
     if (isAnimating) return;
     try {
-      const scrambledState = await scrambleCube(); // 后端打乱，获取新状态
+      const scrambledState = await scrambleCube();
       if (cube3DRef.current && cube3DRef.current.setState) {
-        cube3DRef.current.setState(scrambledState); // 前端同步新状态
+        cube3DRef.current.setState(scrambledState);
       } else {
-        window.location.reload(); // 无setState方法则刷新页面
+        window.location.reload();
       }
-      await checkSync();
+      await syncAndUpdate();
     } catch (e) {
       alert("打乱失败");
     }
   };
-  // 重置魔方：同步重置后端和前端状态
   const reset = async () => {
     if (isAnimating) return;
     try {
-      await resetCube(); // 后端重置
+      await resetCube();
       if (cube3DRef.current && cube3DRef.current.setToDefault) {
-        cube3DRef.current.setToDefault(); // 前端 Cubie 状态重置（需组件支持）
+        cube3DRef.current.setToDefault();
       } else {
-        // 若无 setToDefault，可刷新页面或重新初始化 cubies
         window.location.reload();
       }
-      await checkSync();
+      await syncAndUpdate();
     } catch (e) {
       alert("重置失败");
     }
@@ -315,33 +313,42 @@ function App() {
         <div className="control-group">
           <h2>手动操作</h2>
           <div className="manual-moves">
-            {[..."UuDdLlRrFfBb"].map((char, index) => {
-              const move =
-                index % 2 === 0 ? char.toUpperCase() : char.toUpperCase() + "'";
-              return (
-                <button
-                  key={move}
-                  onClick={() => handleMoves([move])}
-                  disabled={isAnimating}
-                >
-                  {move}
-                </button>
-              );
-            })}
+            {[
+              "U",
+              "U'",
+              "D",
+              "D'",
+              "L",
+              "L'",
+              "R",
+              "R'",
+              "F",
+              "F'",
+              "B",
+              "B'",
+            ].map((move) => (
+              <button
+                key={move}
+                onClick={() => handleMoves([move])}
+                disabled={isAnimating}
+              >
+                {move}
+              </button>
+            ))}
           </div>
         </div>
         <div className="control-group">
           <h2>整体旋转（XYZ轴）</h2>
           <div className="xyz-rotate-controls">
-            <button onClick={() => handleMoves(["X"])} disabled={isAnimating}>
-              X轴 +90°
-            </button>
-            <button onClick={() => handleMoves(["Y"])} disabled={isAnimating}>
-              Y轴 +90°
-            </button>
-            <button onClick={() => handleMoves(["Z"])} disabled={isAnimating}>
-              Z轴 +90°
-            </button>
+            {["X", "Y", "Z"].map((move) => (
+              <button
+                key={move}
+                onClick={() => handleMoves([move])}
+                disabled={isAnimating}
+              >
+                {move}轴 +90°
+              </button>
+            ))}
           </div>
         </div>
 
@@ -367,7 +374,7 @@ function App() {
         </div>
         <div className="control-group">
           <h2>调试信息</h2>
-          <button onClick={checkSync} disabled={isAnimating}>
+          <button onClick={syncAndUpdate} disabled={isAnimating}>
             检测前后端状态同步
           </button>
         </div>
