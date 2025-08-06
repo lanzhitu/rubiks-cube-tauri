@@ -333,22 +333,13 @@ function App() {
         <div className="control-group">
           <h2>整体旋转（XYZ轴）</h2>
           <div className="xyz-rotate-controls">
-            <button
-              onClick={() => cube3DRef.current?.triggerRotate("X")}
-              disabled={cube3DRef.current?.isAnimating}
-            >
+            <button onClick={() => handleMoves(["X"])} disabled={isAnimating}>
               X轴 +90°
             </button>
-            <button
-              onClick={() => cube3DRef.current?.triggerRotate("Y")}
-              disabled={cube3DRef.current?.isAnimating}
-            >
+            <button onClick={() => handleMoves(["Y"])} disabled={isAnimating}>
               Y轴 +90°
             </button>
-            <button
-              onClick={() => cube3DRef.current?.triggerRotate("Z")}
-              disabled={cube3DRef.current?.isAnimating}
-            >
+            <button onClick={() => handleMoves(["Z"])} disabled={isAnimating}>
               Z轴 +90°
             </button>
           </div>

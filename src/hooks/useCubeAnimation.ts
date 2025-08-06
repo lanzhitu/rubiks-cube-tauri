@@ -41,7 +41,7 @@ export function useCubeAnimation(animationSpeed: number = 1) {
     const rotateCubies = (move: string) => {
         if (move === 'X' || move === 'Y' || move === 'Z') {
             const axis: [number, number, number] = move === 'X' ? [1, 0, 0] : move === 'Y' ? [0, 1, 0] : [0, 0, 1];
-            const ang = Math.PI / 2;
+            const ang = - Math.PI / 2;
             setCubies((prev) => prev.map((cubie) => ({
                 ...cubie,
                 position: rotatePosition(cubie.position, axis, ang),
@@ -90,7 +90,7 @@ export function useCubeAnimation(animationSpeed: number = 1) {
         let angle: number;
         if (move === 'X' || move === 'Y' || move === 'Z') {
             axis = move === 'X' ? [1, 0, 0] : move === 'Y' ? [0, 1, 0] : [0, 0, 1];
-            angle = Math.PI / 2;
+            angle = - Math.PI / 2;
         } else {
             const face = move[0].toUpperCase() as FaceColor;
             const isPrime = move.endsWith("'");
