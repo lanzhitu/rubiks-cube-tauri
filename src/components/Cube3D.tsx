@@ -23,9 +23,8 @@ const Cube3D = forwardRef(function Cube3D(
     animatedCubies,
     staticCubies,
     springs,
-    triggerLayerRotate,
-    triggerCubeRotate,
     isAnimating,
+    triggerRotate,
   } = useCubeAnimation(animationSpeed);
 
   // 生成贴纸材质
@@ -57,9 +56,8 @@ const Cube3D = forwardRef(function Cube3D(
   };
 
   useImperativeHandle(ref, () => ({
-    triggerLayerRotate,
     getCubeState,
-    triggerCubeRotate,
+    triggerRotate,
     isAnimating,
   }));
 

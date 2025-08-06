@@ -109,7 +109,7 @@ function App() {
       }
 
       // 前端动画
-      cube3DRef.current.triggerLayerRotate(move, async () => {
+      cube3DRef.current.triggerRotate(move, async () => {
         // 后端同步旋转
         await rotateCube(move);
         await checkSync();
@@ -334,25 +334,19 @@ function App() {
           <h2>整体旋转（XYZ轴）</h2>
           <div className="xyz-rotate-controls">
             <button
-              onClick={() =>
-                cube3DRef.current?.triggerCubeRotate([1, 0, 0], Math.PI / 2)
-              }
+              onClick={() => cube3DRef.current?.triggerRotate("X")}
               disabled={cube3DRef.current?.isAnimating}
             >
               X轴 +90°
             </button>
             <button
-              onClick={() =>
-                cube3DRef.current?.triggerCubeRotate([0, 1, 0], Math.PI / 2)
-              }
+              onClick={() => cube3DRef.current?.triggerRotate("Y")}
               disabled={cube3DRef.current?.isAnimating}
             >
               Y轴 +90°
             </button>
             <button
-              onClick={() =>
-                cube3DRef.current?.triggerCubeRotate([0, 0, 1], Math.PI / 2)
-              }
+              onClick={() => cube3DRef.current?.triggerRotate("Z")}
               disabled={cube3DRef.current?.isAnimating}
             >
               Z轴 +90°

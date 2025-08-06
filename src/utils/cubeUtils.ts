@@ -99,10 +99,14 @@ export function getAnimatedCubies(move: string | null, cubieList: CubieType[]): 
 // orientation: 'default' | 'flipped'
 export function getCubeStateFromCubies(
   cubies: CubieType[],
-  orientation?: 'default' | 'flipped'
+  orientation: 'default' | 'flipped' = 'default'
 ): string {
-  // 始终用 ULFRBD 顺序
-  const faceOrder = ['U', 'L', 'F', 'R', 'B', 'D'];
+  // 默认顺序: U, L, F, R, B, D
+  // flipped顺序: D, R, B, L, F, U
+  const FACE_ORDER_DEFAULT = ['U', 'L', 'F', 'R', 'B', 'D'];
+  const FACE_ORDER_FLIPPED = ['D', 'R', 'B', 'L', 'F', 'U'];
+  const faceOrder = orientation === 'flipped' ? FACE_ORDER_FLIPPED : FACE_ORDER_DEFAULT;
+
   let state = "";
   for (const face of faceOrder) {
     const positions = STICKER_MAP.filter((s) => s.f === face).map((s) => s.p);
