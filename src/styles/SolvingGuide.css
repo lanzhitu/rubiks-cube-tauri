@@ -1,0 +1,98 @@
+.solving-guide {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+.solving-guide h3 {
+    color: #1a1a1a;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+.solving-guide h4 {
+    color: #2196F3;
+    margin: 15px 0;
+    font-size: 1.1em;
+}
+
+.solving-guide h5 {
+    color: #1976D2;
+    margin: 10px 0;
+    font-size: 1em;
+}
+
+.solving-guide p {
+    color: #666;
+    line-height: 1.5;
+    margin: 8px 0;
+}
+
+.progress-section {
+    margin-bottom: 20px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #eee;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #4CAF50;
+    transition: width 0.3s ease;
+}
+
+.current-stage {
+    border-left: 4px solid #2196F3;
+    padding-left: 15px;
+    margin-bottom: 20px;
+}
+
+.current-step {
+    background: #f5f5f5;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+.algorithm {
+    margin: 15px 0;
+}
+
+.algorithm-btn {
+    background: #2196F3;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+.algorithm-btn:hover {
+    background: #1976D2;
+}
+
+.hints {
+    background: #E3F2FD;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+.hints ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.hints li {
+    margin: 5px 0;
+    color: #1565C0;
+}

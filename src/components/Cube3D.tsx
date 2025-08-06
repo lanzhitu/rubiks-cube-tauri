@@ -1,9 +1,5 @@
 import * as THREE from "three";
-import {
-  useMemo,
-  forwardRef,
-  useImperativeHandle,
-} from "react";
+import { useMemo, forwardRef, useImperativeHandle } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { animated } from "@react-spring/three";
@@ -28,6 +24,8 @@ const Cube3D = forwardRef(function Cube3D(
     staticCubies,
     springs,
     triggerLayerRotate,
+    triggerCubeRotate,
+    isAnimating,
   } = useCubeAnimation(animationSpeed);
 
   // 生成贴纸材质
@@ -58,14 +56,24 @@ const Cube3D = forwardRef(function Cube3D(
     return getCubeStateFromCubies(cubies);
   };
 
-  useImperativeHandle(ref, () => ({ triggerLayerRotate, getCubeState }));
+  useImperativeHandle(ref, () => ({
+    triggerLayerRotate,
+    getCubeState,
+    triggerCubeRotate,
+    isAnimating,
+  }));
 
+  // 调试输出
+  console.log("[Cube3D] springs.rotation:", springs.rotation);
+  console.log("[Cube3D] animatedCubies:", animatedCubies);
+  console.log("[Cube3D] staticCubies:", staticCubies);
   return (
     <div style={{ width: "100%", height: "100%", touchAction: "none" }}>
       <Canvas camera={{ position: [3.5, 3.5, 3.5], fov: 50 }}>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={0.8} />
         <animated.group rotation={springs.rotation as any}>
+          {/* 动画组调试 */}
           <CubieList
             cubies={animatedCubies}
             getCubieMaterials={getCubieMaterials}
@@ -73,6 +81,7 @@ const Cube3D = forwardRef(function Cube3D(
           />
         </animated.group>
         <group>
+          {/* 静态组调试 */}
           <CubieList
             cubies={staticCubies}
             getCubieMaterials={getCubieMaterials}

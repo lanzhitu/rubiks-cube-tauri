@@ -1,5 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Cube3D from "./components/Cube3D";
+import { SolvingGuide } from "./components/SolvingGuide";
+import { SolvingManager } from "./utils/solvingManager";
 import {
   getCubeState as getBackendCubeState,
   rotateCube,
@@ -7,17 +9,24 @@ import {
   solveCube,
   scrambleCube,
 } from "./services/cubeApi";
+import { parseCubeState, SOLVED_STATE } from "./utils/cubeUtils";
+import type { CubeState } from "./types/cube";
 import "./App.css";
 
 function App() {
   console.log("App component rendering");
   const cube3DRef = useRef<any>(null);
+  const solvingManager = useRef(new SolvingManager());
 
   const [isAnimating, setIsAnimating] = useState(false);
   const [animationSpeed, setAnimationSpeed] = useState(1);
   const [cubeState, setCubeState] = useState("");
   const [backendState, setBackendState] = useState("");
   const [syncResult, setSyncResult] = useState<string>("");
+
+  // 解魔方状态
+  const [currentProgress, setCurrentProgress] = useState(0);
+  const [currentHints, setCurrentHints] = useState<string[]>([]);
   // 校验前端与后端魔方状态是否同步
   // 同步检测并显示前后端状态
   // 每次旋转后自动检测同步并显示匹配提示
@@ -30,23 +39,31 @@ function App() {
     setSyncResult(frontendState === backend ? "match" : "mismatch");
   };
 
-  // 页面初始化时重置后端魔方数据，并定时刷新 CubeState
-  React.useEffect(() => {
+  // 页面初始化时重置后端魔方数据，并定时刷新状态
+  useEffect(() => {
     // 初始化时重置后端魔方
     (async () => {
       try {
         await resetCube();
         await checkSync();
+
+        // 初始化解魔方管理器
+        solvingManager.current.reset();
+        updateSolvingProgress();
       } catch (e) {
         console.error("后端魔方重置失败", e);
       }
     })();
-    // 定时刷新 CubeState
-    const timer = setInterval(() => {
+
+    // 定时刷新状态
+    const timer = setInterval(async () => {
       if (cube3DRef.current && cube3DRef.current.getCubeState) {
-        setCubeState(cube3DRef.current.getCubeState());
+        const state = cube3DRef.current.getCubeState();
+        setCubeState(state);
+        updateSolvingProgress();
       }
     }, 500);
+
     return () => clearInterval(timer);
   }, []);
 
@@ -55,30 +72,53 @@ function App() {
   // 只负责动画和交互，不再处理魔方状态
   // 每次旋转后自动检测同步
   // 每次旋转时，前后端都同步操作
+  // 更新解魔方进度
+  const updateSolvingProgress = async () => {
+    const state = cube3DRef.current?.getCubeState();
+    if (!state) return;
+
+    const cubeState: CubeState = {
+      raw: state,
+      faces: parseCubeState(state),
+      isSolved: state === SOLVED_STATE,
+    };
+
+    solvingManager.current.updateProgress(cubeState);
+    setCurrentProgress(solvingManager.current.getProgress());
+    setCurrentHints(solvingManager.current.getCurrentHints());
+  };
+
   const handleMoves = (moves: string[] | null) => {
     if (isAnimating || !moves || moves.length === 0) return;
     let currentMoveIndex = 0;
+
     const processNextMove = async () => {
       if (currentMoveIndex >= moves.length) {
         setIsAnimating(false);
-        await checkSync(); // 旋转全部完成后再检测一次
+        await checkSync();
+        await updateSolvingProgress();
         return;
       }
+
       setIsAnimating(true);
       const move = moves[currentMoveIndex];
+
       if (!cube3DRef.current) {
         setIsAnimating(false);
         return;
       }
+
       // 前端动画
       cube3DRef.current.triggerLayerRotate(move, async () => {
         // 后端同步旋转
         await rotateCube(move);
-        await checkSync(); // 每次旋转后检测一次
+        await checkSync();
+        await updateSolvingProgress();
         currentMoveIndex++;
         processNextMove();
       });
     };
+
     processNextMove();
   };
 
@@ -198,7 +238,16 @@ function App() {
       </div>
 
       <div className="controls-container">
-        <h1>魔方CFOP教学与解法</h1>
+        <h1>魔方层先法教学</h1>
+
+        {/* 解魔方指导面板 */}
+        <SolvingGuide
+          currentStage={solvingManager.current.getCurrentStage()}
+          currentStep={solvingManager.current.getCurrentStep()}
+          progress={currentProgress}
+          hints={currentHints}
+          onAlgorithmClick={handleMoves}
+        />
 
         <div className="control-group">
           <h2>基本操作</h2>
@@ -279,6 +328,35 @@ function App() {
                 </button>
               );
             })}
+          </div>
+        </div>
+        <div className="control-group">
+          <h2>整体旋转（XYZ轴）</h2>
+          <div className="xyz-rotate-controls">
+            <button
+              onClick={() =>
+                cube3DRef.current?.triggerCubeRotate([1, 0, 0], Math.PI / 2)
+              }
+              disabled={cube3DRef.current?.isAnimating}
+            >
+              X轴 +90°
+            </button>
+            <button
+              onClick={() =>
+                cube3DRef.current?.triggerCubeRotate([0, 1, 0], Math.PI / 2)
+              }
+              disabled={cube3DRef.current?.isAnimating}
+            >
+              Y轴 +90°
+            </button>
+            <button
+              onClick={() =>
+                cube3DRef.current?.triggerCubeRotate([0, 0, 1], Math.PI / 2)
+              }
+              disabled={cube3DRef.current?.isAnimating}
+            >
+              Z轴 +90°
+            </button>
           </div>
         </div>
 

@@ -37,28 +37,49 @@ export function useCubeAnimation(animationSpeed: number = 1) {
         },
     }));
 
-    const rotateCubies = (move: string) => {
-        const face = move[0].toUpperCase() as FaceColor;
-        const isPrime = move.endsWith("'");
-        const filterFn = layerFilter[face as keyof typeof layerFilter];
-        const rot = FACE_ROTATION_MAP[face];
-        if (!filterFn || !rot) return;
-        const axis = rot.axis;
-        const angle = isPrime ? rot.ccw : rot.cw;
-        setCubies((prev) => {
-            return prev.map((cubie) => {
-                if (!filterFn(cubie)) return cubie;
-                return {
+    // 支持单层和整体旋转：
+    // - move: 普通字符串如 "U"/"R'"，则只旋转对应层
+    // - axis/angle: 若传入则整体旋转所有 cubie
+    const rotateCubies = (moveOrAxis: string | [number, number, number], angle?: number) => {
+        if (typeof moveOrAxis === "string") {
+            const move = moveOrAxis;
+            const face = move[0].toUpperCase() as FaceColor;
+            const isPrime = move.endsWith("'");
+            const filterFn = layerFilter[face as keyof typeof layerFilter];
+            const rot = FACE_ROTATION_MAP[face];
+            if (!filterFn || !rot) return;
+            const axis = rot.axis;
+            const ang = isPrime ? rot.ccw : rot.cw;
+            setCubies((prev) => {
+                return prev.map((cubie) => {
+                    if (!filterFn(cubie)) return cubie;
+                    return {
+                        ...cubie,
+                        position: rotatePosition(cubie.position, axis, ang),
+                        orientation: rotateOrientation(
+                            cubie.orientation || [0, 0, 0],
+                            axis,
+                            ang
+                        ),
+                    };
+                });
+            });
+        } else {
+            // 整体旋转：所有 cubie 都参与，orientation 也变
+            const axis = moveOrAxis;
+            const ang = angle ?? Math.PI / 2;
+            setCubies((prev) => {
+                return prev.map((cubie) => ({
                     ...cubie,
-                    position: rotatePosition(cubie.position, axis, angle),
+                    position: rotatePosition(cubie.position, axis, ang),
                     orientation: rotateOrientation(
                         cubie.orientation || [0, 0, 0],
                         axis,
-                        angle
+                        ang
                     ),
-                };
+                }));
             });
-        });
+        }
     };
 
     const triggerLayerRotate = (move: string, onEnd?: () => void) => {
@@ -70,7 +91,7 @@ export function useCubeAnimation(animationSpeed: number = 1) {
         setCurrentMove(move);
         onAnimationEndCallbackRef.current = () => {
             rotateCubies(move);
-            if (onEnd) onEnd();
+            if (typeof onEnd === 'function') onEnd();
         };
         const face = move[0].toUpperCase() as FaceColor;
         const isPrime = move.endsWith("'");
@@ -92,11 +113,45 @@ export function useCubeAnimation(animationSpeed: number = 1) {
 
     const cubieList = cubies;
     const animatedCubies: CubieType[] = currentMove
-        ? getAnimatedCubies(currentMove, cubieList)
+        ? currentMove === "__rotate__"
+            ? cubieList // 整体旋转时所有 cubie 都动画
+            : getAnimatedCubies(currentMove, cubieList)
         : [];
-    const staticCubies = currentMove
-        ? cubieList.filter((cubie) => !animatedCubies.includes(cubie))
+    const staticCubies: CubieType[] = currentMove
+        ? currentMove === "__rotate__"
+            ? [] // 整体旋转时无静态 cubie
+            : cubieList.filter((cubie) => !animatedCubies.includes(cubie))
         : cubieList;
+
+    // 魔方整体旋转动画及 cubies 变换（参数化）
+    const triggerCubeRotate = (
+        axis: [number, number, number],
+        onEnd?: () => void
+    ) => {
+        if (isAnimating) {
+            if (onEnd) setTimeout(onEnd, 100);
+            return;
+        }
+        setIsAnimating(true);
+        setCurrentMove("__rotate__"); // 标记整体旋转动画
+        const angle = Math.PI / 2; // 默认顺时针90度
+        onAnimationEndCallbackRef.current = () => {
+            rotateCubies(axis, angle);
+            if (typeof onEnd === 'function') onEnd();
+        };
+        // 计算动画目标 rotation
+        const rotation: [number, number, number] = [0, 0, 0];
+        if (axis[0]) rotation[0] = angle * axis[0];
+        if (axis[1]) rotation[1] = angle * axis[1];
+        if (axis[2]) rotation[2] = angle * axis[2];
+        setTimeout(() => {
+            api.start({
+                to: { rotation },
+                from: { rotation: [0, 0, 0] },
+                config: { duration: 300 / animationSpeed },
+            });
+        }, 10);
+    };
 
     return {
         cubies,
@@ -104,6 +159,7 @@ export function useCubeAnimation(animationSpeed: number = 1) {
         staticCubies,
         springs,
         triggerLayerRotate,
+        triggerCubeRotate,
         isAnimating,
         setCubies,
     };

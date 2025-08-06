@@ -1,12 +1,33 @@
 // CubieType 类型和工厂函数
 import { STICKER_MAP } from "./cubeConstants";
 import type { FaceColor } from "./cubeConstants";
+import type { Color } from "../types/cube";
 import * as THREE from "three";
 import {
-  CUBE_FACE_ORDER,
   CUBE_COLOR_LETTER,
   faceMap,
 } from "./cubeConstants";
+
+// 标准还原状态
+export const SOLVED_STATE = "WWWWWWWWWRRRRRRRRRGGGGGGGGGOOOOOOOOOBBBBBBBBBYYYYYYYYY";
+
+// 解析魔方状态为二维数组
+export function parseCubeState(state: string): Color[][] {
+  if (state.length !== 54) {
+    throw new Error("Invalid cube state length");
+  }
+
+  const faces: Color[][] = [];
+  // 每个面9个格子
+  for (let i = 0; i < 6; i++) {
+    const face: Color[] = [];
+    for (let j = 0; j < 9; j++) {
+      face.push(state[i * 9 + j] as Color);
+    }
+    faces.push(face);
+  }
+  return faces;
+}
 import type { CubieType } from "./cubeTypes";
 
 
@@ -74,9 +95,16 @@ export function getAnimatedCubies(move: string | null, cubieList: CubieType[]): 
 
 
 // 获取魔方当前物理状态字符串（前端采集，后端兼容）
-export function getCubeStateFromCubies(cubies: CubieType[]): string {
+
+// orientation: 'default' | 'flipped'
+export function getCubeStateFromCubies(
+  cubies: CubieType[],
+  orientation?: 'default' | 'flipped'
+): string {
+  // 始终用 ULFRBD 顺序
+  const faceOrder = ['U', 'L', 'F', 'R', 'B', 'D'];
   let state = "";
-  for (const face of CUBE_FACE_ORDER) {
+  for (const face of faceOrder) {
     const positions = STICKER_MAP.filter((s) => s.f === face).map((s) => s.p);
     for (const pos of positions) {
       const cubie = cubies.find(
@@ -102,7 +130,7 @@ export function getCubeStateFromCubies(cubies: CubieType[]): string {
         const vec = new THREE.Vector3(...faceVecs[stickerFace as FaceColor]);
         const euler = new THREE.Euler(...(cubie.orientation || [0, 0, 0]));
         vec.applyEuler(euler);
-        const faceVec = new THREE.Vector3(...faceVecs[face]);
+        const faceVec = new THREE.Vector3(...faceVecs[face as FaceColor]);
         if (vec.distanceTo(faceVec) < 0.1) {
           foundSticker = cubie.stickers[stickerFace as FaceColor];
           break;
@@ -115,14 +143,14 @@ export function getCubeStateFromCubies(cubies: CubieType[]): string {
       }
     }
   }
-  // 按后端顺序重组
-  let backendState = "";
-  for (let i = 0; i < CUBE_FACE_ORDER.length; i++) {
-    backendState += state
+  // faceMap映射
+  let mappedState = "";
+  for (let i = 0; i < faceOrder.length; i++) {
+    mappedState += state
       .slice(i * 9, i * 9 + 9)
       .split("")
       .map((c) => faceMap[c] || c)
       .join("");
   }
-  return backendState;
+  return mappedState;
 }
