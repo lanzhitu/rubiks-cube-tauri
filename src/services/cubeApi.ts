@@ -33,8 +33,8 @@ export async function isCubeSolved() {
   return response.ok ? (await response.json()).solved : false;
 }
 
-export async function solveCube() {
-  const response = await fetch(`${API_BASE_URL}/cube/solve`);
+export async function getCubeSolution() {
+  const response = await fetch(`${API_BASE_URL}/cube/get_solution`);
   return response.ok ? (await response.json()).solution : null;
 }
 

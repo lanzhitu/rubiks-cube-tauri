@@ -5,7 +5,7 @@ import {
     getCubeState as getBackendCubeState,
     rotateCube,
     resetCube,
-    solveCube,
+    getCubeSolution,
     scrambleCube,
 } from "../services/cubeApi";
 
@@ -79,7 +79,7 @@ export function useCubeActions({
     const solveFullWithAnimation = useCallback(async () => {
         if (cube3DRef.current?.isAnimating) return;
         try {
-            const moves = await solveCube();
+            const moves = await getCubeSolution();
             if (Array.isArray(moves) && moves.length > 0) {
                 handleMoves(moves);
             } else {

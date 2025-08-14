@@ -78,6 +78,16 @@ def scramble_cube():
     state = global_cube.scramble()
     return {"state": state}
 
+@app.get("/cube/get_solution")
+def get_solution():
+    try:
+        state = global_cube.get_state()
+        moves = global_cube.solve()
+        global_cube.set_state(state)
+    except NotImplementedError:
+        moves = []
+    return {"solution": moves}
+
 # 允许直接运行 app.py 启动 FastAPI 服务
 if __name__ == "__main__":
     import uvicorn
