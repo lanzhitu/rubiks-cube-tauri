@@ -49,8 +49,7 @@ export function useCubeActions({
         setCurrentHints(solvingManager.current.getCurrentHints());
     }, [cube3DRef, solvingManager, setCubeState, setBackendState, setSyncResult, setCurrentProgress, setCurrentHints]);
 
-    // 支持是否同步后端
-    const handleMoves = useCallback((moves: string[] | null, syncBackend: boolean = true) => {
+    const handleMoves = useCallback((moves: string[] | null) => {
         if (!cube3DRef.current?.triggerRotate || !moves || moves.length === 0) return;
         if (cube3DRef.current.isAnimating || typeof setIsAnimating !== "function") return;
         setIsAnimating(true);
@@ -58,40 +57,13 @@ export function useCubeActions({
         const processNextMove = async () => {
             if (currentMoveIndex >= moves.length) {
                 setIsAnimating(false);
-                if (syncBackend) await syncAndUpdate();
-                else {
-                    // 只更新前端进度
-                    const state = cube3DRef.current?.getCubeState();
-                    if (state) {
-                        const cubeStateObj: CubeState = {
-                            raw: state,
-                            faces: parseCubeState(state),
-                            isSolved: state === SOLVED_STATE,
-                        };
-                        solvingManager.current.updateProgress(cubeStateObj);
-                        setCurrentProgress(solvingManager.current.getProgress());
-                        setCurrentHints(solvingManager.current.getCurrentHints());
-                    }
-                }
+                await syncAndUpdate();
                 return;
             }
             const move = moves[currentMoveIndex];
             cube3DRef.current.triggerRotate(move, async () => {
-                if (syncBackend) await rotateCube(move);
-                if (syncBackend) await syncAndUpdate();
-                else {
-                    const state = cube3DRef.current?.getCubeState();
-                    if (state) {
-                        const cubeStateObj: CubeState = {
-                            raw: state,
-                            faces: parseCubeState(state),
-                            isSolved: state === SOLVED_STATE,
-                        };
-                        solvingManager.current.updateProgress(cubeStateObj);
-                        setCurrentProgress(solvingManager.current.getProgress());
-                        setCurrentHints(solvingManager.current.getCurrentHints());
-                    }
-                }
+                await rotateCube(move);
+                await syncAndUpdate();
                 currentMoveIndex++;
                 processNextMove();
             });
