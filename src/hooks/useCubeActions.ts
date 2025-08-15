@@ -6,7 +6,6 @@ import {
     rotateCube,
     resetCube,
     getCubeSolution,
-    scrambleCube,
 } from "../services/cubeApi";
 
 export function useCubeActions({
@@ -90,20 +89,16 @@ export function useCubeActions({
         }
     }, [cube3DRef, handleMoves]);
 
-    const randomize = useCallback(async () => {
+    const randomize = useCallback(() => {
         if (cube3DRef.current?.isAnimating) return;
-        try {
-            const scrambledState = await scrambleCube();
-            if (cube3DRef.current && cube3DRef.current.setState) {
-                cube3DRef.current.setState(scrambledState);
-            } else {
-                window.location.reload();
-            }
-            await syncAndUpdate();
-        } catch (e) {
-            alert("打乱失败");
+        const moves = [];
+        const possibleMoves = ["U", "U'", "R", "R'", "F", "F'", "D", "D'", "L", "L'", "B", "B'"];
+        for (let i = 0; i < 20; i++) {
+            const randomMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+            moves.push(randomMove);
         }
-    }, [cube3DRef, syncAndUpdate]);
+        handleMoves(moves);
+    }, [cube3DRef, handleMoves]);
 
     const reset = useCallback(async () => {
         if (cube3DRef.current?.isAnimating) return;
