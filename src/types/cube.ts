@@ -1,4 +1,5 @@
 // 魔方的类型定义
+import type { CubeProgress } from './solving';
 export type Move = string;  // 基础移动，如 "U", "R'", "F2" 等
 export type Face = 'U' | 'D' | 'L' | 'R' | 'F' | 'B';
 export type Color = 'W' | 'Y' | 'R' | 'O' | 'G' | 'B';
@@ -19,6 +20,7 @@ export interface SolvingStage {
     name: string;
     description: string;
     steps: SolvingStep[];
+    cubeProgress: CubeProgress;
 }
 
 // 魔方状态

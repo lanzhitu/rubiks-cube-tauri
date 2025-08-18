@@ -6,6 +6,7 @@ export const SOLVING_STAGES: SolvingStage[] = [
         id: 'white-cross',
         name: '白色十字',
         description: '构建底层（白色）十字',
+        cubeProgress: 'IN_PROGRESS',
         steps: [
             {
                 id: 'white-cross-1',
@@ -37,6 +38,7 @@ export const SOLVING_STAGES: SolvingStage[] = [
         id: 'white-corners',
         name: '白色角块',
         description: '完成第一层（白色面）',
+        cubeProgress: 'BOTTOM_CROSS',
         steps: [
             {
                 id: 'white-corners-1',
@@ -56,6 +58,7 @@ export const SOLVING_STAGES: SolvingStage[] = [
         id: 'second-layer',
         name: '第二层',
         description: '完成中间层',
+        cubeProgress: 'BOTTOM_COMPLETE',
         steps: [
             {
                 id: 'second-layer-1',
@@ -87,6 +90,7 @@ export const SOLVING_STAGES: SolvingStage[] = [
         id: 'yellow-cross',
         name: '顶层十字',
         description: '完成顶层黄色十字',
+        cubeProgress: 'MIDDLE_LAYER',
         steps: [
             {
                 id: 'yellow-cross-1',
@@ -106,6 +110,7 @@ export const SOLVING_STAGES: SolvingStage[] = [
         id: 'yellow-corners',
         name: '顶层角块',
         description: '完成顶层角块位置与方向',
+        cubeProgress: 'SOLVED',
         steps: [
             {
                 id: 'yellow-corners-1',

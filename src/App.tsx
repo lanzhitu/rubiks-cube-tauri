@@ -9,57 +9,7 @@ import { useResetOnUnload } from "./hooks/useResetOnUnload";
 import "./App.css";
 
 function App() {
-  // 分步解法状态
-  const [currentStep, setCurrentStep] = useState(0);
-
-  // 分步解法按钮点击逻辑
-  const onStepSolve = async (step: number) => {
-    if (isAnimating) return;
-    // 步骤名与后端API映射
-    const stepApiMap = [
-      "bottom_cross", // 0
-      "white_corner", // 1
-      "second_layer", // 2
-      "top_cross", // 3
-      "order_top_cross", // 4
-      "order_top_corners", // 5
-      "turn_top_corners", // 6
-    ];
-    const stepName = stepApiMap[step];
-    try {
-      // 请求后端获取该步解法指令
-      const res = await fetch(`/api/solve/${stepName}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ state: cubeState }),
-      });
-      const data = await res.json();
-      const moves: string[] = data.moves || [];
-      // 逐步动画执行指令
-      for (const move of moves) {
-        await new Promise((resolve) => {
-          handleMoves([move]);
-          // 假设动画完成后会自动setIsAnimating(false)
-          const check = () => {
-            if (!isAnimating) resolve(undefined);
-            else setTimeout(check, 50);
-          };
-          check();
-        });
-        await syncAndUpdate();
-      }
-      // 校验该步是否完成（可根据后端返回或前端判断）
-      // 这里假设后端返回stepFinished字段
-      if (data.stepFinished) {
-        setCurrentStep(step + 1);
-      }
-    } catch (e) {
-      alert("分步解法失败: " + e);
-    }
-  };
-  // 页面刷新时通知后端重置魔方状态（模块化）
   useResetOnUnload();
-  console.log("App component rendering");
   const cube3DRef = useRef<any>(null);
   const solvingManager = useRef(new SolvingManager());
 
@@ -68,12 +18,10 @@ function App() {
   const [cubeState, setCubeState] = useState("");
   const [backendState, setBackendState] = useState("");
   const [syncResult, setSyncResult] = useState<string>("");
-
-  // 解魔方状态
   const [currentProgress, setCurrentProgress] = useState(0);
   const [currentHints, setCurrentHints] = useState<string[]>([]);
 
-  // 使用 useCubeActions 简化所有魔方操作
+  // 集成分步解法相关状态和方法
   const {
     handleMoves,
     syncAndUpdate,
@@ -82,6 +30,13 @@ function App() {
     randomize,
     reset,
     changeAnimationSpeed,
+    solutionSteps,
+    currentStep,
+    setCurrentStep,
+    isAutoPlaying,
+    toggleAutoPlay,
+    onStepSolve,
+    resetSteps,
   } = useCubeActions({
     cube3DRef,
     solvingManager,
@@ -116,12 +71,16 @@ function App() {
         solveAndAnimate={solveAndAnimate}
         solveFullWithAnimation={solveFullWithAnimation}
         handleMoves={handleMoves}
+        solutionSteps={solutionSteps}
         currentStep={currentStep}
+        setCurrentStep={setCurrentStep}
+        isAutoPlaying={isAutoPlaying}
+        toggleAutoPlay={toggleAutoPlay}
         onStepSolve={onStepSolve}
+        resetSteps={resetSteps}
       />
       <SolvingGuide
-        currentStage={solvingManager.current.getCurrentStage()}
-        currentStep={solvingManager.current.getCurrentStep()}
+        currentStep={currentStep}
         progress={currentProgress}
         hints={currentHints}
         onAlgorithmClick={handleMoves}

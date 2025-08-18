@@ -1,26 +1,35 @@
 interface ControlPanelProps {
+  solutionSteps: any[];
   currentStep: number;
-  onStepSolve: (step: number) => void;
+  setCurrentStep: (step: number) => void;
+  onStepSolve: (step?: number) => void;
   isAnimating: boolean;
+  isAutoPlaying: boolean;
+  toggleAutoPlay: () => void;
   animationSpeed: number;
   changeAnimationSpeed: (speed: number) => void;
-  randomize: () => void;
-  reset: () => void;
+  randomize: () => Promise<void>;
+  reset: () => Promise<void>;
   solveAndAnimate: () => void;
-  solveFullWithAnimation: () => void;
+  solveFullWithAnimation: () => Promise<void>;
   handleMoves: (moves: string[], syncBackend?: boolean) => void;
+  resetSteps: () => void;
 }
 
 export function ControlPanel({
+  solutionSteps,
+  currentStep,
+  onStepSolve,
   isAnimating,
+  isAutoPlaying,
+  toggleAutoPlay,
   animationSpeed,
   changeAnimationSpeed,
   randomize,
   reset,
   solveFullWithAnimation,
   handleMoves,
-  currentStep,
-  onStepSolve,
+  resetSteps,
 }: ControlPanelProps) {
   return (
     <div className="controls-container">
@@ -33,57 +42,31 @@ export function ControlPanel({
         <button onClick={reset} disabled={isAnimating}>
           重置魔方
         </button>
+        <button onClick={resetSteps} disabled={isAnimating}>
+          重新获取分步解法
+        </button>
       </div>
       <div className="control-group">
-        <h2>CFOP分步解法</h2>
-        <button
-          onClick={() => onStepSolve(0)}
-          disabled={isAnimating || currentStep !== 0}
-        >
-          第一步：解底部十字
-        </button>
-        <button
-          onClick={() => onStepSolve(1)}
-          disabled={isAnimating || currentStep !== 1}
-        >
-          第二步：解底部四角
-        </button>
-        <button
-          onClick={() => onStepSolve(2)}
-          disabled={isAnimating || currentStep !== 2}
-        >
-          第三步：解第二层
-        </button>
-        <button
-          onClick={() => onStepSolve(3)}
-          disabled={isAnimating || currentStep !== 3}
-        >
-          第四步：解顶层十字
-        </button>
-        <button
-          onClick={() => onStepSolve(4)}
-          disabled={isAnimating || currentStep !== 4}
-        >
-          第五步：顶层十字归位
-        </button>
-        <button
-          onClick={() => onStepSolve(5)}
-          disabled={isAnimating || currentStep !== 5}
-        >
-          第六步：顶层四角归位
-        </button>
-        <button
-          onClick={() => onStepSolve(6)}
-          disabled={isAnimating || currentStep !== 6}
-        >
-          第七步：顶层四角转向
-        </button>
+        <h2>分步解法</h2>
+        {solutionSteps.map((step, idx) => (
+          <button
+            key={idx}
+            onClick={() => onStepSolve(idx)}
+            disabled={isAnimating || currentStep !== idx}
+          >
+            {step.name || `步骤${idx + 1}`}
+          </button>
+        ))}
         <button
           onClick={solveFullWithAnimation}
           disabled={isAnimating}
           className="solve-full-btn"
         >
           完整解魔方
+        </button>
+        <h2>播放控制</h2>
+        <button onClick={toggleAutoPlay} disabled={isAnimating}>
+          {isAutoPlaying ? "暂停" : "播放"}
         </button>
       </div>
       <div className="control-group">
