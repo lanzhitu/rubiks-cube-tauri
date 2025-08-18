@@ -61,10 +61,6 @@ const Cube3D = forwardRef(function Cube3D(
     isAnimating,
   }));
 
-  // 调试输出
-  console.log("[Cube3D] springs.rotation:", springs.rotation);
-  console.log("[Cube3D] animatedCubies:", animatedCubies);
-  console.log("[Cube3D] staticCubies:", staticCubies);
   return (
     <div style={{ width: "100%", height: "100%", touchAction: "none" }}>
       <Canvas camera={{ position: [3.5, 3.5, 3.5], fov: 50 }}>
