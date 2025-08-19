@@ -10,7 +10,6 @@ interface ControlPanelProps {
   changeAnimationSpeed: (speed: number) => void;
   randomize: () => Promise<void>;
   reset: () => Promise<void>;
-  solveAndAnimate: () => void;
   solveFullWithAnimation: () => Promise<void>;
   handleMoves: (moves: string[], syncBackend?: boolean) => void;
   resetSteps: () => void;

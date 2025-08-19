@@ -25,7 +25,6 @@ function App() {
   const {
     handleMoves,
     syncAndUpdate,
-    solveAndAnimate,
     solveFullWithAnimation,
     randomize,
     reset,
@@ -68,7 +67,6 @@ function App() {
         changeAnimationSpeed={changeAnimationSpeed}
         randomize={randomize}
         reset={reset}
-        solveAndAnimate={solveAndAnimate}
         solveFullWithAnimation={solveFullWithAnimation}
         handleMoves={handleMoves}
         solutionSteps={solutionSteps}
