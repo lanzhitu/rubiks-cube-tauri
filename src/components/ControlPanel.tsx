@@ -1,10 +1,7 @@
 interface ControlPanelProps {
-  solutionSteps: any[];
-  currentStep: number;
-  setCurrentStep: (step: number) => void;
-  onStepSolve: (step?: number) => void;
   isAnimating: boolean;
   isAutoPlaying: boolean;
+  isPaused: boolean;
   toggleAutoPlay: () => void;
   animationSpeed: number;
   changeAnimationSpeed: (speed: number) => void;
@@ -13,14 +10,14 @@ interface ControlPanelProps {
   solveFullWithAnimation: () => Promise<void>;
   handleMoves: (moves: string[], syncBackend?: boolean) => void;
   resetSteps: () => void;
+  currentStageIndex: number;
+  continueNextStage: () => void;
 }
 
 export function ControlPanel({
-  solutionSteps,
-  currentStep,
-  onStepSolve,
   isAnimating,
   isAutoPlaying,
+  isPaused,
   toggleAutoPlay,
   animationSpeed,
   changeAnimationSpeed,
@@ -29,6 +26,8 @@ export function ControlPanel({
   solveFullWithAnimation,
   handleMoves,
   resetSteps,
+  currentStageIndex,
+  continueNextStage,
 }: ControlPanelProps) {
   return (
     <div className="controls-container">
@@ -46,16 +45,7 @@ export function ControlPanel({
         </button>
       </div>
       <div className="control-group">
-        <h2>分步解法</h2>
-        {solutionSteps.map((step, idx) => (
-          <button
-            key={idx}
-            onClick={() => onStepSolve(idx)}
-            disabled={isAnimating || currentStep !== idx}
-          >
-            {step.name || `步骤${idx + 1}`}
-          </button>
-        ))}
+        <h2>解法控制</h2>
         <button
           onClick={solveFullWithAnimation}
           disabled={isAnimating}
@@ -63,10 +53,15 @@ export function ControlPanel({
         >
           完整解魔方
         </button>
-        <h2>播放控制</h2>
         <button onClick={toggleAutoPlay} disabled={isAnimating}>
-          {isAutoPlaying ? "暂停" : "播放"}
+          {isPaused ? "继续" : isAutoPlaying ? "暂停" : "开始分步解魔方"}
         </button>
+        {isPaused && (
+          <button onClick={continueNextStage} disabled={isAnimating}>
+            确认并进入下一步
+          </button>
+        )}
+        <div className="current-stage">第 {currentStageIndex + 1} 步</div>
       </div>
       <div className="control-group">
         <h2>动画速度</h2>

@@ -21,7 +21,6 @@ function App() {
   const [currentProgress, setCurrentProgress] = useState(0);
   const [currentHints, setCurrentHints] = useState<string[]>([]);
 
-  // 集成分步解法相关状态和方法
   const {
     handleMoves,
     syncAndUpdate,
@@ -29,13 +28,12 @@ function App() {
     randomize,
     reset,
     changeAnimationSpeed,
-    solutionSteps,
-    currentStep,
-    setCurrentStep,
+    currentStageIndex,
     isAutoPlaying,
+    isPaused,
     toggleAutoPlay,
-    onStepSolve,
     resetSteps,
+    continueNextStage,
   } = useCubeActions({
     cube3DRef,
     solvingManager,
@@ -69,16 +67,15 @@ function App() {
         reset={reset}
         solveFullWithAnimation={solveFullWithAnimation}
         handleMoves={handleMoves}
-        solutionSteps={solutionSteps}
-        currentStep={currentStep}
-        setCurrentStep={setCurrentStep}
+        currentStageIndex={currentStageIndex}
+        isPaused={isPaused}
         isAutoPlaying={isAutoPlaying}
         toggleAutoPlay={toggleAutoPlay}
-        onStepSolve={onStepSolve}
+        continueNextStage={continueNextStage}
         resetSteps={resetSteps}
       />
       <SolvingGuide
-        currentStep={currentStep}
+        currentStageIndex={currentStageIndex}
         progress={currentProgress}
         hints={currentHints}
         onAlgorithmClick={handleMoves}

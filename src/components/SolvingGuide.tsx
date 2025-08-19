@@ -1,14 +1,14 @@
 import "../styles/SolvingGuide.css";
 
 interface SolvingGuideProps {
-  currentStep: number;
+  currentStageIndex: number;
   progress: number;
   hints: string[];
   onAlgorithmClick: (moves: string[] | null, syncBackend?: boolean) => void;
 }
 
 export function SolvingGuide({
-  currentStep,
+  currentStageIndex,
   progress,
   hints,
   onAlgorithmClick,
@@ -21,7 +21,7 @@ export function SolvingGuide({
         <div className="progress-bar">
           <div className="progress-fill" style={{ width: `${progress}%` }} />
         </div>
-        <div className="step-counter">当前步骤: {currentStep}</div>
+        <div className="step-counter">当前步骤: {currentStageIndex}</div>
       </div>
 
       {/* 提示部分 */}

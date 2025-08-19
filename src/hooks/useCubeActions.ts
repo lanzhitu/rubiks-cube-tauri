@@ -32,55 +32,24 @@ export function useCubeActions({
     setAnimationSpeed: (v: number) => void;
 }) {
     // 分步解法相关状态
-    const [solutionSteps, setSolutionSteps] = useState<any[]>([]);
-    const [currentStep, setCurrentStep] = useState(0);
+    const [currentStageIndex, setCurrentStageIndex] = useState(0);
     const [isAutoPlaying, setIsAutoPlaying] = useState(false);
+    const [fullSolution, setFullSolution] = useState<string[]>([]);
+    const [remainingMoves, setRemainingMoves] = useState<string[]>([]);
+    const [isPaused, setIsPaused] = useState(false);
 
-    // 获取分步解法
+    // 获取完整解法
     const fetchSolution = useCallback(async () => {
+        if (!solvingManager.current) return;
         const solution = await getCubeSolution();
-        if (Array.isArray(solution)) setSolutionSteps(solution);
-        setCurrentStep(0);
-    }, []);
+        if (Array.isArray(solution)) {
+            setFullSolution(solution);
+            setRemainingMoves(solution);
+        }
+        setCurrentStageIndex(0);
+    }, [solvingManager]);
 
     useEffect(() => { fetchSolution(); }, [fetchSolution]);
-
-    // 分步动画执行
-    const onStepSolve = useCallback(async (step?: number) => {
-        const stepIndex = typeof step === "number" ? step : currentStep;
-        if (cube3DRef.current?.isAnimating || stepIndex >= solutionSteps.length) {
-            setIsAutoPlaying(false);
-            return;
-        }
-        const currentStepData = solutionSteps[stepIndex];
-        if (!currentStepData) return;
-        setIsAnimating(true);
-        for (const move of currentStepData.algorithm) {
-            await new Promise<void>((resolve) => {
-                if (cube3DRef.current?.triggerRotate) {
-                    cube3DRef.current.triggerRotate(move, () => resolve());
-                } else {
-                    resolve();
-                }
-            });
-        }
-        setIsAnimating(false);
-        setCurrentStep(stepIndex + 1);
-        if (isAutoPlaying) {
-            setTimeout(() => onStepSolve(stepIndex + 1), 1000 / animationSpeed);
-        }
-    }, [solutionSteps, currentStep, isAutoPlaying, animationSpeed, cube3DRef, setIsAnimating]);
-
-    const toggleAutoPlay = useCallback(() => {
-        setIsAutoPlaying((prev) => !prev);
-        if (!isAutoPlaying) onStepSolve(currentStep);
-    }, [isAutoPlaying, onStepSolve, currentStep]);
-
-    const resetSteps = useCallback(() => {
-        setCurrentStep(0);
-        setIsAutoPlaying(false);
-        fetchSolution();
-    }, [fetchSolution]);
 
     // 合并同步与进度更新
     const syncAndUpdate = useCallback(async () => {
@@ -99,6 +68,95 @@ export function useCubeActions({
         setCurrentProgress(solvingManager.current.getProgress());
         setCurrentHints(solvingManager.current.getCurrentHints());
     }, [cube3DRef, solvingManager, setCubeState, setBackendState, setSyncResult, setCurrentProgress, setCurrentHints]);
+
+    // 分步动画执行
+    const executeMove = useCallback(async (move: string) => {
+        if (!cube3DRef.current?.triggerRotate) return;
+
+        await new Promise<void>((resolve) => {
+            cube3DRef.current.triggerRotate(move, () => resolve());
+        });
+
+        await syncAndUpdate();
+    }, [cube3DRef, syncAndUpdate]);
+
+    const onStepSolve = useCallback(async () => {
+        if (cube3DRef.current?.isAnimating || remainingMoves.length === 0 || isPaused) {
+            setIsAutoPlaying(false);
+            return;
+        }
+
+        setIsAnimating(true);
+
+        try {
+            const nextMove = remainingMoves[0];
+            await executeMove(nextMove);
+
+            // 从剩余步骤中移除已执行的动作
+            setRemainingMoves(prev => prev.slice(1));
+
+            // 检查当前阶段是否完成
+            if (solvingManager.current) {
+                const isComplete = solvingManager.current.isStepComplete({
+                    raw: cube3DRef.current.getCubeState(),
+                    faces: [],
+                    isSolved: false
+                });
+
+                if (isComplete) {
+                    // 暂停动画，等待用户确认
+                    setIsAutoPlaying(false);
+                    setIsPaused(true);
+
+                    // 更新到下一个阶段
+                    setCurrentStageIndex(prev => prev + 1);
+                    return;
+                }
+            }
+        } catch (error) {
+            console.error('执行步骤时出错:', error);
+            setIsAutoPlaying(false);
+        } finally {
+            setIsAnimating(false);
+
+            // 如果还有剩余步骤且处于自动播放状态，继续执行
+            if (isAutoPlaying && remainingMoves.length > 0 && !isPaused) {
+                setTimeout(() => onStepSolve(), 1000 / animationSpeed);
+            }
+        }
+    }, [remainingMoves, isAutoPlaying, animationSpeed, cube3DRef, setIsAnimating, executeMove, isPaused, solvingManager]);
+
+    // 继续下一个阶段
+    const continueNextStage = useCallback(() => {
+        if (currentStageIndex >= fullSolution.length) return;
+
+        // Reset state for next stage
+        setIsPaused(false);
+        setIsAutoPlaying(true);
+
+        // Get moves for the next stage
+        const nextStageMoves = fullSolution[currentStageIndex];
+        setRemainingMoves(typeof nextStageMoves === 'string' ? [nextStageMoves] : nextStageMoves);
+
+        // Continue execution
+        onStepSolve();
+    }, [currentStageIndex, fullSolution, onStepSolve]);
+
+    const toggleAutoPlay = useCallback(() => {
+        if (isPaused) {
+            // If paused, resume from current stage
+            continueNextStage();
+        } else {
+            // If not paused, toggle auto play state
+            setIsAutoPlaying((prev) => {
+                const newState = !prev;
+                if (newState) {
+                    onStepSolve(); // Start playing if turning on
+                }
+                return newState;
+            });
+        }
+    }, [isPaused, continueNextStage, onStepSolve]);
 
     const handleMoves = useCallback((moves: string[] | null) => {
         if (!cube3DRef.current?.triggerRotate || !moves || moves.length === 0) return;
@@ -122,10 +180,20 @@ export function useCubeActions({
         processNextMove();
     }, [cube3DRef, solvingManager, setIsAnimating, setCurrentProgress, setCurrentHints, syncAndUpdate]);
 
+    const resetSteps = useCallback(() => {
+        setCurrentStageIndex(0);
+        setIsAutoPlaying(false);
+        setIsPaused(false);
+        fetchSolution();
+    }, [fetchSolution]);
+
     const solveAndAnimate = useCallback(() => {
         if (cube3DRef.current?.isAnimating) return;
-        handleMoves(["U", "U'", "U", "U'"]);
-    }, [cube3DRef, handleMoves]);
+        if (remainingMoves.length > 0) {
+            setIsAutoPlaying(true);
+            onStepSolve();
+        }
+    }, [cube3DRef, remainingMoves, onStepSolve]);
 
     const solveFullWithAnimation = useCallback(async () => {
         if (cube3DRef.current?.isAnimating) return;
@@ -180,12 +248,12 @@ export function useCubeActions({
         randomize,
         reset,
         changeAnimationSpeed,
-        solutionSteps,
-        currentStep,
-        setCurrentStep,
+        currentStageIndex,
+        remainingMoves,
+        isPaused,
         isAutoPlaying,
         toggleAutoPlay,
-        onStepSolve,
+        continueNextStage,
         resetSteps,
     } as {
         handleMoves: (moves: string[] | null, syncBackend?: boolean) => void;
@@ -195,12 +263,12 @@ export function useCubeActions({
         randomize: () => Promise<void>;
         reset: () => Promise<void>;
         changeAnimationSpeed: (speed: number) => void;
-        solutionSteps: any[];
-        currentStep: number;
-        setCurrentStep: (step: number) => void;
+        currentStageIndex: number;
+        remainingMoves: string[];
+        isPaused: boolean;
         isAutoPlaying: boolean;
         toggleAutoPlay: () => void;
-        onStepSolve: (step?: number) => void;
+        continueNextStage: () => void;
         resetSteps: () => void;
     };
 }

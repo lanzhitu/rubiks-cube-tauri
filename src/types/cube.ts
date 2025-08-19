@@ -9,7 +9,7 @@ export interface SolvingStep {
     id: string;
     name: string;
     description: string;
-    algorithm?: string[];
+    algorithm?: string[] | undefined;
     targetPattern: string;
     hints: string[];
 }

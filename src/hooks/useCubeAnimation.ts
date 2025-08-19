@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { useSpring } from "@react-spring/three";
 import {
     getDefaultCubies,
@@ -111,17 +111,25 @@ export function useCubeAnimation(animationSpeed: number = 1) {
         }, 10);
     };
 
-    const cubieList = cubies;
-    const animatedCubies: CubieType[] = currentMove
-        ? (currentMove === 'X' || currentMove === 'Y' || currentMove === 'Z')
-            ? cubieList // 整体旋转时所有 cubie 都动画
-            : getAnimatedCubies(currentMove, cubieList)
-        : [];
-    const staticCubies: CubieType[] = currentMove
-        ? (currentMove === 'X' || currentMove === 'Y' || currentMove === 'Z')
-            ? [] // 整体旋转时无静态 cubie
-            : cubieList.filter((cubie) => !animatedCubies.includes(cubie))
-        : cubieList;
+    const { animatedCubies, staticCubies } = useMemo(() => {
+        if (!currentMove) {
+            return {
+                animatedCubies: [],
+                staticCubies: cubies
+            };
+        }
+        if (currentMove === 'X' || currentMove === 'Y' || currentMove === 'Z') {
+            return {
+                animatedCubies: cubies, // 整体旋转时所有 cubie 都动画
+                staticCubies: [] // 整体旋转时无静态 cubie
+            };
+        }
+        const animated = getAnimatedCubies(currentMove, cubies);
+        return {
+            animatedCubies: animated,
+            staticCubies: cubies.filter((cubie) => !animated.includes(cubie))
+        };
+    }, [cubies, currentMove]);
 
     return {
         cubies,
