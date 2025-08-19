@@ -33,18 +33,15 @@ export function useCubeActions({
 }) {
     // 分步解法相关状态
     const [currentStageIndex, setCurrentStageIndex] = useState(0);
-    const [isAutoPlaying, setIsAutoPlaying] = useState(false);
-    const [fullSolution, setFullSolution] = useState<string[]>([]);
-    const [remainingMoves, setRemainingMoves] = useState<string[]>([]);
-    const [isPaused, setIsPaused] = useState(false);
+    const [currentStageMoves, setCurrentStageMoves] = useState<string[]>([]);
 
     // 获取完整解法
     const fetchSolution = useCallback(async () => {
         if (!solvingManager.current) return;
         const solution = await getCubeSolution();
-        if (Array.isArray(solution)) {
-            setFullSolution(solution);
-            setRemainingMoves(solution);
+        if (Array.isArray(solution) && solution.length > 0) {
+            const firstStageMoves = typeof solution[0] === 'string' ? [solution[0]] : solution[0];
+            setCurrentStageMoves(firstStageMoves);
         }
         setCurrentStageIndex(0);
     }, [solvingManager]);
@@ -80,20 +77,19 @@ export function useCubeActions({
         await syncAndUpdate();
     }, [cube3DRef, syncAndUpdate]);
 
-    const onStepSolve = useCallback(async () => {
-        if (cube3DRef.current?.isAnimating || remainingMoves.length === 0 || isPaused) {
-            setIsAutoPlaying(false);
+    // 执行当前阶段的解法
+    const solveCurrentStage = useCallback(async () => {
+        if (!cube3DRef.current || cube3DRef.current.isAnimating || currentStageMoves.length === 0) {
             return;
         }
 
         setIsAnimating(true);
 
         try {
-            const nextMove = remainingMoves[0];
-            await executeMove(nextMove);
-
-            // 从剩余步骤中移除已执行的动作
-            setRemainingMoves(prev => prev.slice(1));
+            // 依次执行当前阶段的每一步
+            for (const move of currentStageMoves) {
+                await executeMove(move);
+            }
 
             // 检查当前阶段是否完成
             if (solvingManager.current) {
@@ -104,61 +100,28 @@ export function useCubeActions({
                 });
 
                 if (isComplete) {
-                    // 暂停动画，等待用户确认
-                    setIsAutoPlaying(false);
-                    setIsPaused(true);
+                    // 获取下一阶段的步骤
+                    const nextStageIndex = currentStageIndex + 1;
+                    setCurrentStageIndex(nextStageIndex);
 
-                    // 更新到下一个阶段
-                    setCurrentStageIndex(prev => prev + 1);
-                    return;
+                    // 更新当前阶段的动作
+                    const solution = await getCubeSolution();
+                    if (Array.isArray(solution) && nextStageIndex < solution.length) {
+                        const nextStageMoves = typeof solution[nextStageIndex] === 'string'
+                            ? [solution[nextStageIndex]]
+                            : solution[nextStageIndex];
+                        setCurrentStageMoves(nextStageMoves);
+                    } else {
+                        setCurrentStageMoves([]);
+                    }
                 }
             }
         } catch (error) {
             console.error('执行步骤时出错:', error);
-            setIsAutoPlaying(false);
         } finally {
             setIsAnimating(false);
-
-            // 如果还有剩余步骤且处于自动播放状态，继续执行
-            if (isAutoPlaying && remainingMoves.length > 0 && !isPaused) {
-                setTimeout(() => onStepSolve(), 1000 / animationSpeed);
-            }
         }
-    }, [remainingMoves, isAutoPlaying, animationSpeed, cube3DRef, setIsAnimating, executeMove, isPaused, solvingManager]);
-
-    // 继续下一个阶段
-    const continueNextStage = useCallback(() => {
-        if (currentStageIndex >= fullSolution.length) return;
-
-        // Reset state for next stage
-        setIsPaused(false);
-        setIsAutoPlaying(true);
-
-        // Get moves for the next stage
-        const nextStageMoves = fullSolution[currentStageIndex];
-        setRemainingMoves(typeof nextStageMoves === 'string' ? [nextStageMoves] : nextStageMoves);
-
-        // Continue execution
-        onStepSolve();
-    }, [currentStageIndex, fullSolution, onStepSolve]);
-
-    const toggleAutoPlay = useCallback(() => {
-        if (isPaused) {
-            // If paused, resume from current stage
-            continueNextStage();
-        } else {
-            // If not paused, toggle auto play state
-            setIsAutoPlaying((prev) => {
-                const newState = !prev;
-                if (newState) {
-                    onStepSolve(); // Start playing if turning on
-                }
-                return newState;
-            });
-        }
-    }, [isPaused, continueNextStage, onStepSolve]);
-
-    const handleMoves = useCallback((moves: string[] | null) => {
+    }, [currentStageMoves, currentStageIndex, cube3DRef, executeMove, setIsAnimating, solvingManager]); const handleMoves = useCallback((moves: string[] | null) => {
         if (!cube3DRef.current?.triggerRotate || !moves || moves.length === 0) return;
         if (cube3DRef.current.isAnimating || typeof setIsAnimating !== "function") return;
         setIsAnimating(true);
@@ -180,20 +143,10 @@ export function useCubeActions({
         processNextMove();
     }, [cube3DRef, solvingManager, setIsAnimating, setCurrentProgress, setCurrentHints, syncAndUpdate]);
 
-    const resetSteps = useCallback(() => {
-        setCurrentStageIndex(0);
-        setIsAutoPlaying(false);
-        setIsPaused(false);
-        fetchSolution();
-    }, [fetchSolution]);
-
-    const solveAndAnimate = useCallback(() => {
+    const solveCurrentStageWithAnimation = useCallback(() => {
         if (cube3DRef.current?.isAnimating) return;
-        if (remainingMoves.length > 0) {
-            setIsAutoPlaying(true);
-            onStepSolve();
-        }
-    }, [cube3DRef, remainingMoves, onStepSolve]);
+        solveCurrentStage();
+    }, [cube3DRef, solveCurrentStage]);
 
     const solveFullWithAnimation = useCallback(async () => {
         if (cube3DRef.current?.isAnimating) return;
@@ -243,32 +196,20 @@ export function useCubeActions({
     return {
         handleMoves,
         syncAndUpdate,
-        solveAndAnimate,
+        solveCurrentStageWithAnimation,
         solveFullWithAnimation,
         randomize,
         reset,
         changeAnimationSpeed,
         currentStageIndex,
-        remainingMoves,
-        isPaused,
-        isAutoPlaying,
-        toggleAutoPlay,
-        continueNextStage,
-        resetSteps,
     } as {
         handleMoves: (moves: string[] | null, syncBackend?: boolean) => void;
         syncAndUpdate: () => Promise<void>;
-        solveAndAnimate: () => void;
+        solveCurrentStageWithAnimation: () => void;
         solveFullWithAnimation: () => Promise<void>;
         randomize: () => Promise<void>;
         reset: () => Promise<void>;
         changeAnimationSpeed: (speed: number) => void;
         currentStageIndex: number;
-        remainingMoves: string[];
-        isPaused: boolean;
-        isAutoPlaying: boolean;
-        toggleAutoPlay: () => void;
-        continueNextStage: () => void;
-        resetSteps: () => void;
     };
 }

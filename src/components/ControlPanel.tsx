@@ -1,33 +1,25 @@
 interface ControlPanelProps {
   isAnimating: boolean;
-  isAutoPlaying: boolean;
-  isPaused: boolean;
-  toggleAutoPlay: () => void;
   animationSpeed: number;
   changeAnimationSpeed: (speed: number) => void;
   randomize: () => Promise<void>;
   reset: () => Promise<void>;
   solveFullWithAnimation: () => Promise<void>;
+  solveCurrentStage: () => void;
   handleMoves: (moves: string[], syncBackend?: boolean) => void;
-  resetSteps: () => void;
   currentStageIndex: number;
-  continueNextStage: () => void;
 }
 
 export function ControlPanel({
   isAnimating,
-  isAutoPlaying,
-  isPaused,
-  toggleAutoPlay,
   animationSpeed,
   changeAnimationSpeed,
   randomize,
   reset,
   solveFullWithAnimation,
+  solveCurrentStage,
   handleMoves,
-  resetSteps,
   currentStageIndex,
-  continueNextStage,
 }: ControlPanelProps) {
   return (
     <div className="controls-container">
@@ -40,9 +32,6 @@ export function ControlPanel({
         <button onClick={reset} disabled={isAnimating}>
           重置魔方
         </button>
-        <button onClick={resetSteps} disabled={isAnimating}>
-          重新获取分步解法
-        </button>
       </div>
       <div className="control-group">
         <h2>解法控制</h2>
@@ -53,14 +42,9 @@ export function ControlPanel({
         >
           完整解魔方
         </button>
-        <button onClick={toggleAutoPlay} disabled={isAnimating}>
-          {isPaused ? "继续" : isAutoPlaying ? "暂停" : "开始分步解魔方"}
+        <button onClick={solveCurrentStage} disabled={isAnimating}>
+          开始当前阶段
         </button>
-        {isPaused && (
-          <button onClick={continueNextStage} disabled={isAnimating}>
-            确认并进入下一步
-          </button>
-        )}
         <div className="current-stage">第 {currentStageIndex + 1} 步</div>
       </div>
       <div className="control-group">

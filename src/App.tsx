@@ -29,11 +29,7 @@ function App() {
     reset,
     changeAnimationSpeed,
     currentStageIndex,
-    isAutoPlaying,
-    isPaused,
-    toggleAutoPlay,
-    resetSteps,
-    continueNextStage,
+    solveCurrentStageWithAnimation,
   } = useCubeActions({
     cube3DRef,
     solvingManager,
@@ -66,13 +62,9 @@ function App() {
         randomize={randomize}
         reset={reset}
         solveFullWithAnimation={solveFullWithAnimation}
+        solveCurrentStage={solveCurrentStageWithAnimation}
         handleMoves={handleMoves}
         currentStageIndex={currentStageIndex}
-        isPaused={isPaused}
-        isAutoPlaying={isAutoPlaying}
-        toggleAutoPlay={toggleAutoPlay}
-        continueNextStage={continueNextStage}
-        resetSteps={resetSteps}
       />
       <SolvingGuide
         currentStageIndex={currentStageIndex}
