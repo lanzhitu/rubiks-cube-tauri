@@ -70,22 +70,41 @@ export function useCubeActions({
     const executeMove = useCallback(async (move: string) => {
         if (!cube3DRef.current?.triggerRotate) return;
 
+        // 执行前端动画
         await new Promise<void>((resolve) => {
-            cube3DRef.current.triggerRotate(move, () => resolve());
+            cube3DRef.current.triggerRotate(move, resolve);
         });
 
+        // 同步后端状态
+        await rotateCube(move);
         await syncAndUpdate();
-    }, [cube3DRef, syncAndUpdate]);
+    }, [cube3DRef, rotateCube, syncAndUpdate]);
 
     // 执行当前阶段的解法
     const solveCurrentStage = useCallback(async () => {
-        if (!cube3DRef.current || cube3DRef.current.isAnimating || currentStageMoves.length === 0) {
+        if (!cube3DRef.current || cube3DRef.current.isAnimating) {
             return;
         }
 
         setIsAnimating(true);
 
         try {
+            // 如果当前阶段没有动作，先获取解法
+            if (currentStageMoves.length === 0) {
+                const solution = await getCubeSolution();
+                if (Array.isArray(solution) && solution.length > currentStageIndex) {
+                    const moves = typeof solution[currentStageIndex] === 'string'
+                        ? [solution[currentStageIndex]]
+                        : solution[currentStageIndex];
+                    setCurrentStageMoves(moves);
+                    // 等待状态更新
+                    await new Promise(resolve => setTimeout(resolve, 0));
+                } else {
+                    setIsAnimating(false);
+                    return;
+                }
+            }
+
             // 依次执行当前阶段的每一步
             for (const move of currentStageMoves) {
                 await executeMove(move);
@@ -121,27 +140,26 @@ export function useCubeActions({
         } finally {
             setIsAnimating(false);
         }
-    }, [currentStageMoves, currentStageIndex, cube3DRef, executeMove, setIsAnimating, solvingManager]); const handleMoves = useCallback((moves: string[] | null) => {
+    }, [currentStageMoves, currentStageIndex, cube3DRef, executeMove, setIsAnimating, solvingManager]);
+
+    const handleMoves = useCallback(async (moves: string[] | null) => {
         if (!cube3DRef.current?.triggerRotate || !moves || moves.length === 0) return;
         if (cube3DRef.current.isAnimating || typeof setIsAnimating !== "function") return;
+
         setIsAnimating(true);
-        let currentMoveIndex = 0;
-        const processNextMove = async () => {
-            if (currentMoveIndex >= moves.length) {
-                setIsAnimating(false);
-                await syncAndUpdate();
-                return;
+        try {
+            // 依次执行每个动作
+            for (const move of moves) {
+                await executeMove(move);
+                // 添加一个小延迟，确保动画流畅
+                await new Promise(resolve => setTimeout(resolve, 1000 / animationSpeed));
             }
-            const move = moves[currentMoveIndex];
-            cube3DRef.current.triggerRotate(move, async () => {
-                await rotateCube(move);
-                await syncAndUpdate();
-                currentMoveIndex++;
-                processNextMove();
-            });
-        };
-        processNextMove();
-    }, [cube3DRef, solvingManager, setIsAnimating, setCurrentProgress, setCurrentHints, syncAndUpdate]);
+        } catch (error) {
+            console.error('执行动作序列时出错:', error);
+        } finally {
+            setIsAnimating(false);
+        }
+    }, [cube3DRef, executeMove, setIsAnimating, animationSpeed]);
 
     const solveCurrentStageWithAnimation = useCallback(() => {
         if (cube3DRef.current?.isAnimating) return;
