@@ -1,105 +1,95 @@
 import type { SolvingStage } from '../types/cube';
 
-// 魔方标准层先法（Beginner's Method）步骤
-export const SOLVING_STAGES: SolvingStage[] = [
+// 魔方的求解阶段定义
+export type Stage = SolvingStage;
+
+export const SOLVING_STAGES: Stage[] = [
     {
         id: 'white-cross',
         name: '白色十字',
-        description: '构建底层（白色）十字',
-        cubeProgress: 'IN_PROGRESS',
-        steps: [
-            {
-                id: 'white-cross',
-                name: '白色十字',
-                description: '构建顶层（白色）十字',
-                algorithm: undefined, // 运行时从后端获取
-                targetPattern: 'WWWWWWWWW*********************************', // 白色在上方
-                hints: [
-                    '1. 观察白色棱块的位置',
-                    '2. 将白色棱块转至顶层',
-                    '3. 对齐白色中心块'
-                ]
-            },
-        ]
+        description: '构建白色十字',
+        targetPattern: '************W*W*W*W**********************************',
+        hints: [
+            '1. 找到一个白色棱块',
+            '2. 将它移动到顶层',
+            '3. 旋转顶层使其对应颜色与中心块对齐',
+            '4. 执行F2转动将其放置到底层正确位置'
+        ],
+        algorithm: ['F', 'R', 'U', 'R\'', 'U\'', 'F\''],
+        cubeProgress: ['bottom-edges']
     },
     {
         id: 'white-corners',
         name: '白色角块',
-        description: '完成顶层（白色面）',
-        cubeProgress: 'BOTTOM_CROSS',
-        steps: [
-            {
-                id: 'white-corners',
-                name: '白色角块',
-                description: '调整白色角块到正确位置',
-                algorithm: undefined,
-                targetPattern: 'WWWWWWWWWRRRGGGOOOBBB***************************', // 顶层完成
-                hints: [
-                    '1. 找到一个带白色的角块',
-                    '2. 调整到正确位置',
-                    '3. 根据解法执行'
-                ]
-            }
-        ]
+        description: '完成白色面',
+        targetPattern: '*********WWWWWWWWW*********************************',
+        hints: [
+            '1. 找到一个白色角块',
+            '2. 将它移动到顶层对应位置',
+            '3. 执行R U R\'或其对称操作放置到正确位置'
+        ],
+        algorithm: ['R', 'U', 'R\'', 'U\''],
+        cubeProgress: ['bottom-complete']
     },
     {
-        id: 'second-layer',
-        name: '第二层',
+        id: 'middle-layer',
+        name: '中间层',
         description: '完成中间层',
-        cubeProgress: 'BOTTOM_COMPLETE',
-        steps: [
-            {
-                id: 'second-layer',
-                name: '中层棱块',
-                description: '调整中层的所有棱块到正确位置',
-                algorithm: undefined,
-                targetPattern: 'WWWWWWWWWRRRRRRRRRGGGGGGGGG************************', // 第二层完成
-                hints: [
-                    '1. 观察中层棱块的位置',
-                    '2. 根据解法调整棱块',
-                    '3. 确保颜色对齐'
-                ]
-            }
-        ]
+        targetPattern: '*********WWWWWWWWW****RRRR****FFFF****LLLL****BBBB***',
+        hints: [
+            '1. 找到一个不含黄色的棱块',
+            '2. 将它移动到顶层',
+            '3. 根据颜色选择U R U\' R\' U\' F\' U F或其镜像操作'
+        ],
+        algorithm: ['U', 'R', 'U\'', 'R\'', 'U\'', 'F\'', 'U', 'F'],
+        cubeProgress: ['middle-layer-complete']
     },
     {
         id: 'yellow-cross',
-        name: '黄色十字',
-        description: '完成底层（黄色）十字',
-        cubeProgress: 'MIDDLE_LAYER',
-        steps: [
-            {
-                id: 'yellow-cross',
-                name: '黄色十字',
-                description: '构建底层的黄色十字',
-                algorithm: undefined,
-                targetPattern: 'WWWWWWWWWRRRRRRRRRGGGGGGGGGOOOOOOOOOBBBBBBBBBY*YYY*YYY', // 底层黄色十字
-                hints: [
-                    '1. 观察黄色棱块的位置',
-                    '2. 根据解法调整黄色棱块',
-                    '3. 形成底层十字'
-                ]
-            }
-        ]
+        name: '顶层十字',
+        description: '构建黄色十字',
+        targetPattern: '*********WWWWWWWWW****RRRR****FFFF****LLLL****BBBB*Y*Y*Y*Y*',
+        hints: [
+            '1. 观察顶面黄色块的形状',
+            '2. 根据形状执行F R U R\' U\' F\'或其变体'
+        ],
+        algorithm: ['F', 'R', 'U', 'R\'', 'U\'', 'F\''],
+        cubeProgress: ['top-cross']
+    },
+    {
+        id: 'yellow-face',
+        name: '顶层面完成',
+        description: '完成黄色面',
+        targetPattern: '*********WWWWWWWWW****RRRR****FFFF****LLLL****BBBB*YYYYYYYYY',
+        hints: [
+            '1. 如果有一个角块已经是黄色朝上，将其放在左后方',
+            '2. 执行R U R\' U R U2 R\'旋转其他角块'
+        ],
+        algorithm: ['R', 'U', 'R\'', 'U', 'R', 'U2', 'R\''],
+        cubeProgress: ['top-face']
     },
     {
         id: 'yellow-corners',
-        name: '黄色角块',
-        description: '完成底层角块',
-        cubeProgress: 'SOLVED',
-        steps: [
-            {
-                id: 'yellow-corners',
-                name: '黄色角块',
-                description: '调整底层黄色角块',
-                algorithm: undefined,
-                targetPattern: 'WWWWWWWWWRRRRRRRRRGGGGGGGGGOOOOOOOOOBBBBBBBBBYYYYYYYYY', // 完全还原
-                hints: [
-                    '1. 观察黄色角块的位置',
-                    '2. 根据解法调整角块位置',
-                    '3. 完成魔方还原'
-                ]
-            }
-        ]
+        name: '顶层角块调整',
+        description: '调整顶层角块位置',
+        targetPattern: '*********WWWWWWWWW***RRRRR****FFFFF****LLLLL****BBBBB*YYYYYYYYY',
+        hints: [
+            '1. 找到一个位置正确的角块，将其放在右后方',
+            '2. 执行U R U\' L\' U R\' U\' L调整其他角块'
+        ],
+        algorithm: ['U', 'R', 'U\'', 'L\'', 'U', 'R\'', 'U\'', 'L'],
+        cubeProgress: ['top-corners-placed']
+    },
+    {
+        id: 'yellow-edges',
+        name: '顶层棱块调整',
+        description: '完成魔方还原',
+        targetPattern: 'WWWWWWWWWRRRRRRRRRFFFFFFFFFLLLLLLLLBBBBBBBBBYYYYYYYYY',
+        hints: [
+            '1. 找到一个位置正确的棱块',
+            '2. 执行R2 U R U R\' U\' R\' U\' R\' U R\'或其变体'
+        ],
+        algorithm: ['R2', 'U', 'R', 'U', 'R\'', 'U\'', 'R\'', 'U\'', 'R\'', 'U', 'R\''],
+        cubeProgress: ['complete']
     }
 ];

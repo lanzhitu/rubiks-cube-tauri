@@ -66,7 +66,6 @@ export function useCubeActions({
         setSyncResult(frontendState === backend ? "match" : "mismatch");
         const cubeStateObj: CubeState = {
             raw: frontendState,
-            faces: parseCubeState(frontendState),
             isSolved: frontendState === SOLVED_STATE,
         };
         solvingManager.current.updateProgress(cubeStateObj);
@@ -100,8 +99,14 @@ export function useCubeActions({
             const currentState = cube3DRef.current.getCubeState();
             const isSolved = currentState === SOLVED_STATE;
 
-            // 如果魔方未解开且没有解法，获取新解法
-            if (!isSolved && fullSolution.length === 0) {
+            if (isSolved) {
+                console.log('魔方已还原');
+                setIsAnimating(false);
+                return;
+            }
+
+            // 如果没有解法，获取新解法
+            if (fullSolution.length === 0) {
                 await fetchSolution();
                 // 等待状态更新
                 await new Promise(resolve => setTimeout(resolve, 0));
@@ -109,38 +114,50 @@ export function useCubeActions({
                 return;
             }
 
-            // 确保有解法可执行
-            if (fullSolution.length === 0 || moveIndex >= fullSolution.flat().length) {
-                console.log('没有更多步骤可执行');
-                setIsAnimating(false);
-                return;
-            }
-
-            // 1. 在获取 allMoves 后添加：
+            // 获取所有步骤
             const allMoves = fullSolution.flat();
             let currentMoveIndex = moveIndex;
+
             console.log('开始执行，当前阶段:', currentStageIndex, '步骤索引:', currentMoveIndex);
 
-            // 2. 修改 while 循环：
+            // 从当前步骤开始，持续执行直到满足当前阶段的要求
             while (currentMoveIndex < allMoves.length) {
+                // 执行一步
                 console.log('执行步骤:', allMoves[currentMoveIndex]);
                 await executeMove(allMoves[currentMoveIndex]);
                 currentMoveIndex++;
 
-                // 检查完成状态...
+                // 更新进度并检查当前阶段是否完成
                 if (solvingManager.current) {
-                    const isComplete = solvingManager.current.isStepComplete({/*...*/ });
-                    if (isComplete) {
-                        // 更新moveIndex到当前位置
+                    // 先更新当前魔方状态
+                    solvingManager.current.updateProgress({
+                        raw: cube3DRef.current.getCubeState(),
+                        faces: [],
+                        isSolved: false
+                    });
+
+                    // 检查当前阶段是否完成
+                    const isStageComplete = solvingManager.current.isStageComplete();
+                    if (isStageComplete) {
+                        console.log('当前阶段完成，保存进度并进入下一阶段');
                         setMoveIndex(currentMoveIndex);
-                        // ... 其余代码不变
+
+                        // 更新到下一阶段
+                        const nextStageIndex = currentStageIndex + 1;
+                        if (nextStageIndex < fullSolution.length) {
+                            setCurrentStageIndex(nextStageIndex);
+                            console.log(`阶段 ${currentStageIndex} 完成，等待用户开始阶段 ${nextStageIndex}`);
+                        } else {
+                            console.log('所有阶段已完成');
+                        }
+                        break; // 退出循环，等待用户触发下一阶段
                     }
                 }
 
-                // 添加这个检查
+                // 检查是否需要重置步骤索引
                 if (currentMoveIndex >= allMoves.length) {
                     console.log('已执行所有步骤，但当前阶段未完成，重置步骤索引');
-                    setMoveIndex(0);
+                    setMoveIndex(0); // 重置到开始，以便重新尝试
                 }
             }
         } catch (error) {
