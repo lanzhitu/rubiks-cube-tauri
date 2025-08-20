@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { parseCubeState, SOLVED_STATE } from "../utils/cubeUtils";
+import { SOLVED_STATE } from "../utils/cubeUtils";
 import type { CubeState } from "../types/cube";
 import {
     getCubeState as getBackendCubeState,
@@ -132,7 +132,6 @@ export function useCubeActions({
                     // 先更新当前魔方状态
                     solvingManager.current.updateProgress({
                         raw: cube3DRef.current.getCubeState(),
-                        faces: [],
                         isSolved: false
                     });
 

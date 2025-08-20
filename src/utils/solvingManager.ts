@@ -1,4 +1,4 @@
-import { SOLVING_STAGES } from '../constants/solvingSteps';
+import { SOLVING_STAGES } from '../constants/solvingStage';
 import type { CubeState, SolvingStage } from '../types/cube';
 
 export interface GuideInfo {
@@ -64,6 +64,7 @@ export class SolvingManager {
     }
 
     private matchesPattern(state: string, pattern: string): boolean {
+        console.log('匹配状态:', state, '目标模式:', pattern);
         if (!state || !pattern || state.length !== pattern.length) return false;
 
         for (let i = 0; i < pattern.length; i++) {
