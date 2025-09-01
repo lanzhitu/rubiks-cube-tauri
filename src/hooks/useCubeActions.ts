@@ -122,8 +122,6 @@ export function useCubeActions({
 
             // 从当前步骤开始，持续执行直到满足当前阶段的要求
             while (currentMoveIndex < allMoves.length) {
-                // 执行一步
-                console.log('执行步骤:', allMoves[currentMoveIndex]);
                 await executeMove(allMoves[currentMoveIndex]);
                 currentMoveIndex++;
 
