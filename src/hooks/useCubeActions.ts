@@ -7,6 +7,7 @@ import {
     resetCube,
     getCubeSolution,
 } from "../services/cubeApi";
+import { ManagerState } from "../utils/solvingManager";
 
 export function useCubeActions({
     cube3DRef,
@@ -244,15 +245,22 @@ export function useCubeActions({
 
     const randomize = useCallback(async () => {
         if (cube3DRef.current?.isAnimating) return;
+
+        // 设置为打乱状态
+        solvingManager.current?.setState(ManagerState.SCRAMBLING);
+
         const moves = [];
         const possibleMoves = ["U", "U'", "R", "R'", "F", "F'", "D", "D'", "L", "L'", "B", "B'"];
         for (let i = 0; i < 20; i++) {
             const randomMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
             moves.push(randomMove);
         }
-        handleMoves(moves);
-        return;
-    }, [cube3DRef, handleMoves]);
+
+        await handleMoves(moves);
+
+        // 恢复为解题状态
+        solvingManager.current?.setState(ManagerState.SOLVING);
+    }, [cube3DRef, handleMoves, solvingManager]);
 
     const reset = useCallback(async () => {
         if (cube3DRef.current?.isAnimating) return;
