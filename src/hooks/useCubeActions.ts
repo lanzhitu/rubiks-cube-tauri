@@ -105,13 +105,64 @@ export function useCubeActions({
                 return;
             }
 
+            // 如果解法尚未加载，立即加载
             if (fullSolution.length === 0) {
-                await fetchSolution();
-                await new Promise(resolve => setTimeout(resolve, 0));
-                setIsAnimating(false);
-                return;
+                // 确保在解法未加载时直接使用 processedSolution
+                const solution = await getCubeSolution();
+                if (Array.isArray(solution) && solution.length > 0) {
+                    const processedSolution = solution.map(stage =>
+                        typeof stage === 'string' ? [stage] : stage
+                    );
+                    setFullSolution(processedSolution);
+                    setCurrentStageIndex(0);
+                    setMoveIndex(0);
+
+                    // 直接在此处展开 allMoves
+                    const allMoves = processedSolution.flat();
+                    let currentMoveIndex = 0; // 重置步骤索引
+
+                    console.log('开始执行，当前阶段:', currentStageIndex, '步骤索引:', currentMoveIndex);
+
+                    while (currentMoveIndex < allMoves.length) {
+                        await executeMove(allMoves[currentMoveIndex]);
+                        currentMoveIndex++;
+
+                        if (solvingManager.current) {
+                            const guideInfo = solvingManager.current.updateProgress({
+                                raw: cube3DRef.current.getCubeState(),
+                                isSolved: false
+                            });
+
+                            console.log('阶段完成状态:', guideInfo.currentStep > currentStageIndex);
+                            if (guideInfo.currentStep > currentStageIndex) {
+                                console.log('当前阶段完成，保存进度并进入下一阶段');
+                                setMoveIndex(currentMoveIndex);
+
+                                const nextStageIndex = currentStageIndex + 1;
+                                if (nextStageIndex < processedSolution.length) {
+                                    setCurrentStageIndex(nextStageIndex);
+                                    console.log(`阶段 ${currentStageIndex} 完成，等待用户开始阶段 ${nextStageIndex}`);
+                                } else {
+                                    console.log('所有阶段已完成');
+                                }
+                                break; // 退出循环，等待用户触发下一阶段
+                            }
+                        }
+
+                        if (currentMoveIndex >= allMoves.length) {
+                            console.log('已执行所有步骤，但当前阶段未完成，重置步骤索引');
+                            setMoveIndex(0);
+                        }
+                    }
+                    return;
+                } else {
+                    console.error('未能获取解法');
+                    setIsAnimating(false);
+                    return;
+                }
             }
 
+            // 直接使用 processedSolution 来避免状态更新的异步问题
             const allMoves = fullSolution.flat();
             let currentMoveIndex = moveIndex;
 
@@ -122,7 +173,6 @@ export function useCubeActions({
                 currentMoveIndex++;
 
                 if (solvingManager.current) {
-                    // 更新状态并检查阶段完成
                     const guideInfo = solvingManager.current.updateProgress({
                         raw: cube3DRef.current.getCubeState(),
                         isSolved: false
@@ -154,7 +204,7 @@ export function useCubeActions({
         } finally {
             setIsAnimating(false);
         }
-    }, [moveIndex, currentStageIndex, fullSolution, cube3DRef, executeMove, setIsAnimating, solvingManager, fetchSolution]);
+    }, [moveIndex, currentStageIndex, fullSolution, cube3DRef, executeMove, setIsAnimating, solvingManager, getCubeSolution]);
 
     const handleMoves = useCallback(async (moves: string[] | null) => {
         if (!cube3DRef.current?.triggerRotate || !moves || moves.length === 0) return;
