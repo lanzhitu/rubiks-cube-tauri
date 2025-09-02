@@ -45,6 +45,12 @@ function App() {
 
   return (
     <div className="app-container">
+      <SolvingGuide
+        currentStageIndex={currentStageIndex}
+        progress={currentProgress}
+        hints={currentHints}
+        onAlgorithmClick={handleMoves}
+      />
       <div className="cube-container">
         <Cube3D ref={cube3DRef} animationSpeed={animationSpeed} />
         <DebugPanel
@@ -65,12 +71,6 @@ function App() {
         solveCurrentStage={solveCurrentStageWithAnimation}
         handleMoves={handleMoves}
         currentStageIndex={currentStageIndex}
-      />
-      <SolvingGuide
-        currentStageIndex={currentStageIndex}
-        progress={currentProgress}
-        hints={currentHints}
-        onAlgorithmClick={handleMoves}
       />
     </div>
   );

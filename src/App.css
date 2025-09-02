@@ -25,21 +25,36 @@ body {
 }
 
 .app-container {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 1fr 1.618fr 0.618fr; /* 使用黄金比例调整教程、魔方、控制面板的宽度比例 */
   height: 100vh;
   width: 100vw;
   text-align: center;
+  overflow: hidden;
+}
+
+.tutorial-container {
+  background-color: var(--background-color);
+  overflow-y: auto;
+  padding: 0; /* 移除多余的内边距 */
+  border-right: 1px solid var(--button-hover-bg-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.tutorial-container > * {
+  flex: 1;
+  width: 100%; /* 确保内容占满全宽 */
 }
 
 .cube-container {
-  flex: 2;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100%;
   position: relative;
+  padding: 0 20px;
 }
 
 /* 解魔方进度显示 */
@@ -75,15 +90,139 @@ body {
   color: var(--text-color);
 }
 
-.controls-container {
-  flex: 1;
-  padding: 20px;
+/* 旧的控制面板样式 - 已弃用 */
+/* 右侧控制面板样式 */
+.controls-sidebar {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 200px;
   background-color: var(--control-bg-color);
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
 }
+
+.side-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--button-hover-bg-color);
+}
+
+.side-tabs .tab-btn {
+  flex: 1;
+  padding: 8px;
+  background-color: var(--button-bg-color);
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  font-size: 0.8em;
+}
+
+.side-tabs .tab-btn.active {
+  background-color: var(--primary-color);
+  color: #000;
+}
+
+.control-content {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+/* 基本控制区域 */
+.basic-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stage-info {
+  text-align: center;
+  padding: 5px;
+  background-color: var(--button-bg-color);
+  border-radius: 4px;
+  font-size: 0.9em;
+  margin-bottom: 8px;
+}
+
+.control-btn {
+  padding: 8px;
+  font-size: 0.9em;
+  width: 100%;
+}
+
+.control-btn.primary {
+  background-color: var(--primary-color);
+  color: #000;
+  font-weight: bold;
+}
+
+/* 移动操作区域 */
+.move-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.move-btn {
+  padding: 6px;
+  font-size: 0.8em;
+  min-width: 0;
+}
+
+.xyz-rotate {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.move-btn.rotate {
+  flex: 1;
+}
+
+/* 公式输入区域 */
+.algorithm-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.algo-input {
+  padding: 6px;
+  font-size: 0.9em;
+  background-color: var(--button-bg-color);
+  border: 1px solid var(--button-hover-bg-color);
+  color: var(--text-color);
+  border-radius: 4px;
+}
+
+.execute-btn {
+  width: 100%;
+  padding: 6px;
+  font-size: 0.9em;
+}
+
+/* 速度控制区域 */
+.speed-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.speed-btn {
+  padding: 6px;
+  font-size: 0.9em;
+}
+
+.speed-btn.active {
+  background-color: var(--primary-color);
+  color: #000;
+  font-weight: bold;
+}
+
+/* 移除响应式设计，因为只支持横屏 */
 
 h1 {
   color: var(--primary-color);

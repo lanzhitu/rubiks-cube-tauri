@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 interface ControlPanelProps {
   isAnimating: boolean;
   animationSpeed: number;
@@ -21,110 +23,152 @@ export function ControlPanel({
   handleMoves,
   currentStageIndex,
 }: ControlPanelProps) {
+  const [activeTab, setActiveTab] = useState<"basic" | "moves" | "settings">(
+    "basic"
+  );
+
   return (
-    <div className="controls-container">
-      <h1>魔方层先法教学</h1>
-      <div className="control-group">
-        <h2>基本操作</h2>
-        <button onClick={randomize} disabled={isAnimating}>
-          打乱魔方
-        </button>
-        <button onClick={reset} disabled={isAnimating}>
-          重置魔方
-        </button>
-      </div>
-      <div className="control-group">
-        <h2>解法控制</h2>
+    <div className="controls-sidebar">
+      {/* 侧边栏标签 */}
+      <div className="side-tabs">
         <button
-          onClick={solveFullWithAnimation}
-          disabled={isAnimating}
-          className="solve-full-btn"
+          className={`tab-btn ${activeTab === "basic" ? "active" : ""}`}
+          onClick={() => setActiveTab("basic")}
         >
-          完整解魔方
+          基本
         </button>
-        <button onClick={solveCurrentStage} disabled={isAnimating}>
-          开始当前阶段
+        <button
+          className={`tab-btn ${activeTab === "moves" ? "active" : ""}`}
+          onClick={() => setActiveTab("moves")}
+        >
+          操作
         </button>
-        <div className="current-stage">第 {currentStageIndex + 1} 步</div>
+        <button
+          className={`tab-btn ${activeTab === "settings" ? "active" : ""}`}
+          onClick={() => setActiveTab("settings")}
+        >
+          设置
+        </button>
       </div>
-      <div className="control-group">
-        <h2>动画速度</h2>
-        <div className="speed-controls">
-          {[0.5, 1, 2].map((speed) => (
+
+      {/* 主要内容区域 */}
+      <div className="control-content">
+        {activeTab === "basic" && (
+          <div className="basic-controls">
+            <div className="stage-info">阶段 {currentStageIndex + 1}</div>
             <button
-              key={speed}
-              onClick={() => changeAnimationSpeed(speed)}
-              className={animationSpeed === speed ? "active" : ""}
+              onClick={randomize}
               disabled={isAnimating}
+              className="control-btn"
             >
-              {speed === 0.5 ? "慢速" : speed === 1 ? "正常" : "快速"}
+              打乱
             </button>
-          ))}
-        </div>
-      </div>
-      <div className="control-group">
-        <h2>手动操作</h2>
-        <div className="manual-moves">
-          {[
-            "U",
-            "U'",
-            "D",
-            "D'",
-            "L",
-            "L'",
-            "R",
-            "R'",
-            "F",
-            "F'",
-            "B",
-            "B'",
-          ].map((move) => (
             <button
-              key={move}
-              onClick={() => handleMoves([move])}
+              onClick={reset}
               disabled={isAnimating}
+              className="control-btn"
             >
-              {move}
+              重置
             </button>
-          ))}
-        </div>
-      </div>
-      <div className="control-group">
-        <h2>整体旋转（XYZ轴）</h2>
-        <div className="xyz-rotate-controls">
-          {["X", "Y", "Z"].map((move) => (
             <button
-              key={move}
-              onClick={() => handleMoves([move])}
+              onClick={solveFullWithAnimation}
               disabled={isAnimating}
+              className="control-btn primary"
             >
-              {move}轴 +90°
+              解魔方
             </button>
-          ))}
-        </div>
-      </div>
-      <div className="control-group">
-        <h2>执行公式</h2>
-        <div className="algorithm-input">
-          <input
-            type="text"
-            id="algorithm-input"
-            placeholder="例如: R U R' U'"
-          />
-          <button
-            onClick={() => {
-              const input = document.getElementById(
-                "algorithm-input"
-              ) as HTMLInputElement;
-              if (input) {
-                handleMoves(input.value.split(" ").filter(Boolean));
-              }
-            }}
-            disabled={isAnimating}
-          >
-            执行
-          </button>
-        </div>
+            <button
+              onClick={solveCurrentStage}
+              disabled={isAnimating}
+              className="control-btn"
+            >
+              执行
+            </button>
+          </div>
+        )}
+
+        {activeTab === "moves" && (
+          <div className="moves-controls">
+            <div className="move-grid">
+              {[
+                "U",
+                "U'",
+                "D",
+                "D'",
+                "L",
+                "L'",
+                "R",
+                "R'",
+                "F",
+                "F'",
+                "B",
+                "B'",
+              ].map((move) => (
+                <button
+                  key={move}
+                  onClick={() => handleMoves([move])}
+                  disabled={isAnimating}
+                  className="move-btn"
+                >
+                  {move}
+                </button>
+              ))}
+            </div>
+            <div className="xyz-rotate">
+              {["X", "Y", "Z"].map((move) => (
+                <button
+                  key={move}
+                  onClick={() => handleMoves([move])}
+                  disabled={isAnimating}
+                  className="move-btn rotate"
+                >
+                  {move}
+                </button>
+              ))}
+            </div>
+            <div className="algorithm-box">
+              <input
+                type="text"
+                className="algo-input"
+                placeholder="R U R' U'"
+              />
+              <button
+                onClick={() => {
+                  const input = document.querySelector(
+                    ".algo-input"
+                  ) as HTMLInputElement;
+                  if (input?.value) {
+                    handleMoves(input.value.split(" ").filter(Boolean));
+                    input.value = "";
+                  }
+                }}
+                disabled={isAnimating}
+                className="execute-btn"
+              >
+                执行
+              </button>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "settings" && (
+          <div className="settings-controls">
+            <div className="speed-buttons">
+              {[0.5, 1, 2].map((speed) => (
+                <button
+                  key={speed}
+                  onClick={() => changeAnimationSpeed(speed)}
+                  className={`speed-btn ${
+                    animationSpeed === speed ? "active" : ""
+                  }`}
+                  disabled={isAnimating}
+                >
+                  {speed === 0.5 ? "慢速" : speed === 1 ? "正常" : "快速"}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
