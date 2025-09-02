@@ -105,41 +105,34 @@ export function useCubeActions({
                 return;
             }
 
-            // 如果没有解法，获取新解法
             if (fullSolution.length === 0) {
                 await fetchSolution();
-                // 等待状态更新
                 await new Promise(resolve => setTimeout(resolve, 0));
                 setIsAnimating(false);
                 return;
             }
 
-            // 获取所有步骤
             const allMoves = fullSolution.flat();
             let currentMoveIndex = moveIndex;
 
             console.log('开始执行，当前阶段:', currentStageIndex, '步骤索引:', currentMoveIndex);
 
-            // 从当前步骤开始，持续执行直到满足当前阶段的要求
             while (currentMoveIndex < allMoves.length) {
                 await executeMove(allMoves[currentMoveIndex]);
                 currentMoveIndex++;
 
-                // 更新进度并检查当前阶段是否完成
                 if (solvingManager.current) {
-                    // 先更新当前魔方状态
-                    solvingManager.current.updateProgress({
+                    // 更新状态并检查阶段完成
+                    const guideInfo = solvingManager.current.updateProgress({
                         raw: cube3DRef.current.getCubeState(),
                         isSolved: false
                     });
 
-                    // 检查当前阶段是否完成
-                    const isStageComplete = solvingManager.current.isStageComplete();
-                    if (isStageComplete) {
+                    console.log('阶段完成状态:', guideInfo.currentStep > currentStageIndex);
+                    if (guideInfo.currentStep > currentStageIndex) {
                         console.log('当前阶段完成，保存进度并进入下一阶段');
                         setMoveIndex(currentMoveIndex);
 
-                        // 更新到下一阶段
                         const nextStageIndex = currentStageIndex + 1;
                         if (nextStageIndex < fullSolution.length) {
                             setCurrentStageIndex(nextStageIndex);
@@ -151,10 +144,9 @@ export function useCubeActions({
                     }
                 }
 
-                // 检查是否需要重置步骤索引
                 if (currentMoveIndex >= allMoves.length) {
                     console.log('已执行所有步骤，但当前阶段未完成，重置步骤索引');
-                    setMoveIndex(0); // 重置到开始，以便重新尝试
+                    setMoveIndex(0);
                 }
             }
         } catch (error) {
