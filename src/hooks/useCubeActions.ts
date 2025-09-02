@@ -215,8 +215,6 @@ export function useCubeActions({
             // 依次执行每个动作
             for (const move of moves) {
                 await executeMove(move);
-                // 添加一个小延迟，确保动画流畅
-                await new Promise(resolve => setTimeout(resolve, 1000 / animationSpeed));
             }
         } catch (error) {
             console.error('执行动作序列时出错:', error);
