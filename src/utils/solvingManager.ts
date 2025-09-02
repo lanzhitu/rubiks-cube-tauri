@@ -9,13 +9,26 @@ export interface GuideInfo {
     description: string;
 }
 
+export const ManagerState = {
+    SCRAMBLING: 'SCRAMBLING',
+    SOLVING: 'SOLVING'
+} as const;
+
+type ManagerStateType = typeof ManagerState[keyof typeof ManagerState];
+
 export class SolvingManager {
     private currentStageIndex: number = 0;
     private stageProgress: boolean[] = [];
     private lastState: CubeState | undefined;
+    private state: ManagerStateType = ManagerState.SOLVING; // 使用状态常量
 
     constructor() {
         this.reset();
+    }
+
+    // 设置当前状态
+    setState(newState: ManagerStateType): void {
+        this.state = newState;
     }
 
     // 重置状态
@@ -23,6 +36,7 @@ export class SolvingManager {
         this.currentStageIndex = 0;
         this.stageProgress = new Array(SOLVING_STAGES.length).fill(false);
         this.lastState = undefined;
+        this.state = ManagerState.SOLVING; // 默认切换到解题模式
     }
 
     // 获取当前阶段
@@ -77,7 +91,7 @@ export class SolvingManager {
     // 更新状态并获取当前指南信息
     updateProgress(state: CubeState): GuideInfo {
         this.lastState = state;
-        if (this.isStageComplete()) {
+        if (this.state === ManagerState.SOLVING && this.isStageComplete()) {
             this.stageProgress[this.currentStageIndex] = true;
             this.moveToNextStage();
         }
