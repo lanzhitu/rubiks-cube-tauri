@@ -105,7 +105,7 @@ export class SolvingManager {
 
         return {
             progress: currentStage.cubeProgress || [],
-            currentStep: this.currentStageIndex + 1,
+            currentStep: this.currentStageIndex,
             totalSteps: SOLVING_STAGES.length,
             nextMove,
             description: currentStage.description
