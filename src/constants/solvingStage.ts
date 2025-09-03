@@ -69,18 +69,6 @@ export const SOLVING_STAGES: Stage[] = [
         cubeProgress: ['top-face']
     },
     {
-        id: 'yellow-corners',
-        name: '顶层角块调整',
-        description: '调整顶层角块位置',
-        targetPattern: 'WWWWWWWWWRRRRRRRR*GGGGGGGG*OOOOOOOO*BBBBBBBB*YYYYYYYYY',
-        hints: [
-            '1. 找到一个位置正确的角块，将其放在右后方',
-            '2. 执行U R U\' L\' U R\' U\' L调整其他角块'
-        ],
-        algorithm: ['U', 'R', 'U\'', 'L\'', 'U', 'R\'', 'U\'', 'L'],
-        cubeProgress: ['top-corners-placed']
-    },
-    {
         id: 'yellow-edges',
         name: '顶层棱块调整',
         description: '完成魔方还原',
