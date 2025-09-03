@@ -30,6 +30,7 @@ function App() {
     changeAnimationSpeed,
     currentStageIndex,
     solveCurrentStageWithAnimation,
+    solveCurrentStageStep,
   } = useCubeActions({
     cube3DRef,
     solvingManager,
@@ -69,6 +70,7 @@ function App() {
         reset={reset}
         solveFullWithAnimation={solveFullWithAnimation}
         solveCurrentStage={solveCurrentStageWithAnimation}
+        solveCurrentStageStep={solveCurrentStageStep}
         handleMoves={handleMoves}
         currentStageIndex={currentStageIndex}
       />

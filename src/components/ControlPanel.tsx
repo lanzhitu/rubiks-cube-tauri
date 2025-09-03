@@ -8,6 +8,7 @@ interface ControlPanelProps {
   reset: () => Promise<void>;
   solveFullWithAnimation: () => Promise<void>;
   solveCurrentStage: () => void;
+  solveCurrentStageStep: () => Promise<void>;
   handleMoves: (moves: string[], syncBackend?: boolean) => void;
   currentStageIndex: number;
 }
@@ -20,6 +21,7 @@ export function ControlPanel({
   reset,
   solveFullWithAnimation,
   solveCurrentStage,
+  solveCurrentStageStep,
   handleMoves,
   currentStageIndex,
 }: ControlPanelProps) {
@@ -83,6 +85,13 @@ export function ControlPanel({
               className="control-btn"
             >
               执行
+            </button>
+            <button
+              onClick={solveCurrentStageStep}
+              disabled={isAnimating}
+              className="control-btn"
+            >
+              单步执行
             </button>
           </div>
         )}

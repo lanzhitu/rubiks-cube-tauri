@@ -35,7 +35,7 @@ export const SOLVING_STAGES: Stage[] = [
         id: 'middle-layer',
         name: '中间层',
         description: '完成中间层',
-        targetPattern: 'WWWWWWWWW****GGGG****RRRR****BBBB****OOOO***********',
+        targetPattern: 'WWWWWWWWWOOOOOO***GGGGGG***RRRRRR***BBBBBB************',
         hints: [
             '1. 找到一个不含黄色的棱块',
             '2. 将它移动到顶层',
@@ -48,7 +48,7 @@ export const SOLVING_STAGES: Stage[] = [
         id: 'yellow-cross',
         name: '顶层十字',
         description: '构建黄色十字',
-        targetPattern: 'WWWWWWWWW****GGGG****RRRR****BBBB****OOOO*Y*Y*Y*Y***',
+        targetPattern: 'WWWWWWWWWOOOOOO***GGGGGG***RRRRRR***BBBBBB****Y*YYY*Y*',
         hints: [
             '1. 观察顶面黄色块的形状',
             '2. 根据形状执行F R U R\' U\' F\'或其变体'
@@ -60,7 +60,7 @@ export const SOLVING_STAGES: Stage[] = [
         id: 'yellow-face',
         name: '顶层面完成',
         description: '完成黄色面',
-        targetPattern: 'WWWWWWWWW****GGGG****RRRR****BBBB****OOOOYYYYYYYYY',
+        targetPattern: 'WWWWWWWWWOOOOOO***GGGGGG***RRRRRR***BBBBBB***YYYYYYYYY',
         hints: [
             '1. 如果有一个角块已经是黄色朝上，将其放在左后方',
             '2. 执行R U R\' U R U2 R\'旋转其他角块'
@@ -72,7 +72,7 @@ export const SOLVING_STAGES: Stage[] = [
         id: 'yellow-corners',
         name: '顶层角块调整',
         description: '调整顶层角块位置',
-        targetPattern: 'WWWWWWWWWGGGGGGGG*RRRRRRRR*BBBBBBBB*OOOOOOOO*YYYYYYYYY',
+        targetPattern: 'WWWWWWWWWRRRRRRRR*GGGGGGGG*OOOOOOOO*BBBBBBBB*YYYYYYYYY',
         hints: [
             '1. 找到一个位置正确的角块，将其放在右后方',
             '2. 执行U R U\' L\' U R\' U\' L调整其他角块'
@@ -84,7 +84,7 @@ export const SOLVING_STAGES: Stage[] = [
         id: 'yellow-edges',
         name: '顶层棱块调整',
         description: '完成魔方还原',
-        targetPattern: 'WWWWWWWWWGGGGGGGGGRRRRRRRRRBBBBBBBBBOOOOOOOOOYYYYYYYY',
+        targetPattern: 'WWWWWWWWWOOOOOOOOOGGGGGGGGGRRRRRRRRRBBBBBBBBBYYYYYYYYY',
         hints: [
             '1. 找到一个位置正确的棱块',
             '2. 执行R2 U R U R\' U\' R\' U\' R\' U R\'或其变体'
