@@ -8,7 +8,7 @@ export const SOLVING_STAGES: Stage[] = [
         id: 'white-cross',
         name: '白色十字',
         description: '构建白色十字',
-        targetPattern: '*W*WWW*W**********************************************',
+        targetPattern: '*W*WWW*W**O**O*****G**G*****R**R*****B**B*************',
         hints: [
             '1. 找到一个白色棱块',
             '2. 将它移动到顶层',
@@ -22,7 +22,7 @@ export const SOLVING_STAGES: Stage[] = [
         id: 'white-corners',
         name: '白色角块',
         description: '完成白色面',
-        targetPattern: 'WWWWWWWWW*********************************************',
+        targetPattern: 'WWWWWWWWWOOO*O****GGG*G****RRR*R****BBB*B*************',
         hints: [
             '1. 找到一个白色角块',
             '2. 将它移动到顶层对应位置',
