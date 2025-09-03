@@ -151,8 +151,7 @@ export function useCubeActions({
                         }
 
                         if (currentMoveIndex >= allMoves.length) {
-                            console.log('已执行所有步骤，但当前阶段未完成，重置步骤索引');
-                            setMoveIndex(0);
+                            console.log('已执行所有步骤');
                         }
                     }
                     return;
@@ -329,6 +328,14 @@ export function useCubeActions({
         setIsAnimating(true);
 
         try {
+            const currentState = cube3DRef.current.getCubeState();
+            const isSolved = currentState === SOLVED_STATE;
+
+            if (isSolved) {
+                console.log('魔方已还原');
+                setIsAnimating(false);
+                return;
+            }
             let allMoves: string[] = [];
 
             // 确保解法已加载

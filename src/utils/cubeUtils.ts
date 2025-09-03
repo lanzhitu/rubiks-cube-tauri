@@ -9,7 +9,7 @@ import {
 } from "./cubeConstants";
 
 // 标准还原状态
-export const SOLVED_STATE = "WWWWWWWWWRRRRRRRRRGGGGGGGGGOOOOOOOOOBBBBBBBBBYYYYYYYYY";
+export const SOLVED_STATE = "WWWWWWWWWOOOOOOOOOGGGGGGGGGRRRRRRRRRBBBBBBBBBYYYYYYYYY";
 
 // 解析魔方状态为二维数组
 export function parseCubeState(state: string): Color[][] {
