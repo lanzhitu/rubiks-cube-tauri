@@ -195,7 +195,6 @@ export function useCubeActions({
                 }
 
                 if (currentMoveIndex >= allMoves.length) {
-                    console.log('已执行所有步骤，但当前阶段未完成，重置步骤索引');
                     setMoveIndex(0);
                 }
             }
