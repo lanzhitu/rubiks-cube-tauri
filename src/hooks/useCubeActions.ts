@@ -244,8 +244,15 @@ export function useCubeActions({
     const randomize = useCallback(async () => {
         if (cube3DRef.current?.isAnimating) return;
 
+        solvingManager.current?.reset();
+
         // 设置为打乱状态
         solvingManager.current?.setState(ManagerState.SCRAMBLING);
+        setMoveIndex(0);
+        setCurrentProgress(0);
+        setCurrentStageIndex(0);
+        setFullSolution([]);
+
 
         const moves = [];
         const possibleMoves = ["U", "U'", "R", "R'", "F", "F'", "D", "D'", "L", "L'", "B", "B'"];

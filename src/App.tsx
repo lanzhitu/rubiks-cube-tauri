@@ -50,7 +50,7 @@ function App() {
         currentStageIndex={currentStageIndex}
         progress={currentProgress}
         hints={currentHints}
-        onAlgorithmClick={handleMoves}
+        onAlgorithmClick={solveCurrentStageWithAnimation}
       />
       <div className="cube-container">
         <Cube3D ref={cube3DRef} animationSpeed={animationSpeed} />

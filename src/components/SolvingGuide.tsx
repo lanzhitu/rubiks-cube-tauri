@@ -4,7 +4,7 @@ interface SolvingGuideProps {
   currentStageIndex: number;
   progress: number;
   hints: string[];
-  onAlgorithmClick: (moves: string[] | null, syncBackend?: boolean) => void;
+  onAlgorithmClick: () => void;
 }
 
 export function SolvingGuide({
@@ -38,7 +38,7 @@ export function SolvingGuide({
       <div className="controls">
         <button
           className="algorithm-btn"
-          onClick={() => onAlgorithmClick(null)}
+          onClick={onAlgorithmClick}
           disabled={progress === 100}
         >
           执行下一步
