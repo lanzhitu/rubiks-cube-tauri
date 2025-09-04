@@ -1,5 +1,11 @@
 import * as THREE from "three";
-import { useMemo, forwardRef, useImperativeHandle } from "react";
+import {
+  useMemo,
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { animated } from "@react-spring/three";
@@ -26,6 +32,22 @@ const Cube3D = forwardRef(function Cube3D(
     isAnimating,
     triggerRotate,
   } = useCubeAnimation(animationSpeed);
+
+  const controlsRef = useRef<any>(null);
+
+  // 翻转相机位置
+  const flipCamera = () => {
+    if (controlsRef.current) {
+      const camera = controlsRef.current.object;
+      if (camera.up.y > 0) {
+        camera.up.set(0, -1, 0);
+      } else {
+        camera.up.set(0, 1, 0);
+      }
+      camera.lookAt(0, 0, 0);
+      controlsRef.current.update();
+    }
+  };
 
   // 生成贴纸材质
   const colorMaterials = useMemo(() => {
@@ -63,6 +85,23 @@ const Cube3D = forwardRef(function Cube3D(
 
   return (
     <div style={{ width: "100%", height: "100%", touchAction: "none" }}>
+      <button
+        onClick={flipCamera}
+        style={{
+          position: "absolute",
+          top: "10px",
+          right: "10px",
+          zIndex: 1000,
+          padding: "10px",
+          backgroundColor: "#007bff",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+        }}
+      >
+        翻转相机
+      </button>
       <Canvas camera={{ position: [3.5, 3.5, 3.5], fov: 50 }}>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={0.8} />
@@ -83,6 +122,7 @@ const Cube3D = forwardRef(function Cube3D(
           />
         </group>
         <OrbitControls
+          ref={controlsRef}
           enablePan={false}
           minDistance={3}
           maxDistance={10}
