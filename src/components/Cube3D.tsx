@@ -3,8 +3,7 @@ import {
   useMemo,
   forwardRef,
   useImperativeHandle,
-  useRef,
-  useState,
+  useRef
 } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
