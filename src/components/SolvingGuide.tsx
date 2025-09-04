@@ -5,6 +5,9 @@ interface SolvingGuideProps {
   progress: number;
   hints: string[];
   onAlgorithmClick: () => void;
+  stageName: string;
+  stageDescription: string;
+  algorithms: string[];
 }
 
 export function SolvingGuide({
@@ -12,6 +15,9 @@ export function SolvingGuide({
   progress,
   hints,
   onAlgorithmClick,
+  stageName,
+  stageDescription,
+  algorithms,
 }: SolvingGuideProps) {
   return (
     <div className="solving-guide">
@@ -24,12 +30,28 @@ export function SolvingGuide({
         <div className="step-counter">当前步骤: {currentStageIndex}</div>
       </div>
 
+      {/* 阶段信息 */}
+      <div className="stage-info">
+        <h4>{stageName}</h4>
+        <p>{stageDescription}</p>
+      </div>
+
       {/* 提示部分 */}
       <div className="hints">
         <h4>操作提示</h4>
         <ul>
           {hints.map((hint, index) => (
             <li key={index}>{hint}</li>
+          ))}
+        </ul>
+      </div>
+
+      {/* 解法部分 */}
+      <div className="algorithms">
+        <h4>解法公式</h4>
+        <ul>
+          {algorithms.map((algorithm, index) => (
+            <li key={index}>{algorithm}</li>
           ))}
         </ul>
       </div>

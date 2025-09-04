@@ -6,6 +6,7 @@ import Cube3D from "./components/Cube3D";
 import { SolvingGuide } from "./components/SolvingGuide";
 import { SolvingManager } from "./utils/solvingManager";
 import { useResetOnUnload } from "./hooks/useResetOnUnload";
+import { SOLVING_STAGES } from "./constants/solvingStage";
 import "./App.css";
 
 function App() {
@@ -46,12 +47,21 @@ function App() {
 
   return (
     <div className="app-container">
-      <SolvingGuide
-        currentStageIndex={currentStageIndex}
-        progress={currentProgress}
-        hints={currentHints}
-        onAlgorithmClick={solveCurrentStageWithAnimation}
-      />
+      {(() => {
+        const currentStage =
+          SOLVING_STAGES[currentStageIndex] || SOLVING_STAGES[0];
+        return (
+          <SolvingGuide
+            currentStageIndex={currentStageIndex}
+            progress={currentProgress}
+            hints={currentHints}
+            onAlgorithmClick={solveCurrentStageWithAnimation}
+            stageName={currentStage.name}
+            stageDescription={currentStage.description}
+            algorithms={currentStage.algorithm || []}
+          />
+        );
+      })()}
       <div className="cube-container">
         <Cube3D ref={cube3DRef} animationSpeed={animationSpeed} />
         <DebugPanel

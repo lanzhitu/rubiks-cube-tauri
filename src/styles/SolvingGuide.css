@@ -1,101 +1,175 @@
 .solving-guide {
   padding: 20px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  color: #fff;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
 }
 
 .progress-section {
   margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 8px;
 }
 
 .progress-section h3 {
   margin: 0 0 10px;
-  color: #333;
+  color: #fff;
 }
 
-.description {
-  color: #666;
-  margin: 10px 0;
-  line-height: 1.4;
+.progress-bar {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, #4CAF50, #8BC34A);
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.3s ease;
 }
 
 .step-counter {
   font-size: 14px;
-  color: #888;
+  color: #e0e0e0;
   margin-top: 5px;
 }
 
-.move-hint {
-  background: #f5f5f5;
+.stage-info {
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.1);
   padding: 15px;
-  border-radius: 4px;
-  margin-top: 20px;
+  border-radius: 8px;
 }
 
-.formula {
-  font-size: 24px;
-  font-weight: bold;
-  color: #2196f3;
-  margin: 15px 0;
-  text-align: center;
+.stage-info h4 {
+  margin: 0 0 10px;
+  color: #fff;
+  font-size: 1.2em;
+}
+
+.stage-info p {
+  color: #e0e0e0;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.hints {
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.hints h4 {
+  margin: 0 0 10px;
+  color: #fff;
+}
+
+.hints ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.hints li {
+  color: #e0e0e0;
+  margin-bottom: 5px;
+  line-height: 1.4;
+}
+
+.algorithms {
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.algorithms h4 {
+  margin: 0 0 10px;
+  color: #fff;
+}
+
+.algorithms ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.algorithms li {
+  color: #e0e0e0;
+  margin-bottom: 5px;
+  font-family: 'Courier New', monospace;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 5px;
+  border-radius: 4px;
 }
 
 .controls {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin-top: 15px;
+  position: sticky;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border-radius: 12px 12px 0 0;
+  padding: 20px;
+  margin: -20px -20px 0;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
 }
 
-.controls button {
-  padding: 8px 16px;
+.algorithm-btn {
+  width: 100%;
+  padding: 15px;
   border: none;
-  border-radius: 4px;
-  background: #2196f3;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
   color: white;
+  font-size: 18px;
+  font-weight: bold;
   cursor: pointer;
-  transition: all 0.2s;
-  min-width: 80px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
-.controls button:disabled {
+.algorithm-btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 25px rgba(0,0,0,0.4);
+}
+
+.algorithm-btn:disabled {
   background: #ccc;
   cursor: not-allowed;
   opacity: 0.7;
-}
-
-.controls button:hover:not(:disabled) {
-    background: #fff;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    color: #333;
+  transform: none;
+  box-shadow: none;
 }
 
 .solving-guide h3 {
-    color: #1a1a1a;
-    margin-bottom: 10px;
-    font-size: 1.2em;
+  color: #fff;
+  margin-bottom: 10px;
+  font-size: 1.2em;
 }
 
 .solving-guide h4 {
-    color: #2196F3;
-    margin: 15px 0;
-    font-size: 1.1em;
+  color: #fff;
+  margin: 15px 0;
+  font-size: 1.1em;
 }
 
 .solving-guide h5 {
-    color: #1976D2;
-    margin: 10px 0;
-    font-size: 1em;
+  color: #fff;
+  margin: 10px 0;
+  font-size: 1em;
 }
 
 .solving-guide p {
-    color: #666;
-    line-height: 1.5;
-    margin: 8px 0;
+  color: #e0e0e0;
+  line-height: 1.5;
+  margin: 8px 0;
 }
 
 .progress-section {

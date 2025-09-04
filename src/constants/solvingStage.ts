@@ -7,45 +7,49 @@ export const SOLVING_STAGES: Stage[] = [
     {
         id: 'white-cross',
         name: '白色十字',
-        description: '在白色面构建一个十字形状',
+        description: '开始解魔方的第一步是完成白色十字。这一步尝试自己完成，可以培养空间感。关键是每个白色棱块不仅要放在白色面上形成十字，还要确保它们的侧面颜色与周围中心块匹配（见图：Good White Cross）。',
         targetPattern: '*W*WWW*W**O**O*****G**G*****R**R*****B**B*************',
         hints: [
-            '1. 保持白色中心块在底部',
-            '2. 找到一个带白色的棱块',
-            '3. 将白色面转到底部，同时确保棱块颜色与侧面中心块颜色对齐',
-            '4. 可以使用 F或F\' 放置棱块，或 F2 直接放入',
-            '5. 重复以上步骤直到完成白色十字'
+            '1. 找出四个带白色的棱块（每个棱块有两种颜色）',
+            '2. 先放一个棱块到位，再放第二个，以此类推',
+            '3. 当放置新棱块时，注意不要破坏已经放好的棱块',
+            '4. 棱块翻转处理：① 当棱在顶层但方向错误：F U\' R U',
+            '5. 棱块位置处理：② 当棱在底层：F2 或 F\' U\' R U',
+            '6. 棱块位置处理：③ 当棱在中层：U\' R U 或 U L\' U\'',
+            '7. 确保每个棱块的侧面颜色与中心块匹配，否则会形成"错误的十字"（Bad Cross）'
         ],
-        algorithm: ['F2', 'U\' R\' F R', 'R U R\' F\''],
+        // 白十字常用公式（直接从Ruwix教程提取）
+        algorithm: ["F U' R U", "F' U' R U", "U' R U", "U L' U'"],
         cubeProgress: ['bottom-edges']
     },
     {
         id: 'white-corners',
         name: '白色角块',
-        description: '完成第一层（白色面）',
+        description: '目标：继续保持白色面在【顶部】，用 3 个极短公式把 4 个白色角块逐一插入完成第一层（顶面整面 + 侧面一圈对齐）。根据角块当前白色贴纸朝向（右 / 前 / 底）选择对应算法。所有角完成后再整体翻转魔方（白底黄顶），进入中层步骤。',
         targetPattern: 'WWWWWWWWWOOO*O****GGG*G****RRR*R****BBB*B*************',
         hints: [
-            '1. 保持白色面在底部',
-            '2. 找到一个白色角块',
-            '3. 将角块移到目标位置的正上方',
-            '4. 如果白色在顶面：执行 U R U\' R\'',
-            '5. 如果白色在前面：执行 R U\' R\' U2 R U\' R\'',
-            '6. 如果白色在右面：执行 U\' F\' U F'
+            '1. 选择一个未就位的白角，将其通过 D / D\' 转到底层，并放到其目标位置正下方（右前下角作为操作位）',
+            '2. 观察该角白色贴纸朝向：朝右 / 朝前 / 朝底',
+            '3. 朝右 → 用 R\' D\' R； 朝前 → 用 F D F\'； 朝底 → 用 F L D2 L\' F\'',
+            '4. 执行后角块会直接归位且方向正确；若角已在顶层但方向错误，先随便执行一个算法把它打回底层再按朝向插入',
+            '5. 重复直至 4 个角全部正确，然后整体翻转魔方（白色到底，黄色到顶）'
         ],
-        algorithm: ['R U R\'', 'U\'', 'R U R\'', 'U2 F\' U\' F'],
+        // Ruwix 初学者角块三种情况（保持白面在上时的常见插入方式：此处沿用其页面展示的三组）
+        // 顺序与提示中朝向说明一致：右 / 前 / 底
+        algorithm: ["R' D' R", 'F D F\'', "F L D2 L' F'"],
         cubeProgress: ['bottom-complete']
     },
     {
         id: 'middle-layer',
         name: '中间层',
-        description: '完成第二层的棱块',
+        description: '目标：翻转后（白色在底、黄色在顶），插入四个不含黄色的棱块完成前两层 (F2L)。使用对称的左 / 右插入公式。',
         targetPattern: 'WWWWWWWWWOOOOOO***GGGGGG***RRRRRR***BBBBBB************',
         hints: [
-            '1. 找到一个不含黄色的棱块',
-            '2. 将棱块移到顶层，使其前面的颜色与前面的中心块匹配',
-            '3. 向右插入：U R U\' R\' U\' F\' U F',
-            '4. 向左插入：U\' L\' U L U F U\' F\'',
-            '5. 如果棱块在正确位置但方向错误，先取出再重新插入'
+            '1. 寻找顶层不含黄色的棱块，将其前色与前中心对齐形成“竖线”',
+            '2. 判断其目标在右还是左',
+            '3. 右侧插入：执行右公式一次',
+            '4. 左侧插入：执行左公式一次',
+            '5. 若某棱在中层但方向错误，用对应公式执行两次把它顶出再重插'
         ],
         algorithm: ['U R U\' R\' U\' F\' U F', 'U\' L\' U L U F U\' F\''],
         cubeProgress: ['middle-layer-complete']
@@ -53,63 +57,64 @@ export const SOLVING_STAGES: Stage[] = [
     {
         id: 'yellow-cross',
         name: '黄色十字',
-        description: '在顶面形成黄色十字',
+        description: '目标：在黄色顶面做出黄色十字（此时只关注“+”形，棱块侧色是否对齐暂不要求）。通过同一公式在不同形态间转换：点 → L → 直线 → 十字。',
         targetPattern: 'WWWWWWWWWOOOOOO***GGGGGG***RRRRRR***BBBBBB****Y*YYY*Y*',
         hints: [
-            '1. 观察顶面黄色形状：点、线或L形',
-            '2. 点型：执行完整公式',
-            '3. 线型：调整至横线，执行公式',
-            '4. L型：调整至左上角，执行公式',
-            '5. 标准公式：F R U R\' U\' F\''
+            '1. 形态判断：点 / L / 直线 / 十字',
+            '2. 点：执行一次 → 得 L',
+            '3. L：放成左上“┘”形，再执行一次 → 得横线',
+            '4. 直线：保持水平，再执行一次 → 得十字',
+            '5. 出现十字后继续下一阶段（暂不必对齐棱侧色）'
         ],
-        algorithm: ['F R U R\' U\' F\'', 'F U R U\' R\' F\''],
+        algorithm: ['F R U R\' U\' F\''],
         cubeProgress: ['top-cross']
     },
     {
-        id: 'yellow-face',
-        name: '黄色面定向',
-        description: '使所有黄色角块朝上',
-        targetPattern: 'WWWWWWWWWOOOOOO***GGGGGG***RRRRRR***BBBBBB***YYYYYYYYY',
-        hints: [
-            '1. 找到已经朝上的黄色角块',
-            '2. 将该角块放在左后方（U面的左后角）',
-            '3. 执行角块定向公式：R U R\' U R U2 R\'',
-            '4. 重复执行直到所有角块朝上',
-            '5. 如果没有朝上的角块，从任意位置开始'
-        ],
-        algorithm: ['R U R\' U R U2 R\'', 'R\' U\' R U\' R\' U2 R'],
-        cubeProgress: ['top-face']
-    },
-    {
-        id: 'yellow-corners',
-        name: '顶层角块调整',
-        description: '调整黄色角块的位置（不考虑方向）',
-        targetPattern: 'WWWWWWWWWOOOOOO***GGGGGG***RRRRRR***BBBBBB***YYYYYYYYY',
-        hints: [
-            '1. 观察四个角块的位置',
-            '2. 找到至少一个位置正确的角块',
-            '3. 将正确的角块放在右后方',
-            '4. 执行 U R U\' L\' U R\' U\' L',
-            '5. 如果没有位置正确的角块，从任意位置执行一次公式',
-            '6. 重复检查和执行直到所有角块就位'
-        ],
-        algorithm: ['U R U\' L\' U R\' U\' L', 'L\' U R U\' L U R\''],
-        cubeProgress: ['top-corners']
-    },
-    {
         id: 'yellow-edges',
-        name: '顶层棱块调整',
-        description: '完成最后的棱块位置调整',
-        targetPattern: 'WWWWWWWWWOOOOOOOOOGGGGGGGGGRRRRRRRRRBBBBBBBBBYYYYYYYYY',
+        name: '黄色棱块定位',
+        description: '目标：在已有黄色十字的基础上，使四个黄色棱块侧色与相邻中心对齐（完成顶层棱的位置与朝向）。反复使用同一公式直到全部对齐。',
+        targetPattern: 'WWWWWWWWWOOOOOO***GGGGGG***RRRRRR***BBBBBB****Y*YYY*Y*',
         hints: [
-            '1. 找到一个位置正确的棱块作为后面',
-            '2. 根据其他棱块的情况选择算法：',
-            '3. 顺时针循环：R U\' R U R U R U\' R\' U\' R2',
-            '4. 逆时针循环：R2 U R U R\' U\' R\' U\' R\' U R\'',
-            '5. 对换相邻棱块：R U\' R U R U R U\' R\' U\' R2',
-            '6. 对换对面棱块：R2 U R U R\' U\' R\' U\' R\' U R\''
+            '1. 观察十字四个棱与侧面中心的匹配情况',
+            '2. 若有两个相邻已对齐，可将它们放在背面+左侧，执行公式一次',
+            '3. 若只有一个或没有对齐，直接执行公式再重新评估',
+            '4. 反复执行直至四个棱全部对齐'
         ],
-        algorithm: ['R U\' R U R U R U\' R\' U\' R2', 'R2 U R U R\' U\' R\' U\' R\' U R\''],
+        // Ruwix 第5步：Swap Yellow Edges
+        algorithm: ['R U R\' U R U2 R\' U'],
+        cubeProgress: ['top-cross-aligned']
+    },
+    {
+        id: 'yellow-corners-position',
+        name: '黄色角块定位',
+        description: '目标：只调整顶层四个黄色角块的位置（忽略其朝向），把所有角块移动到正确“位置集合”。使用角循环公式。',
+        targetPattern: 'WWWWWWWWWOOOOOO***GGGGGG***RRRRRR***BBBBBB***YYYYYYYYY',
+        hints: [
+            '1. 寻找已在正确位置（颜色集合正确）的角块（不看朝向）',
+            '2. 如找到，将它放右前顶角作为“固定角”',
+            '3. 执行角循环公式，循环其余三个角',
+            '4. 若无任何正确角，先执行一次公式再重新查找',
+            '5. 重复直到四个角位置都正确（但可能仍有朝向未转好）'
+        ],
+        // Ruwix 第6步：Position Yellow Corners
+        algorithm: ['U R U\' L\' U R\' U\' L'],
+        cubeProgress: ['top-corners-positioned']
+    },
+    {
+        id: 'yellow-corners-orient',
+        name: '黄色角块朝向',
+        description: '目标：在所有黄色角块已位于正确位置的前提下，逐个调整其朝向形成完整黄色面。对单个未朝上的角反复执行公式（2或4次），只转顶层切换至下一个角。',
+        targetPattern: 'WWWWWWWWWOOOOOO***GGGGGG***RRRRRR***BBBBBB***YYYYYYYYY',
+        hints: [
+            '1. 手持魔方：选一个未朝上的黄色角放在右前顶',
+            '2. 执行【R\' D\' R D】直至该角黄色朝上（通常 2 或 4 次）',
+            '3. 仅转 U / U\' 将下一个未好的角移到右前顶',
+            '4. 重复直至全部角朝上，过程中不要转动整块或中下两层',
+            '5. 完成后整个魔方复原'
+        ],
+        // Ruwix 第7步：Orient Yellow Corners （单角重复）
+        algorithm: ["R' D' R D"],
         cubeProgress: ['complete']
     }
 ];
+
