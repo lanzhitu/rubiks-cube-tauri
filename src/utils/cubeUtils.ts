@@ -41,9 +41,21 @@ export function getDefaultCubies(): CubieType[] {
         id: `cubie-${key}`,
         position: sticker.p as [number, number, number],
         stickers: {},
+        type: "edge", // 先默认，后面再判断
       });
     }
     cubieMap.get(key)!.stickers[sticker.f as FaceColor] = sticker.f;
+  }
+  // 根据贴纸数量判断类型
+  for (const cubie of cubieMap.values()) {
+    const stickerCount = Object.keys(cubie.stickers).length;
+    if (stickerCount === 3) {
+      cubie.type = "corner";
+    } else if (stickerCount === 2) {
+      cubie.type = "edge";
+    } else if (stickerCount === 1) {
+      cubie.type = "center";
+    }
   }
   return Array.from(cubieMap.values());
 }

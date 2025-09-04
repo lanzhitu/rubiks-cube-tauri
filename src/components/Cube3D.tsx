@@ -1,10 +1,6 @@
 import * as THREE from "three";
-import {
-  useMemo,
-  forwardRef,
-  useImperativeHandle,
-  useRef
-} from "react";
+import React from "react";
+import { useMemo, forwardRef, useImperativeHandle, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { animated } from "@react-spring/three";
@@ -22,6 +18,7 @@ const Cube3D = forwardRef(function Cube3D(
   { animationSpeed = 1 }: { animationSpeed?: number },
   ref
 ) {
+  const [interactiveMode, setInteractiveMode] = React.useState(true);
   // 使用自定义 Hook 管理动画和 Cubie 状态
   const {
     cubies,
@@ -68,6 +65,24 @@ const Cube3D = forwardRef(function Cube3D(
       const idx = FACE_TO_MATERIAL_INDEX[face as FaceColor];
       mats[idx] = colorMaterials[color] || colorMaterials["default"];
     });
+    if (!interactiveMode) {
+      // 正常模式只显示贴纸颜色
+      return mats;
+    }
+    // 交互模式下直接覆盖贴纸色为高亮色
+    let highlightColor = null;
+    if (cubie.type === "corner") {
+      highlightColor = "#ff00ff";
+    } else if (cubie.type === "edge") {
+      highlightColor = "#00ffff";
+    } else if (cubie.type === "center") {
+      highlightColor = "#ffff00";
+    }
+    if (highlightColor) {
+      return Array(6).fill(
+        new THREE.MeshBasicMaterial({ color: highlightColor })
+      );
+    }
     return mats;
   };
 
@@ -84,23 +99,35 @@ const Cube3D = forwardRef(function Cube3D(
 
   return (
     <div style={{ width: "100%", height: "100%", touchAction: "none" }}>
-      <button
-        onClick={flipCamera}
-        style={{
-          position: "absolute",
-          top: "10px",
-          right: "10px",
-          zIndex: 1000,
-          padding: "10px",
-          backgroundColor: "#007bff",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
-      >
-        翻转相机
-      </button>
+      <div style={{ position: "absolute", top: 10, left: 10, zIndex: 1001 }}>
+        <button
+          onClick={() => setInteractiveMode((m) => !m)}
+          style={{
+            padding: "8px 16px",
+            backgroundColor: interactiveMode ? "#28a745" : "#6c757d",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            marginRight: "8px",
+            cursor: "pointer",
+          }}
+        >
+          {interactiveMode ? "交互模式" : "正常模式"}
+        </button>
+        <button
+          onClick={flipCamera}
+          style={{
+            padding: "8px 16px",
+            backgroundColor: "#007bff",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+          }}
+        >
+          翻转相机
+        </button>
+      </div>
       <Canvas camera={{ position: [3.5, 3.5, 3.5], fov: 50 }}>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={0.8} />
@@ -110,6 +137,7 @@ const Cube3D = forwardRef(function Cube3D(
             cubies={animatedCubies}
             getCubieMaterials={getCubieMaterials}
             prefix="animated"
+            interactiveMode={interactiveMode}
           />
         </animated.group>
         <group>
@@ -118,6 +146,7 @@ const Cube3D = forwardRef(function Cube3D(
             cubies={staticCubies}
             getCubieMaterials={getCubieMaterials}
             prefix="static"
+            interactiveMode={interactiveMode}
           />
         </group>
         <OrbitControls

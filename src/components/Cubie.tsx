@@ -1,27 +1,35 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import * as THREE from "three";
+import type { CubieKind, FaceColor } from "../utils/cubeTypes";
 
 export type CubieProps = {
   position: [number, number, number];
   orientation?: [number, number, number];
   materials: THREE.Material[];
+  interactiveMode?: boolean;
+  cubieType?: CubieKind;
+  stickers?: Partial<Record<FaceColor, string>>;
 };
 
 export const Cubie = React.memo(
-  ({ position, orientation = [0, 0, 0], materials }: CubieProps) => {
+  ({
+    position,
+    orientation = [0, 0, 0],
+    materials,
+    cubieType,
+  }: CubieProps) => {
     const meshRef = useRef<THREE.Mesh>(null);
-    useEffect(() => {
-      // 可选：处理 meshRef 相关逻辑
-    }, [position, orientation]);
+    let typeText = "";
+    if (cubieType === "corner") typeText = "角块";
+    else if (cubieType === "edge") typeText = "棱块";
+    else if (cubieType === "center") typeText = "中块";
+
     return (
-      <mesh
-        ref={meshRef}
-        position={position}
-        rotation={orientation}
-        material={materials}
-      >
-        <boxGeometry args={[0.95, 0.95, 0.95]} />
-      </mesh>
+      <group position={position} rotation={orientation}>
+        <mesh ref={meshRef} material={materials}>
+          <boxGeometry args={[0.95, 0.95, 0.95]} />
+        </mesh>
+      </group>
     );
   }
 );
