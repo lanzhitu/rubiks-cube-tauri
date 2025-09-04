@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SOLVING_STAGES } from "../constants/solvingStage";
 
 interface ControlPanelProps {
   isAnimating: boolean;
@@ -57,7 +58,10 @@ export function ControlPanel({
       <div className="control-content">
         {activeTab === "basic" && (
           <div className="basic-controls">
-            <div className="stage-info">阶段 {currentStageIndex + 1}</div>
+            <div className="stage-info">
+              阶段 {currentStageIndex + 1}:{" "}
+              {SOLVING_STAGES[currentStageIndex]?.name || "未知阶段"}
+            </div>
             <button
               onClick={randomize}
               disabled={isAnimating}
