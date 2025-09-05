@@ -15,6 +15,7 @@ import type { CubieType } from "../utils/cubeTypes";
 
 import { CubieList } from "./CubieList";
 import InfoPanelOverlay from "./InfoPanelOverlay";
+import theme from "../styles/theme";
 
 const Cube3D = forwardRef(function Cube3D(
   { animationSpeed = 1 }: { animationSpeed?: number },
@@ -113,12 +114,16 @@ const Cube3D = forwardRef(function Cube3D(
           onClick={() => setInteractiveMode((m) => !m)}
           style={{
             padding: "8px 16px",
-            backgroundColor: interactiveMode ? "#28a745" : "#6c757d",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            marginRight: "8px",
+            backgroundColor: interactiveMode ? theme.primary : theme.surface,
+            color: theme.textPrimary,
+            border: `1px solid ${theme.border}`,
+            borderRadius: "6px",
+            marginRight: "10px",
             cursor: "pointer",
+            fontWeight: 500,
+            fontSize: 15,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.10)",
+            transition: "background 0.2s, color 0.2s",
           }}
         >
           {interactiveMode ? "正常模式" : "说明模式"}
@@ -127,11 +132,15 @@ const Cube3D = forwardRef(function Cube3D(
           onClick={flipCamera}
           style={{
             padding: "8px 16px",
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
+            backgroundColor: theme.accent,
+            color: theme.background,
+            border: `1px solid ${theme.border}`,
+            borderRadius: "6px",
             cursor: "pointer",
+            fontWeight: 500,
+            fontSize: 15,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.10)",
+            transition: "background 0.2s, color 0.2s",
           }}
         >
           翻转相机

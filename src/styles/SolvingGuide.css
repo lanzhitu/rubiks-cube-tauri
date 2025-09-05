@@ -1,239 +1,25 @@
 .solving-guide {
-  padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-  color: #fff;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  height: 100vh;
 }
-
-.progress-section {
-  margin-bottom: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 15px;
-  border-radius: 8px;
-}
-
-.progress-section h3 {
-  margin: 0 0 10px;
-  color: #fff;
-}
-
-.progress-bar {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-  height: 8px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  background: linear-gradient(90deg, #4CAF50, #8BC34A);
-  height: 100%;
-  border-radius: 10px;
-  transition: width 0.3s ease;
-}
-
-.step-counter {
-  font-size: 14px;
-  color: #e0e0e0;
-  margin-top: 5px;
-}
-
-.stage-info {
-  margin-bottom: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 15px;
-  border-radius: 8px;
-}
-
-.stage-info h4 {
-  margin: 0 0 10px;
-  color: #fff;
-  font-size: 1.2em;
-}
-
-.stage-info p {
-  color: #e0e0e0;
-  line-height: 1.5;
-  margin: 0;
-}
-
-.hints {
-  margin-bottom: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 15px;
-  border-radius: 8px;
-}
-
-.hints h4 {
-  margin: 0 0 10px;
-  color: #fff;
-}
-
-.hints ul {
-  margin: 0;
-  padding-left: 20px;
-}
-
-.hints li {
-  color: #e0e0e0;
-  margin-bottom: 5px;
-  line-height: 1.4;
-}
-
+.progress-section,
+.stage-info,
+.hints,
 .algorithms {
-  margin-bottom: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 15px;
-  border-radius: 8px;
+  margin-bottom: 16px;
 }
-
-.algorithms h4 {
-  margin: 0 0 10px;
-  color: #fff;
+.progress-bar {
+  width: 100%;
+  height: 10px;
 }
-
-.algorithms ul {
-  margin: 0;
-  padding-left: 20px;
+.progress-fill {
+  height: 100%;
+  transition: width 0.3s;
 }
-
-.algorithms li {
-  color: #e0e0e0;
-  margin-bottom: 5px;
-  font-family: 'Courier New', monospace;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 5px;
-  border-radius: 4px;
-}
-
 .controls {
   position: sticky;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-  border-radius: 12px 12px 0 0;
-  padding: 20px;
-  margin: -20px -20px 0;
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
-}
-
-.algorithm-btn {
-  width: 100%;
-  padding: 15px;
-  border: none;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-}
-
-.algorithm-btn:hover:not(:disabled) {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 25px rgba(0,0,0,0.4);
-}
-
-.algorithm-btn:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-  opacity: 0.7;
-  transform: none;
-  box-shadow: none;
-}
-
-.solving-guide h3 {
-  color: #fff;
-  margin-bottom: 10px;
-  font-size: 1.2em;
-}
-
-.solving-guide h4 {
-  color: #fff;
-  margin: 15px 0;
-  font-size: 1.1em;
-}
-
-.solving-guide h5 {
-  color: #fff;
-  margin: 10px 0;
-  font-size: 1em;
-}
-
-.solving-guide p {
-  color: #e0e0e0;
-  line-height: 1.5;
-  margin: 8px 0;
-}
-
-.progress-section {
-    margin-bottom: 20px;
-}
-
-.progress-bar {
-    width: 100%;
-    height: 8px;
-    background: #eee;
-    border-radius: 4px;
-    overflow: hidden;
-    margin: 10px 0;
-}
-
-.progress-fill {
-    height: 100%;
-    background: #4CAF50;
-    transition: width 0.3s ease;
-}
-
-.current-stage {
-    border-left: 4px solid #2196F3;
-    padding-left: 15px;
-    margin-bottom: 20px;
-}
-
-.current-step {
-    background: #f5f5f5;
-    padding: 15px;
-    border-radius: 4px;
-}
-
-.algorithm {
-    margin: 15px 0;
-}
-
-.algorithm-btn {
-    background: #2196F3;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-family: monospace;
-    font-size: 14px;
-}
-
-.algorithm-btn:hover {
-    background: #1976D2;
-}
-
-.hints {
-    background: #E3F2FD;
-    padding: 15px;
-    border-radius: 4px;
-}
-
-.hints ul {
-    margin: 0;
-    padding-left: 20px;
-}
-
-.hints li {
-    margin: 5px 0;
-    color: #1565C0;
+  padding: 20px 0 0 0;
 }

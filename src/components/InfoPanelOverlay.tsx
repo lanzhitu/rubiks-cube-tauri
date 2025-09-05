@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import theme from "../styles/theme";
 
 // CubeInfoPanel 组件内容合并
 const CubeInfoPanel: React.FC = () => {
@@ -9,8 +10,9 @@ const CubeInfoPanel: React.FC = () => {
         minWidth: 220,
         maxWidth: 320,
         height: "100%",
-        color: "#fff",
+        color: theme.textPrimary,
         fontFamily: "system-ui, sans-serif",
+        background: theme.surface,
         padding: "32px 24px",
         boxSizing: "border-box",
         display: "flex",
@@ -18,6 +20,8 @@ const CubeInfoPanel: React.FC = () => {
         justifyContent: "center",
         alignItems: "center",
         textAlign: "center",
+        borderRadius: 12,
+        boxShadow: `0 2px 16px ${theme.border}`,
       }}
     >
       <div
@@ -35,10 +39,10 @@ const CubeInfoPanel: React.FC = () => {
           style={{
             width: 20,
             height: 20,
-            background: "#ff00ff",
+            background: theme.primary,
             borderRadius: "50%",
             marginRight: 12,
-            border: "2px solid #fff",
+            border: `2px solid ${theme.textPrimary}`,
             display: "inline-block",
           }}
         />
@@ -49,10 +53,10 @@ const CubeInfoPanel: React.FC = () => {
           style={{
             width: 20,
             height: 20,
-            background: "#00ffff",
+            background: theme.accent,
             borderRadius: "50%",
             marginRight: 12,
-            border: "2px solid #fff",
+            border: `2px solid ${theme.textPrimary}`,
             display: "inline-block",
           }}
         />
@@ -63,10 +67,10 @@ const CubeInfoPanel: React.FC = () => {
           style={{
             width: 20,
             height: 20,
-            background: "#ffff00",
+            background: "#FFD600", // 主题可加 yellow
             borderRadius: "50%",
             marginRight: 12,
-            border: "2px solid #fff",
+            border: `2px solid ${theme.textPrimary}`,
             display: "inline-block",
           }}
         />
@@ -75,7 +79,7 @@ const CubeInfoPanel: React.FC = () => {
       <div
         style={{
           margin: "18px 0 8px 0",
-          borderTop: "1px solid #444",
+          borderTop: `1px solid ${theme.border}`,
           paddingTop: 12,
         }}
       >
@@ -83,10 +87,15 @@ const CubeInfoPanel: React.FC = () => {
           旋转方向说明
         </div>
         <table
-          style={{ width: "100%", fontSize: 14, borderCollapse: "collapse" }}
+          style={{
+            width: "100%",
+            fontSize: 14,
+            borderCollapse: "collapse",
+            color: theme.textPrimary,
+          }}
         >
           <thead>
-            <tr style={{ color: "#aaa" }}>
+            <tr style={{ color: theme.textSecondary }}>
               <th style={{ textAlign: "left", paddingBottom: 4 }}>面</th>
               <th style={{ textAlign: "center", paddingBottom: 4 }}>顺时针</th>
               <th style={{ textAlign: "center", paddingBottom: 4 }}>逆时针</th>
@@ -94,9 +103,9 @@ const CubeInfoPanel: React.FC = () => {
           </thead>
           <tbody>
             {[
-              { face: "R", name: "右", color: "#f44336" },
-              { face: "U", name: "上", color: "#2196f3" },
-              { face: "F", name: "前", color: "#4caf50" },
+              { face: "R", name: "右", color: "#00B7FF" },
+              { face: "U", name: "上", color: "#00FFD0" },
+              { face: "F", name: "前", color: "#FFD600" },
             ].map(({ face, name, color }) => (
               <tr key={face}>
                 <td style={{ color, fontWeight: 600 }}>
@@ -112,17 +121,17 @@ const CubeInfoPanel: React.FC = () => {
                       cx="12"
                       cy="12"
                       r="9"
-                      stroke="#28a745"
+                      stroke={theme.primary}
                       strokeWidth="2"
                       fill="none"
                     />
                     <path
                       d="M12 5 A7 7 0 0 1 19 12"
-                      stroke="#28a745"
+                      stroke={theme.primary}
                       strokeWidth="2"
                       fill="none"
                     />
-                    <polygon points="19,12 16,11 17,14" fill="#28a745" />
+                    <polygon points="19,12 16,11 17,14" fill={theme.primary} />
                   </svg>
                   <span style={{ marginLeft: 4 }}>R</span>
                 </td>
@@ -136,17 +145,17 @@ const CubeInfoPanel: React.FC = () => {
                       cx="12"
                       cy="12"
                       r="9"
-                      stroke="#ff9800"
+                      stroke={theme.accent}
                       strokeWidth="2"
                       fill="none"
                     />
                     <path
                       d="M19 12 A7 7 0 0 1 12 5"
-                      stroke="#ff9800"
+                      stroke={theme.accent}
                       strokeWidth="2"
                       fill="none"
                     />
-                    <polygon points="12,5 13,8 10,7" fill="#ff9800" />
+                    <polygon points="12,5 13,8 10,7" fill={theme.accent} />
                   </svg>
                   <span style={{ marginLeft: 4 }}>{face}'</span>
                 </td>
@@ -154,7 +163,7 @@ const CubeInfoPanel: React.FC = () => {
             ))}
           </tbody>
         </table>
-        <div style={{ marginTop: 8, fontSize: 13, color: "#aaa" }}>
+        <div style={{ marginTop: 8, fontSize: 13, color: theme.textSecondary }}>
           <span style={{ fontWeight: 600 }}>示例：</span> R = 右面顺时针，R' =
           右面逆时针
         </div>
@@ -162,6 +171,7 @@ const CubeInfoPanel: React.FC = () => {
     </div>
   );
 };
+
 const InfoPanelOverlay: React.FC = () => {
   const [showInfo, setShowInfo] = useState(false);
   return (
@@ -174,13 +184,13 @@ const InfoPanelOverlay: React.FC = () => {
           top: 24,
           right: 0,
           zIndex: 1100,
-          background: showInfo ? "#28a745" : "#444",
-          color: "#fff",
+          background: showInfo ? theme.primary : theme.surface,
+          color: theme.textPrimary,
           border: "none",
           borderRadius: "50%",
           width: 48,
           height: 48,
-          boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
+          boxShadow: `0 2px 8px ${theme.border}`,
           cursor: "pointer",
           fontSize: 22,
           fontWeight: 700,
@@ -198,10 +208,10 @@ const InfoPanelOverlay: React.FC = () => {
             top: 80,
             right: 0,
             zIndex: 1099,
-            background: "rgba(40,40,40,0.85)",
+            background: "rgba(35,38,47,0.92)", // theme.surface + 透明
             borderRadius: 16,
-            boxShadow: "0 8px 32px rgba(0,0,0,0.22)",
-            color: "#fff",
+            boxShadow: `0 8px 32px ${theme.border}`,
+            color: theme.textPrimary,
             padding: "28px 22px",
             minWidth: 240,
             maxWidth: 360,
