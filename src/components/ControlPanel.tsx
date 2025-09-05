@@ -88,7 +88,7 @@ export function ControlPanel({
               disabled={isAnimating}
               className="control-btn"
             >
-              执行
+              分阶执行
             </button>
             <button
               onClick={solveCurrentStageStep}

@@ -16,6 +16,8 @@ const CubeInfoPanel: React.FC = () => {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
+        alignItems: "center",
+        textAlign: "center",
       }}
     >
       <div
@@ -170,7 +172,7 @@ const InfoPanelOverlay: React.FC = () => {
         style={{
           position: "absolute",
           top: 24,
-          right: 32,
+          right: 0,
           zIndex: 1100,
           background: showInfo ? "#28a745" : "#444",
           color: "#fff",
@@ -194,8 +196,7 @@ const InfoPanelOverlay: React.FC = () => {
           style={{
             position: "absolute",
             top: 80,
-            left: "50%",
-            transform: "translateX(-50%)",
+            right: 0,
             zIndex: 1099,
             background: "rgba(40,40,40,0.85)",
             borderRadius: 16,
@@ -207,10 +208,13 @@ const InfoPanelOverlay: React.FC = () => {
             fontFamily: "system-ui, sans-serif",
             pointerEvents: "auto",
             backdropFilter: "blur(4px)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-end",
           }}
         >
           {/* 只渲染内容，不再设置额外背景 */}
-          <div style={{ background: "none" }}>
+          <div style={{ background: "none", width: "100%" }}>
             <CubeInfoPanel />
           </div>
         </div>

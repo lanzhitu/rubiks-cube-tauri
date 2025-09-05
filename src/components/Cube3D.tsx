@@ -121,7 +121,7 @@ const Cube3D = forwardRef(function Cube3D(
             cursor: "pointer",
           }}
         >
-          {interactiveMode ? "正常模式" : "交互模式"}
+          {interactiveMode ? "正常模式" : "说明模式"}
         </button>
         <button
           onClick={flipCamera}
