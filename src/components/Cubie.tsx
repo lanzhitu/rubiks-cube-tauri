@@ -12,17 +12,8 @@ export type CubieProps = {
 };
 
 export const Cubie = React.memo(
-  ({
-    position,
-    orientation = [0, 0, 0],
-    materials,
-    cubieType,
-  }: CubieProps) => {
+  ({ position, orientation = [0, 0, 0], materials }: CubieProps) => {
     const meshRef = useRef<THREE.Mesh>(null);
-    let typeText = "";
-    if (cubieType === "corner") typeText = "角块";
-    else if (cubieType === "edge") typeText = "棱块";
-    else if (cubieType === "center") typeText = "中块";
 
     return (
       <group position={position} rotation={orientation}>
