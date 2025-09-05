@@ -14,87 +14,13 @@ import { useCubeAnimation } from "../hooks/useCubeAnimation";
 import type { CubieType } from "../utils/cubeTypes";
 
 import { CubieList } from "./CubieList";
-
-// 魔方方块说明面板组件
-function CubeInfoPanel() {
-  return (
-    <div
-      style={{
-        position: "absolute",
-        right: 8,
-        top: 8,
-        zIndex: 1002,
-        background: "#222",
-        borderRadius: 10,
-        boxShadow: "0 4px 16px rgba(0,0,0,0.25)",
-        padding: "22px 8px",
-        minWidth: 170,
-        color: "#fff",
-        fontFamily: "system-ui, sans-serif",
-      }}
-    >
-      <div
-        style={{
-          fontWeight: 700,
-          fontSize: 17,
-          marginBottom: 16,
-          letterSpacing: 1,
-          color: "#fff",
-        }}
-      >
-        魔方方块说明
-      </div>
-      <div style={{ display: "flex", alignItems: "center", marginBottom: 18 }}>
-        <span
-          style={{
-            width: 20,
-            height: 20,
-            background: "#ff00ff",
-            borderRadius: "50%",
-            marginRight: 12,
-            border: "2px solid #fff",
-            display: "inline-block",
-          }}
-        />
-        <span style={{ fontWeight: 500, fontSize: 15 }}>角块：3色贴纸</span>
-      </div>
-      <div style={{ display: "flex", alignItems: "center", marginBottom: 18 }}>
-        <span
-          style={{
-            width: 20,
-            height: 20,
-            background: "#00ffff",
-            borderRadius: "50%",
-            marginRight: 12,
-            border: "2px solid #fff",
-            display: "inline-block",
-          }}
-        />
-        <span style={{ fontWeight: 500, fontSize: 15 }}>棱块：2色贴纸</span>
-      </div>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <span
-          style={{
-            width: 20,
-            height: 20,
-            background: "#ffff00",
-            borderRadius: "50%",
-            marginRight: 12,
-            border: "2px solid #fff",
-            display: "inline-block",
-          }}
-        />
-        <span style={{ fontWeight: 500, fontSize: 15 }}>中心块：1色贴纸</span>
-      </div>
-    </div>
-  );
-}
+import InfoPanelOverlay from "./InfoPanelOverlay";
 
 const Cube3D = forwardRef(function Cube3D(
   { animationSpeed = 1 }: { animationSpeed?: number },
   ref
 ) {
-  const [interactiveMode, setInteractiveMode] = React.useState(true);
+  const [interactiveMode, setInteractiveMode] = React.useState(false);
   // 使用自定义 Hook 管理动画和 Cubie 状态
   const {
     cubies,
@@ -195,7 +121,7 @@ const Cube3D = forwardRef(function Cube3D(
             cursor: "pointer",
           }}
         >
-          {interactiveMode ? "交互模式" : "正常模式"}
+          {interactiveMode ? "正常模式" : "交互模式"}
         </button>
         <button
           onClick={flipCamera}
@@ -211,6 +137,8 @@ const Cube3D = forwardRef(function Cube3D(
           翻转相机
         </button>
       </div>
+      {/* 信息弹窗及按钮 */}
+      {interactiveMode && <InfoPanelOverlay />}
       <Canvas camera={{ position: [3.5, 3.5, 3.5], fov: 50 }}>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={0.8} />
@@ -241,8 +169,6 @@ const Cube3D = forwardRef(function Cube3D(
           dampingFactor={0.1}
         />
       </Canvas>
-      {/* 交互模式下显示说明面板 */}
-      {interactiveMode && <CubeInfoPanel />}
     </div>
   );
 });
