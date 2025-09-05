@@ -99,14 +99,15 @@ export function ControlPanel({
                 border: `1px solid ${theme.border}`,
                 borderRadius: 8,
                 padding: "10px 0",
-                fontWeight: 600,
-                fontSize: 15,
+                fontWeight: 700,
+                fontSize: 16,
                 marginBottom: 10,
                 width: "100%",
                 cursor: isAnimating ? "not-allowed" : "pointer",
                 opacity: isAnimating ? 0.5 : 1,
-                boxShadow: `0 2px 8px ${theme.border}`,
+                boxShadow: `0 2px 12px ${theme.primary}44`,
                 transition: "background 0.2s, color 0.2s, opacity 0.2s",
+                letterSpacing: 1,
               }}
             >
               打乱
@@ -116,8 +117,8 @@ export function ControlPanel({
               disabled={isAnimating}
               className="control-btn"
               style={{
-                background: theme.accent,
-                color: theme.background,
+                background: theme.surface,
+                color: theme.textPrimary,
                 border: `1px solid ${theme.border}`,
                 borderRadius: 8,
                 padding: "10px 0",
@@ -138,9 +139,9 @@ export function ControlPanel({
               disabled={isAnimating}
               className="control-btn primary"
               style={{
-                background: theme.primary,
-                color: theme.background,
-                border: `1px solid ${theme.border}`,
+                background: theme.surface,
+                color: theme.primary,
+                border: `1px solid ${theme.primary}`,
                 borderRadius: 8,
                 padding: "10px 0",
                 fontWeight: 600,
@@ -149,7 +150,7 @@ export function ControlPanel({
                 width: "100%",
                 cursor: isAnimating ? "not-allowed" : "pointer",
                 opacity: isAnimating ? 0.5 : 1,
-                boxShadow: `0 2px 8px ${theme.border}`,
+                boxShadow: `0 2px 8px ${theme.primary}44`,
                 transition: "background 0.2s, color 0.2s, opacity 0.2s",
               }}
             >
@@ -160,19 +161,20 @@ export function ControlPanel({
               disabled={isAnimating}
               className="control-btn"
               style={{
-                background: theme.surface,
-                color: theme.textPrimary,
-                border: `1px solid ${theme.border}`,
+                background: theme.accent,
+                color: theme.background,
+                border: `1px solid ${theme.accent}`,
                 borderRadius: 8,
                 padding: "10px 0",
-                fontWeight: 600,
-                fontSize: 15,
+                fontWeight: 700,
+                fontSize: 16,
                 marginBottom: 10,
                 width: "100%",
                 cursor: isAnimating ? "not-allowed" : "pointer",
                 opacity: isAnimating ? 0.5 : 1,
-                boxShadow: `0 2px 8px ${theme.border}`,
+                boxShadow: `0 2px 12px ${theme.accent}44`,
                 transition: "background 0.2s, color 0.2s, opacity 0.2s",
+                letterSpacing: 1,
               }}
             >
               分阶执行
@@ -182,18 +184,19 @@ export function ControlPanel({
               disabled={isAnimating}
               className="control-btn"
               style={{
-                background: theme.surface,
-                color: theme.textPrimary,
-                border: `1px solid ${theme.border}`,
+                background: theme.primary,
+                color: theme.background,
+                border: `1px solid ${theme.primary}`,
                 borderRadius: 8,
                 padding: "10px 0",
-                fontWeight: 600,
-                fontSize: 15,
+                fontWeight: 700,
+                fontSize: 16,
                 width: "100%",
                 cursor: isAnimating ? "not-allowed" : "pointer",
                 opacity: isAnimating ? 0.5 : 1,
-                boxShadow: `0 2px 8px ${theme.border}`,
+                boxShadow: `0 2px 12px ${theme.primary}44`,
                 transition: "background 0.2s, color 0.2s, opacity 0.2s",
+                letterSpacing: 1,
               }}
             >
               单步执行
