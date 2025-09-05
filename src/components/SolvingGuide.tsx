@@ -114,7 +114,13 @@ export function SolvingGuide({
           >
             {stageName}
           </h4>
-          <p style={{ color: theme.textSecondary, fontSize: 15 }}>
+          <p
+            style={{
+              color: theme.textSecondary,
+              fontSize: 15,
+              textAlign: "left",
+            }}
+          >
             {stageDescription}
           </p>
         </div>
@@ -147,6 +153,7 @@ export function SolvingGuide({
                   color: theme.textSecondary,
                   fontSize: 15,
                   marginBottom: 4,
+                  textAlign: "left",
                 }}
               >
                 {hint}
