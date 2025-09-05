@@ -12,7 +12,83 @@ import {
 import { getCubeStateFromCubies } from "../utils/cubeUtils";
 import { useCubeAnimation } from "../hooks/useCubeAnimation";
 import type { CubieType } from "../utils/cubeTypes";
+
 import { CubieList } from "./CubieList";
+
+// 魔方方块说明面板组件
+function CubeInfoPanel() {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        right: 8,
+        top: 8,
+        zIndex: 1002,
+        background: "#222",
+        borderRadius: 10,
+        boxShadow: "0 4px 16px rgba(0,0,0,0.25)",
+        padding: "22px 8px",
+        minWidth: 170,
+        color: "#fff",
+        fontFamily: "system-ui, sans-serif",
+      }}
+    >
+      <div
+        style={{
+          fontWeight: 700,
+          fontSize: 17,
+          marginBottom: 16,
+          letterSpacing: 1,
+          color: "#fff",
+        }}
+      >
+        魔方方块说明
+      </div>
+      <div style={{ display: "flex", alignItems: "center", marginBottom: 18 }}>
+        <span
+          style={{
+            width: 20,
+            height: 20,
+            background: "#ff00ff",
+            borderRadius: "50%",
+            marginRight: 12,
+            border: "2px solid #fff",
+            display: "inline-block",
+          }}
+        />
+        <span style={{ fontWeight: 500, fontSize: 15 }}>角块：3色贴纸</span>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", marginBottom: 18 }}>
+        <span
+          style={{
+            width: 20,
+            height: 20,
+            background: "#00ffff",
+            borderRadius: "50%",
+            marginRight: 12,
+            border: "2px solid #fff",
+            display: "inline-block",
+          }}
+        />
+        <span style={{ fontWeight: 500, fontSize: 15 }}>棱块：2色贴纸</span>
+      </div>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <span
+          style={{
+            width: 20,
+            height: 20,
+            background: "#ffff00",
+            borderRadius: "50%",
+            marginRight: 12,
+            border: "2px solid #fff",
+            display: "inline-block",
+          }}
+        />
+        <span style={{ fontWeight: 500, fontSize: 15 }}>中心块：1色贴纸</span>
+      </div>
+    </div>
+  );
+}
 
 const Cube3D = forwardRef(function Cube3D(
   { animationSpeed = 1 }: { animationSpeed?: number },
@@ -98,7 +174,14 @@ const Cube3D = forwardRef(function Cube3D(
   }));
 
   return (
-    <div style={{ width: "100%", height: "100%", touchAction: "none" }}>
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        touchAction: "none",
+        position: "relative",
+      }}
+    >
       <div style={{ position: "absolute", top: 10, left: 10, zIndex: 1001 }}>
         <button
           onClick={() => setInteractiveMode((m) => !m)}
@@ -158,6 +241,8 @@ const Cube3D = forwardRef(function Cube3D(
           dampingFactor={0.1}
         />
       </Canvas>
+      {/* 交互模式下显示说明面板 */}
+      {interactiveMode && <CubeInfoPanel />}
     </div>
   );
 });
