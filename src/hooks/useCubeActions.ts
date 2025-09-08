@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import { SOLVED_STATE } from "../utils/cubeUtils";
 import type { CubeState } from "../types/cube";
 import {
-    getCubeState as getBackendCubeState,
     rotateCube,
     resetCube,
     getCubeSolution,
@@ -13,9 +12,6 @@ export function useCubeActions({
     cube3DRef,
     solvingManager,
     setIsAnimating,
-    setCubeState,
-    setBackendState,
-    setSyncResult,
     setCurrentProgress,
     setCurrentHints,
     animationSpeed,
@@ -24,9 +20,6 @@ export function useCubeActions({
     cube3DRef: React.RefObject<any>;
     solvingManager: React.RefObject<any>;
     setIsAnimating: (v: boolean) => void;
-    setCubeState: (v: string) => void;
-    setBackendState: (v: string) => void;
-    setSyncResult: (v: string) => void;
     setCurrentProgress: (v: number) => void;
     setCurrentHints: (v: string[]) => void;
     animationSpeed: number;
@@ -61,10 +54,6 @@ export function useCubeActions({
     const syncAndUpdate = useCallback(async () => {
         if (!cube3DRef.current || !cube3DRef.current.getCubeState) return;
         const frontendState = cube3DRef.current.getCubeState();
-        const backend = await getBackendCubeState();
-        setCubeState(frontendState);
-        setBackendState(backend);
-        setSyncResult(frontendState === backend ? "match" : "mismatch");
         const cubeStateObj: CubeState = {
             raw: frontendState,
             isSolved: frontendState === SOLVED_STATE,
@@ -72,7 +61,7 @@ export function useCubeActions({
         solvingManager.current.updateProgress(cubeStateObj);
         setCurrentProgress(solvingManager.current.getProgress());
         setCurrentHints(solvingManager.current.getCurrentHints());
-    }, [cube3DRef, solvingManager, setCubeState, setBackendState, setSyncResult, setCurrentProgress, setCurrentHints]);
+    }, [cube3DRef, solvingManager, setCurrentProgress, setCurrentHints]);
 
     // 分步动画执行
     const executeMove = useCallback(async (move: string) => {

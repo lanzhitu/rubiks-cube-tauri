@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import { DebugPanel } from "./components/DebugPanel";
 import { ControlPanel } from "./components/ControlPanel";
 import { useCubeActions } from "./hooks/useCubeActions";
 import Cube3D from "./components/Cube3D";
@@ -16,15 +15,11 @@ function App() {
 
   const [isAnimating, setIsAnimating] = useState(false);
   const [animationSpeed, setAnimationSpeed] = useState(1);
-  const [cubeState, setCubeState] = useState("");
-  const [backendState, setBackendState] = useState("");
-  const [syncResult, setSyncResult] = useState<string>("");
   const [currentProgress, setCurrentProgress] = useState(0);
   const [currentHints, setCurrentHints] = useState<string[]>([]);
 
   const {
     handleMoves,
-    syncAndUpdate,
     solveFullWithAnimation,
     randomize,
     reset,
@@ -36,9 +31,6 @@ function App() {
     cube3DRef,
     solvingManager,
     setIsAnimating,
-    setCubeState,
-    setBackendState,
-    setSyncResult,
     setCurrentProgress,
     setCurrentHints,
     animationSpeed,
@@ -64,13 +56,6 @@ function App() {
       })()}
       <div className="cube-container">
         <Cube3D ref={cube3DRef} animationSpeed={animationSpeed} />
-        <DebugPanel
-          cubeState={cubeState}
-          backendState={backendState}
-          syncResult={syncResult}
-          onSync={syncAndUpdate}
-          isAnimating={isAnimating}
-        />
       </div>
       <ControlPanel
         isAnimating={isAnimating}
