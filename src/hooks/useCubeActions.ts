@@ -258,7 +258,7 @@ export function useCubeActions({
                 raw: cube3DRef.current.getCubeState(),
                 isSolved: false
             });
-            if (guideInfo.currentStep > currentStageIndex) {
+            if (guideInfo.currentStage > currentStageIndex) {
                 setMoveIndex(0);
                 setCurrentStageIndex(currentStageIndex + 1);
             }
@@ -282,7 +282,7 @@ export function useCubeActions({
                 setIsAnimating(false);
                 return;
             }
-            let allMoves: string[] = [];
+            let allMoves = fullSolution.flat();
 
             // 确保解法已加载
             if (fullSolution.length === 0) {
@@ -291,9 +291,7 @@ export function useCubeActions({
                 setCurrentStageIndex(0);
                 setMoveIndex(0);
                 allMoves = processedSolution.flat();
-            } else {
-                allMoves = fullSolution.flat();
-            }
+            } 
 
             if (allMoves.length === 0) {
                 console.error("解法步骤为空，无法执行");
