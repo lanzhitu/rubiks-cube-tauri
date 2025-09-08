@@ -249,7 +249,6 @@ export function useCubeActions({
         solvingManager: React.RefObject<any>,
         cube3DRef: React.RefObject<any>,
         currentStageIndex: number,
-        setMoveIndex: (index: number) => void,
         setCurrentStageIndex: (index: number) => void
     ) => {
         await executeMove(move);
@@ -259,7 +258,6 @@ export function useCubeActions({
                 isSolved: false
             });
             if (guideInfo.currentStage > currentStageIndex) {
-                setMoveIndex(0);
                 setCurrentStageIndex(currentStageIndex + 1);
             }
         }
@@ -291,7 +289,7 @@ export function useCubeActions({
                 setCurrentStageIndex(0);
                 setMoveIndex(0);
                 allMoves = processedSolution.flat();
-            } 
+            }
 
             if (allMoves.length === 0) {
                 console.error("解法步骤为空，无法执行");
@@ -311,7 +309,6 @@ export function useCubeActions({
                 cube3DRef,
                 currentStageIndex,
                 setMoveIndex,
-                setCurrentStageIndex
             );
             setMoveIndex(moveIndex + 1);
         } catch (error) {
