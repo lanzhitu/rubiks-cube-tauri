@@ -75,11 +75,11 @@ const Cube3D = forwardRef(function Cube3D(
     // 交互模式下直接覆盖贴纸色为高亮色
     let highlightColor = null;
     if (cubie.type === "corner") {
-      highlightColor = "#ff00ff";
+      highlightColor = theme.highlightCorner || theme.accent;
     } else if (cubie.type === "edge") {
-      highlightColor = "#00ffff";
+      highlightColor = theme.highlightEdge || theme.primary;
     } else if (cubie.type === "center") {
-      highlightColor = "#ffff00";
+      highlightColor = theme.highlightCenter || "#FFD600";
     }
     if (highlightColor) {
       return Array(6).fill(

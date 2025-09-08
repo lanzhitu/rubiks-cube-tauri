@@ -16,7 +16,7 @@ export function CubieList({
     <>
       {cubies.map((cubie) => (
         <Cubie
-          key={cubie.id}
+          key={`${prefix}-${cubie.id}`}
           position={cubie.position}
           orientation={cubie.orientation}
           materials={getCubieMaterials(cubie)}

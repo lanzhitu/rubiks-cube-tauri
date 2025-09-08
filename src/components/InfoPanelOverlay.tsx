@@ -39,7 +39,7 @@ const CubeInfoPanel: React.FC = () => {
           style={{
             width: 20,
             height: 20,
-            background: theme.primary,
+            background: theme.highlightCorner,
             borderRadius: "50%",
             marginRight: 12,
             border: `2px solid ${theme.textPrimary}`,
@@ -53,7 +53,7 @@ const CubeInfoPanel: React.FC = () => {
           style={{
             width: 20,
             height: 20,
-            background: theme.accent,
+            background: theme.highlightEdge,
             borderRadius: "50%",
             marginRight: 12,
             border: `2px solid ${theme.textPrimary}`,
@@ -67,7 +67,7 @@ const CubeInfoPanel: React.FC = () => {
           style={{
             width: 20,
             height: 20,
-            background: "#FFD600", // 主题可加 yellow
+            background: theme.highlightCenter,
             borderRadius: "50%",
             marginRight: 12,
             border: `2px solid ${theme.textPrimary}`,
