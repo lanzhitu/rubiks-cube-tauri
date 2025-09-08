@@ -151,7 +151,10 @@ const Cube3D = forwardRef(function Cube3D(
       <Canvas camera={{ position: [3.5, 3.5, 3.5], fov: 50 }}>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={0.8} />
-        <animated.group rotation={springs.rotation as any}>
+        <animated.group
+          rotation={springs.rotation as any}
+          scale={[0.7, 0.7, 0.7]}
+        >
           {/* 动画组调试 */}
           <CubieList
             cubies={animatedCubies}
@@ -160,7 +163,7 @@ const Cube3D = forwardRef(function Cube3D(
             interactiveMode={interactiveMode}
           />
         </animated.group>
-        <group>
+        <group scale={[0.7, 0.7, 0.7]}>
           {/* 静态组调试 */}
           <CubieList
             cubies={staticCubies}
