@@ -124,7 +124,7 @@ export function useCubeActions({
                         setMoveIndex(currentMoveIndex);
 
                         const nextStageIndex = currentStageIndex + 1;
-                        if (nextStageIndex < fullSolution.length) {
+                        if (nextStageIndex < guideInfo.totalStages) {
                             setCurrentStageIndex(nextStageIndex);
                             console.log(`阶段 ${currentStageIndex} 完成，等待用户开始阶段 ${nextStageIndex}`);
                         } else {
