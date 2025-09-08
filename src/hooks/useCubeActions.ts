@@ -167,19 +167,6 @@ export function useCubeActions({
         solveCurrentStage();
     }, [cube3DRef, solveCurrentStage]);
 
-    const solveFullWithAnimation = useCallback(async () => {
-        if (cube3DRef.current?.isAnimating) return;
-        try {
-            const moves = await getCubeSolution();
-            if (Array.isArray(moves) && moves.length > 0) {
-                handleMoves(moves);
-            } else {
-                alert("后端未返回解法或魔方已还原");
-            }
-        } catch (e) {
-            alert("获取解法失败");
-        }
-    }, [cube3DRef, handleMoves]);
 
     const randomize = useCallback(async () => {
         if (cube3DRef.current?.isAnimating) return;
@@ -241,6 +228,49 @@ export function useCubeActions({
         }
         throw new Error("Failed to load solution");
     };
+
+    const solveFullWithAnimation = useCallback(async () => {
+        if (cube3DRef.current?.isAnimating) return;
+        setIsAnimating(true);
+        try {
+            let allMoves: string[] = [];
+            // 确保解法已加载
+            if (fullSolution.length === 0) {
+                const processedSolution = await loadAndProcessSolution(getCubeSolution, setFullSolution);
+                setCurrentStageIndex(0);
+                setMoveIndex(0);
+                allMoves = processedSolution.flat();
+            } else {
+                allMoves = fullSolution.flat();
+            }
+            if (allMoves.length === 0) {
+                alert("无可用解法");
+                setIsAnimating(false);
+                return;
+            }
+            let currentMoveIndex = 0;
+            let stageIndex = 0;
+            while (currentMoveIndex < allMoves.length) {
+                await executeMove(allMoves[currentMoveIndex]);
+                currentMoveIndex++;
+                if (solvingManager.current) {
+                    const guideInfo = solvingManager.current.updateProgress({
+                        raw: cube3DRef.current.getCubeState(),
+                        isSolved: false
+                    });
+                    if (guideInfo.currentStage > stageIndex) {
+                        stageIndex = guideInfo.currentStage;
+                        setCurrentStageIndex(stageIndex);
+                    }
+                }
+                setMoveIndex(currentMoveIndex);
+            }
+        } catch (e) {
+            alert("完整解法执行失败");
+        } finally {
+            setIsAnimating(false);
+        }
+    }, [cube3DRef, fullSolution, getCubeSolution, setIsAnimating, setCurrentStageIndex, setMoveIndex, solvingManager, loadAndProcessSolution]);
 
     // 执行单步并检查阶段完成的辅助函数
     const executeMoveAndCheckStage = async (
