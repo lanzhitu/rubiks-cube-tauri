@@ -89,7 +89,7 @@ export function SolvingGuide({
           >
             当前步骤:{" "}
             <span style={{ color: theme.primary, fontWeight: 600 }}>
-              {currentStageIndex}
+              {currentStageIndex + 1}
             </span>
           </div>
         </div>
