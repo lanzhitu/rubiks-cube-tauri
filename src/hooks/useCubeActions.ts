@@ -95,64 +95,15 @@ export function useCubeActions({
                 return;
             }
 
-            // 如果解法尚未加载，立即加载
+            let allMoves = fullSolution.flat();
+
+            // 确保解法已加载
             if (fullSolution.length === 0) {
-                // 确保在解法未加载时直接使用 processedSolution
-                const solution = await getCubeSolution();
-                if (Array.isArray(solution) && solution.length > 0) {
-                    const processedSolution = solution.map(stage =>
-                        typeof stage === 'string' ? [stage] : stage
-                    );
-                    setFullSolution(processedSolution);
-                    setCurrentStageIndex(0);
-                    setMoveIndex(0);
-
-                    // 直接在此处展开 allMoves
-                    const allMoves = processedSolution.flat();
-                    let currentMoveIndex = 0; // 重置步骤索引
-
-                    console.log('开始执行，当前阶段:', currentStageIndex, '步骤索引:', currentMoveIndex);
-
-                    while (currentMoveIndex < allMoves.length) {
-                        await executeMove(allMoves[currentMoveIndex]);
-                        currentMoveIndex++;
-
-                        if (solvingManager.current) {
-                            const guideInfo = solvingManager.current.updateProgress({
-                                raw: cube3DRef.current.getCubeState(),
-                                isSolved: false
-                            });
-
-                            console.log('阶段完成状态:', guideInfo.currentStep > currentStageIndex);
-                            if (guideInfo.currentStep > currentStageIndex) {
-                                console.log('当前阶段完成，保存进度并进入下一阶段');
-                                setMoveIndex(currentMoveIndex);
-
-                                const nextStageIndex = currentStageIndex + 1;
-                                if (nextStageIndex < processedSolution.length) {
-                                    setCurrentStageIndex(nextStageIndex);
-                                    console.log(`阶段 ${currentStageIndex} 完成，等待用户开始阶段 ${nextStageIndex}`);
-                                } else {
-                                    console.log('所有阶段已完成');
-                                }
-                                break; // 退出循环，等待用户触发下一阶段
-                            }
-                        }
-
-                        if (currentMoveIndex >= allMoves.length) {
-                            console.log('已执行所有步骤');
-                        }
-                    }
-                    return;
-                } else {
-                    console.error('未能获取解法');
-                    setIsAnimating(false);
-                    return;
-                }
+                console.log("解法未加载，正在加载...");
+                const processedSolution = await loadAndProcessSolution(getCubeSolution, setFullSolution);
+                allMoves = processedSolution.flat();
             }
 
-            // 直接使用 processedSolution 来避免状态更新的异步问题
-            const allMoves = fullSolution.flat();
             let currentMoveIndex = moveIndex;
 
             console.log('开始执行，当前阶段:', currentStageIndex, '步骤索引:', currentMoveIndex);
@@ -167,8 +118,8 @@ export function useCubeActions({
                         isSolved: false
                     });
 
-                    console.log('阶段完成状态:', guideInfo.currentStep > currentStageIndex);
-                    if (guideInfo.currentStep > currentStageIndex) {
+                    console.log('阶段完成状态:', guideInfo.currentStage > currentStageIndex);
+                    if (guideInfo.currentStage > currentStageIndex) {
                         console.log('当前阶段完成，保存进度并进入下一阶段');
                         setMoveIndex(currentMoveIndex);
 
@@ -275,7 +226,7 @@ export function useCubeActions({
         if (typeof setAnimationSpeed === "function") setAnimationSpeed(speed);
     }, [setAnimationSpeed]);
 
-    // Helper function to load and process solution
+    // 加载并处理解法的辅助函数
     const loadAndProcessSolution = async (
         getCubeSolution: () => Promise<any>,
         setFullSolution: (solution: string[][]) => void
@@ -291,7 +242,7 @@ export function useCubeActions({
         throw new Error("Failed to load solution");
     };
 
-    // Helper function to execute a move and check stage completion
+    // 执行单步并检查阶段完成的辅助函数
     const executeMoveAndCheckStage = async (
         move: string,
         executeMove: (move: string) => Promise<void>,

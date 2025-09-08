@@ -3,8 +3,8 @@ import type { CubeState, SolvingStage } from '../types/cube';
 
 export interface GuideInfo {
     progress: string[];
-    currentStep: number;
-    totalSteps: number;
+    currentStage: number;
+    totalStages: number;
     nextMove: string;
     description: string;
 }
@@ -105,8 +105,8 @@ export class SolvingManager {
 
         return {
             progress: currentStage.cubeProgress || [],
-            currentStep: this.currentStageIndex,
-            totalSteps: SOLVING_STAGES.length,
+            currentStage: this.currentStageIndex,
+            totalStages: SOLVING_STAGES.length,
             nextMove,
             description: currentStage.description
         };
