@@ -1,20 +1,13 @@
-// CubieType 类型和工厂函数
-import { STICKER_MAP } from "./cubeConstants";
+// --- 魔方 Cubie 工厂与类型工具 ---
+import { STICKER_MAP, CUBE_COLOR_LETTER, faceMap } from "./cubeConstants";
 import type { FaceColor } from "./cubeConstants";
+import type { CubieType } from "./cubeTypes";
 import * as THREE from "three";
-import {
-  CUBE_COLOR_LETTER,
-  faceMap,
-} from "./cubeConstants";
 
 // 标准还原状态
 export const SOLVED_STATE = "WWWWWWWWWOOOOOOOOOGGGGGGGGGRRRRRRRRRBBBBBBBBBYYYYYYYYY";
 
-
-import type { CubieType } from "./cubeTypes";
-
-
-// 以STICKER_MAP为唯一数据源
+// --- Cubie 工厂函数 ---
 export function getDefaultCubies(): CubieType[] {
   const cubieMap = new Map<string, CubieType>();
   for (const sticker of STICKER_MAP) {
@@ -43,7 +36,7 @@ export function getDefaultCubies(): CubieType[] {
   return Array.from(cubieMap.values());
 }
 
-// 分层筛选器
+// --- Cubie 分层筛选器 ---
 export const layerFilter = {
   U: (c: CubieType) => c.position[1] === 1,
   D: (c: CubieType) => c.position[1] === -1,
@@ -53,7 +46,7 @@ export const layerFilter = {
   L: (c: CubieType) => c.position[0] === -1,
 };
 
-
+// --- Cubie 旋转工具 ---
 export function rotatePosition(
   pos: [number, number, number],
   axis: [number, number, number],
@@ -79,6 +72,7 @@ export function rotateOrientation(
   return [newEuler.x, newEuler.y, newEuler.z];
 }
 
+// --- Cubie 动画分组 ---
 export function getAnimatedCubies(move: string | null, cubieList: CubieType[]): CubieType[] {
   if (!move) return [];
   const m = move[0].toUpperCase();
@@ -87,17 +81,11 @@ export function getAnimatedCubies(move: string | null, cubieList: CubieType[]): 
   return cubieList.filter(filterFn);
 }
 
-
-
-// 获取魔方当前物理状态字符串（前端采集，后端兼容）
-
-// orientation: 'default' | 'flipped'
+// --- 魔方状态字符串生成 ---
 export function getCubeStateFromCubies(
   cubies: CubieType[],
   orientation: 'default' | 'flipped' = 'default'
 ): string {
-  // 默认顺序: U, L, F, R, B, D
-  // flipped顺序: D, R, B, L, F, U
   const FACE_ORDER_DEFAULT = ['U', 'L', 'F', 'R', 'B', 'D'];
   const FACE_ORDER_FLIPPED = ['D', 'R', 'B', 'L', 'F', 'U'];
   const faceOrder = orientation === 'flipped' ? FACE_ORDER_FLIPPED : FACE_ORDER_DEFAULT;
@@ -153,3 +141,7 @@ export function getCubeStateFromCubies(
   }
   return mappedState;
 }
+
+// --- 动画工具聚合导出 ---
+export * from './cubeAnimationUtils';
+export * from './solvingManager';

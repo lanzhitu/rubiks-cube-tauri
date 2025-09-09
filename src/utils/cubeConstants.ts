@@ -100,3 +100,6 @@ export const faceMap: Record<string, string> = {
     B: "B", // Blue
     D: "Y", // Yellow
 };
+
+
+export * from './cubeTypes';
