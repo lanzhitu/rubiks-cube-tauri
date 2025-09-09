@@ -1,6 +1,19 @@
-# 魔方 Tauri 应用
 
-这是一个使用 Tauri 构建的魔方应用，前端采用 React/TypeScript，后端采用 Python FastAPI。
+# Rubik's Cube Tauri App
+
+
+这是一个开源的魔方桌面应用，前端采用 React/TypeScript，后端采用 Python FastAPI，桌面框架为 Tauri。
+
+后端依赖第三方开源魔方核心库：[magiccube](https://github.com/trincaog/magiccube)
+
+代码库地址：[https://github.com/lanzhitu/rubiks-cube-tauri](https://github.com/lanzhitu/rubiks-cube-tauri)
+
+欢迎 Star、Fork、Issue、PR 参与共建！
+
+
+## 主要依赖
+
+- [magiccube](https://github.com/trincaog/magiccube)：后端魔方核心算法库（第三方开源项目）
 
 ## 使用技术栈
 
@@ -13,7 +26,7 @@
 1.  **克隆仓库**:
 
     ```bash
-    git clone https://github.com/your-username/rubiks-cube-tauri.git
+    git clone https://github.com/lanzhitu/rubiks-cube-tauri.git
     cd rubiks-cube-tauri
     ```
 
@@ -132,6 +145,16 @@ npm run tauri build
    构建完成后，Windows 可执行文件在 `src-tauri/target/release`，后端 exe 会自动包含在应用包内，无需用户单独安装 Python。
 
 ---
+
+## 开源贡献说明
+
+本项目已开源，欢迎任何开发者参与：
+
+- 提交 Issue 反馈 bug 或建议
+- Fork 后提交 Pull Request
+- 代码、文档、测试、UI 优化等均欢迎贡献
+
+如有疑问或合作意向，请在 GitHub Issue 区留言。
 
 **注意事项**
 - 后端所有依赖必须在虚拟环境中安装并用虚拟环境的 Python 打包。
