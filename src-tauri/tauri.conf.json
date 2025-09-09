@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2.0.0",
-  "productName": "RubiksCube",
+  "productName": "RubiksCube by Lanzt",
   "version": "0.1.0",
-  "identifier": "com.example.rubikscube",
+  "identifier": "com.lanzt.rubikscube",
   "build": {
     "beforeBuildCommand": "npm run build",
     "beforeDevCommand": "npm run dev",
