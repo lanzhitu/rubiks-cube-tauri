@@ -1,5 +1,5 @@
 import { SOLVING_STAGES } from '../constants/solvingStage';
-import type { CubeState, SolvingStage } from '../types/cube';
+import type { CubeState, SolvingStage } from '../utils/cubeTypes';
 
 export interface GuideInfo {
     progress: string[];
