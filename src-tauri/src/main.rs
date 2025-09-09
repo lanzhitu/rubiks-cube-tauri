@@ -2,7 +2,6 @@
 // #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use std::process::Command;
-use tauri::Manager;
 
 fn main() {
     println!("Tauri main process started.");
