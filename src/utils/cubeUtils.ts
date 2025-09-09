@@ -1,7 +1,6 @@
 // CubieType 类型和工厂函数
 import { STICKER_MAP } from "./cubeConstants";
 import type { FaceColor } from "./cubeConstants";
-import type { Color } from "../types/cube";
 import * as THREE from "three";
 import {
   CUBE_COLOR_LETTER,
@@ -11,23 +10,7 @@ import {
 // 标准还原状态
 export const SOLVED_STATE = "WWWWWWWWWOOOOOOOOOGGGGGGGGGRRRRRRRRRBBBBBBBBBYYYYYYYYY";
 
-// 解析魔方状态为二维数组
-export function parseCubeState(state: string): Color[][] {
-  if (state.length !== 54) {
-    throw new Error("Invalid cube state length");
-  }
 
-  const faces: Color[][] = [];
-  // 每个面9个格子
-  for (let i = 0; i < 6; i++) {
-    const face: Color[] = [];
-    for (let j = 0; j < 9; j++) {
-      face.push(state[i * 9 + j] as Color);
-    }
-    faces.push(face);
-  }
-  return faces;
-}
 import type { CubieType } from "./cubeTypes";
 
 

@@ -7,8 +7,7 @@ export const FACE_ROTATION_MAP: Record<FaceColor, { axis: [number, number, numbe
     F: { axis: [0, 0, 1], cw: -Math.PI / 2, ccw: Math.PI / 2 }, // 前
     B: { axis: [0, 0, 1], cw: Math.PI / 2, ccw: -Math.PI / 2 }, // 后
 };
-// 魔方六面顺序
-export const CUBE_FACE_ORDER: FaceColor[] = ["U", "L", "F", "R", "B", "D"];
+
 export const CUBE_COLOR_LETTER: Record<string, string> = {
     W: "W", O: "O", G: "G", R: "R", B: "B", Y: "Y",
     white: "W", orange: "O", green: "G", red: "R", blue: "B", yellow: "Y",
@@ -29,14 +28,6 @@ export function getCubeletIndex(x: number, y: number, z: number): number {
     return mapCoord(x) + mapCoord(y) * 3 + mapCoord(z) * 9;
 }
 
-export const CUBIE_POSITIONS: [number, number, number][] = [];
-for (let z = -1; z <= 1; z++) {
-    for (let y = -1; y <= 1; y++) {
-        for (let x = -1; x <= 1; x++) {
-            CUBIE_POSITIONS[getCubeletIndex(x, y, z)] = [x, y, z];
-        }
-    }
-}
 
 export const STICKER_MAP = [
     // U face (0-8)

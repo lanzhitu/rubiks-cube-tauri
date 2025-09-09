@@ -1,6 +1,5 @@
 // 魔方的类型定义
-export type Move = string;  // 基础移动，如 "U", "R'", "F2" 等
-export type Face = 'U' | 'D' | 'L' | 'R' | 'F' | 'B';
+// 定义魔方的颜色
 export type Color = 'W' | 'Y' | 'R' | 'O' | 'G' | 'B';
 
 // 解魔方的阶段定义
@@ -18,11 +17,4 @@ export interface SolvingStage {
 export interface CubeState {
     raw: string;        // 54字符的状态字符串
     isSolved: boolean;
-}
-
-// 魔方动作结果
-export interface MoveResult {
-    success: boolean;
-    newState?: string;
-    error?: string;
 }
