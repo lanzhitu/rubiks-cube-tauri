@@ -14,8 +14,8 @@
     "tauri:build": "tauri build"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "ZhouFung",
+  "license": "MIT",
   "dependencies": {
     "@react-spring/three": "^10.0.1",
     "@react-three/drei": "^10.6.1",

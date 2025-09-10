@@ -1,10 +1,10 @@
 [package]
 name = "rubiks-cube-tauri"
-version = "0.1.0"
-description = "A Rubik's Cube application built with Tauri"
-authors = ["you"]
-license = ""
-repository = ""
+version = "1.0.0"
+description = "A cross-platform Rubik's Cube desktop app built with Tauri, React, and Python FastAPI."
+authors = ["ZhouFung"]
+license = "MIT"
+repository = "https://github.com/lanzhitu/rubiks-cube-tauri"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
