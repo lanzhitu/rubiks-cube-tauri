@@ -17,7 +17,7 @@
       "name": "前端：React/TypeScript 调试",
       "type": "chrome",
       "request": "launch",
-      "url": "http://localhost:5173",
+      "url": "http://localhost:5178",
       "webRoot": "${workspaceFolder}/src",
       "sourceMaps": true
     },
