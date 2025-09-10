@@ -1,4 +1,5 @@
-import type { SolvingStage } from '../types/cube';
+import type { SolvingStage } from "../utils/cubeTypes";
+
 
 // 魔方的求解阶段定义
 export type Stage = SolvingStage;
