@@ -108,22 +108,23 @@ npm run tauri build
    用虚拟环境的 Python 打包后端：
 
    ```powershell
-   python -m PyInstaller --onefile app.py --hidden-import=fastapi --hidden-import=uvicorn --hidden-import=magiccube --hidden-import=python_multipart
-   ```
 
-   生成的 exe 文件在 `src-tauri/python_service/dist/app.exe`。
+    python -m PyInstaller --onefile app.py --name rubiks_cube_backend --hidden-import=fastapi --hidden-import=uvicorn --hidden-import=magiccube --hidden-import=python_multipart
+    ```
+
+    生成的 exe 文件在 `src-tauri/python_service/dist/rubiks_cube_backend.exe`。
 
 2. **移动后端 exe 到 Tauri 资源目录**
 
-   将 `src-tauri/python_service/dist/app.exe` 复制到 `src-tauri/bin/app.exe`。
+    将 `src-tauri/python_service/dist/rubiks_cube_backend.exe` 复制到 `src-tauri/bin/rubiks_cube_backend.exe`。
 
 3. **确认 Tauri 配置**
 
-   在 `src-tauri/tauri.conf.json` 的 `bundle.resources` 字段添加：
+    在 `src-tauri/tauri.conf.json` 的 `bundle.resources` 字段添加：
 
-   ```json
-   "resources": ["bin/app.exe"]
-   ```
+    ```json
+    "resources": ["bin/rubiks_cube_backend.exe"]
+    ```
 
 4. **前端构建**
 
@@ -159,4 +160,4 @@ npm run tauri build
 **注意事项**
 - 后端所有依赖必须在虚拟环境中安装并用虚拟环境的 Python 打包。
 - 每次后端代码或依赖变动都需重新打包并复制到 bin 文件夹。
-- Tauri 配置必须包含 `bin/app.exe` 资源声明。
+- Tauri 配置必须包含 `bin/rubiks_cube_backend.exe` 资源声明。

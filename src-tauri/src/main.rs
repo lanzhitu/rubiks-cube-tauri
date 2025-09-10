@@ -4,6 +4,7 @@
 use std::process::Command;
 use std::os::windows::process::CommandExt;
 use std::sync::{Arc, Mutex};
+use tauri::Manager;
 
 fn main() {
     println!("Tauri main process started.");
@@ -13,14 +14,14 @@ fn main() {
         .plugin(tauri_plugin_http::init())
         .setup({
             let backend_child = backend_child.clone();
-            move |_app| {
+            move |app| {
                 println!("Setup function called.");
                 let exe_dir = std::env::current_exe()
                     .unwrap()
                     .parent()
                     .unwrap()
                     .to_path_buf();
-                let backend_exe = exe_dir.join("bin").join("app.exe");
+                let backend_exe = exe_dir.join("bin").join("rubiks_cube_backend.exe");
                 let mut cmd = Command::new(backend_exe);
                 #[cfg(windows)]
                 {
@@ -29,10 +30,22 @@ fn main() {
                 match cmd.spawn() {
                     Ok(child) => {
                         *backend_child.lock().unwrap() = Some(child);
-                        println!("后端服务已启动 (app.exe，窗口已隐藏)");
+                        println!("后端服务已启动 (rubiks_cube_backend.exe，窗口已隐藏)");
                     }
                     Err(e) => println!("后端服务启动失败: {:?}", e),
                 }
+                // 监听主窗口关闭事件
+                let main_window = app.get_webview_window("main").unwrap();
+                let backend_child = backend_child.clone();
+                let app_handle = app.app_handle().clone();
+                main_window.on_window_event(move |event| {
+                    if let tauri::WindowEvent::CloseRequested { .. } = event {
+                        if let Some(mut child) = backend_child.lock().unwrap().take() {
+                            let _ = child.kill();
+                        }
+                        app_handle.exit(0);
+                    }
+                });
                 Ok(())
             }
         })
