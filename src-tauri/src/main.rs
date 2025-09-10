@@ -28,6 +28,6 @@ fn main() {
         .build(tauri::generate_context!())
         .expect("error while building tauri application")
         .run(|_app_handle, _event| {
-            println!("Tauri event loop running.");
+            // 可在此处理事件，无需打印 loop running 提示
         });
 }
