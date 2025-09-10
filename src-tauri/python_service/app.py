@@ -90,22 +90,5 @@ def get_solution():
 
 # 允许直接运行 app.py 启动 FastAPI 服务
 if __name__ == "__main__":
-    print("\n" + "="*60)
-    print("🎉 Rubik's Cube 后端服务已启动！")
-    print("="*60)
-    print("用途：为前端魔方应用提供实时解法、状态同步等接口。")
-    print("访问方式：本地 FastAPI 服务，地址 http://127.0.0.1:8000")
-    print("常用接口示例：")
-    print("  - GET  /cube/state         获取当前魔方状态")
-    print("  - POST /cube/rotate        单步旋转")
-    print("  - POST /cube/rotate_many   批量旋转")
-    print("  - POST /cube/reset         重置魔方")
-    print("  - POST /cube/scramble      打乱魔方")
-    print("  - GET  /cube/solve         获取解法")
-    print("-"*60)
-    print("关闭说明：关闭前端窗口后，后端服务会自动退出。")
-    print("如遇端口占用或异常，请关闭所有相关窗口后重试。")
-    print("感谢使用 Rubik's Cube 桌面应用！")
-    print("="*60 + "\n")
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)
