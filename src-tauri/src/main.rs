@@ -1,7 +1,8 @@
 // Tauri 主进程自动启动 Python FastAPI 服务示例
-// #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use std::process::Command;
+use std::os::windows::process::CommandExt;
 
 fn main() {
     println!("Tauri main process started.");
@@ -17,8 +18,13 @@ fn main() {
                 .unwrap()
                 .to_path_buf();
             let backend_exe = exe_dir.join("bin").join("app.exe");
-            let result = Command::new(backend_exe)
-                .spawn();
+            let mut cmd = Command::new(backend_exe);
+            #[cfg(windows)]
+            {
+                // CREATE_NO_WINDOW = 0x08000000
+                cmd.creation_flags(0x08000000);
+            }
+            let result = cmd.spawn();
             match result {
                 Ok(_) => println!("Python backend exe started."),
                 Err(e) => println!("Failed to start Python backend exe: {:?}", e),
