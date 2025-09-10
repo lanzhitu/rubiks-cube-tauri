@@ -78,7 +78,6 @@ export class SolvingManager {
     }
 
     private matchesPattern(state: string, pattern: string): boolean {
-        console.log('匹配状态:', state, '目标模式:', pattern);
         if (!state || !pattern || state.length !== pattern.length) return false;
 
         for (let i = 0; i < pattern.length; i++) {

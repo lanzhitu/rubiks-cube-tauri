@@ -74,6 +74,7 @@ export function useCubeActions({
                 if (guideInfo.currentStage > stageIndex) {
                     stageIndex = guideInfo.currentStage;
                     setCurrentStageIndex(stageIndex);
+                    setMoveIndex(moveIdx);
                     if (type === "stage") break;
                 }
                 setMoveIndex(moveIdx);
