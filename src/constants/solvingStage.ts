@@ -89,7 +89,7 @@ export const SOLVING_STAGES: Stage[] = [
         id: 'yellow-corners-position',
         name: '黄色角块定位',
         description: '目标：只调整顶层四个黄色角块的位置（忽略其朝向），把所有角块移动到正确“位置集合”。使用角循环公式。',
-        targetPattern: 'WWWWWWWWWOOOOOO***GGGGGG***RRRRRR***BBBBBB***YYYYYYYYY',
+        targetPattern: 'WWWWWWWWWOOOOOO*O*GGGGGG*G*RRRRRR*R*BBBBBB*B**Y*YYY*Y*',
         hints: [
             '1. 寻找已在正确位置（颜色集合正确）的角块（不看朝向）',
             '2. 如找到，将它放右前顶角作为“固定角”',
