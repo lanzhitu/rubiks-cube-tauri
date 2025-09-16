@@ -74,11 +74,11 @@ export const SOLVING_STAGES: Stage[] = [
         id: 'yellow-edges',
         name: '黄色棱块定位',
         description: '目标：在已有黄色十字的基础上，使四个黄色棱块侧色与相邻中心对齐（完成顶层棱的位置与朝向）。反复使用同一公式直到全部对齐。',
-        targetPattern: 'WWWWWWWWWOOOOOO***GGGGGG***RRRRRR***BBBBBB****Y*YYY*Y*',
+        targetPattern: 'WWWWWWWWWOOOOOO*O*GGGGGG*G*RRRRRR*R*BBBBBB*B**Y*YYY*Y*',
         hints: [
             '1. 观察十字四个棱与侧面中心的匹配情况',
-            '2. 若有两个相邻已对齐，可将它们放在背面+左侧，执行公式一次',
-            '3. 若只有一个或没有对齐，直接执行公式再重新评估',
+            '2. 若有两个相邻已对齐，可将它们放在背面+右侧，执行公式一次',
+            '3. 若只有一个或没有对齐，直接执行公式（唯一对齐的放在背面）再重新评估',
             '4. 反复执行直至四个棱全部对齐'
         ],
         // Ruwix 第5步：Swap Yellow Edges
@@ -93,7 +93,7 @@ export const SOLVING_STAGES: Stage[] = [
         hints: [
             '1. 寻找已在正确位置（颜色集合正确）的角块（不看朝向）',
             '2. 如找到，将它放右前顶角作为“固定角”',
-            '3. 执行角循环公式，循环其余三个角',
+            '3. 执行角循环公式，循环其余三个角，但固定角从始至终在右前顶不变',
             '4. 若无任何正确角，先执行一次公式再重新查找',
             '5. 重复直到四个角位置都正确（但可能仍有朝向未转好）'
         ],
@@ -105,7 +105,7 @@ export const SOLVING_STAGES: Stage[] = [
         id: 'yellow-corners-orient',
         name: '黄色角块朝向',
         description: '目标：在所有黄色角块已位于正确位置的前提下，逐个调整其朝向形成完整黄色面。对单个未朝上的角反复执行公式（2或4次），只转顶层切换至下一个角。',
-        targetPattern: 'WWWWWWWWWOOOOOO***GGGGGG***RRRRRR***BBBBBB***YYYYYYYYY',
+        targetPattern: 'WWWWWWWWWOOOOOOOOOGGGGGGGGGRRRRRRRRRBBBBBBBBBYYYYYYYYY',
         hints: [
             '1. 手持魔方：选一个未朝上的黄色角放在右前顶',
             '2. 执行【R\' D\' R D】直至该角黄色朝上（通常 2 或 4 次）',
