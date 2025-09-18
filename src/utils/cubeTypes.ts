@@ -7,8 +7,9 @@ export interface SolvingStage {
     name: string;
     description: string;
     targetPattern: string;
+    checkType?: 'exact' | 'corner-position';  // 新增角块位置校验类型
     hints: string[];
-    algorithm?: string[];
+    algorithm: string[];
     cubeProgress: string[];
 }
 
