@@ -16,12 +16,15 @@ import type { CubieType } from "../utils/cubeTypes";
 import { CubieList } from "./CubieList";
 import InfoPanelOverlay from "./InfoPanelOverlay";
 import theme from "../styles/theme";
+import { AxisHelper } from "./AxisHelper";
 
 const Cube3D = forwardRef(function Cube3D(
   { animationSpeed = 1 }: { animationSpeed?: number },
   ref
 ) {
   const [interactiveMode, setInteractiveMode] = React.useState(false);
+  const [showAxisHelper, setShowAxisHelper] = React.useState(true);
+  const toggleAxisHelper = () => setShowAxisHelper((v) => !v);
   // 使用自定义 Hook 管理动画和 Cubie 状态
   const {
     cubies,
@@ -109,7 +112,16 @@ const Cube3D = forwardRef(function Cube3D(
         position: "relative",
       }}
     >
-      <div style={{ position: "absolute", top: 10, left: 10, zIndex: 1001 }}>
+      <div
+        style={{
+          position: "absolute",
+          top: 10,
+          left: 10,
+          zIndex: 1001,
+          display: "flex",
+          gap: 8,
+        }}
+      >
         <button
           onClick={() => setInteractiveMode((m) => !m)}
           style={{
@@ -118,7 +130,6 @@ const Cube3D = forwardRef(function Cube3D(
             color: theme.textPrimary,
             border: `1px solid ${theme.border}`,
             borderRadius: "6px",
-            marginRight: "10px",
             cursor: "pointer",
             fontWeight: 500,
             fontSize: 15,
@@ -145,12 +156,37 @@ const Cube3D = forwardRef(function Cube3D(
         >
           翻转相机
         </button>
+        <label
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            fontWeight: 500,
+            fontSize: 15,
+            cursor: "pointer",
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={showAxisHelper}
+            onChange={toggleAxisHelper}
+            style={{
+              width: 18,
+              height: 18,
+              accentColor: theme.primary,
+              cursor: "pointer",
+            }}
+          />
+          轴辅助
+        </label>
       </div>
       {/* 信息弹窗及按钮 */}
       {interactiveMode && <InfoPanelOverlay />}
       <Canvas camera={{ position: [3.5, 3.5, 3.5], fov: 50 }}>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={0.8} />
+        {/* 坐标轴辅助线，右上角，主题色 */}
+        {showAxisHelper && <AxisHelper position={[2, 2, -2]} />}
         <animated.group
           rotation={springs.rotation as any}
           scale={[0.7, 0.7, 0.7]}
