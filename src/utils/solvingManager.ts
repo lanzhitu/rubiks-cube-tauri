@@ -47,7 +47,11 @@ export class SolvingManager {
     // 检查阶段是否完成
     isStageComplete(): boolean {
         const currentStage = this.getCurrentStage();
-        return this.matchesPattern(this.lastState?.raw || '', currentStage.targetPattern);
+        const resolved = this.matchesPattern(this.lastState?.raw || '', currentStage.targetPattern);
+        if (currentStage.checkType === 'corner-position') {
+            return this.checkCornerPositions(this.lastState?.raw || '');
+        }
+        return resolved;
     }
 
     // 获取当前提示
@@ -85,6 +89,22 @@ export class SolvingManager {
             if (pattern[i] !== state[i]) return false;
         }
         return true;
+    }
+
+    private checkCornerPositions(state: string): boolean {
+
+        // 角块位置判断
+        const cornerPositions = [
+            { indices: [47, 26, 33], colors: ['Y', 'G', 'R'] },
+            { indices: [53, 42, 35], colors: ['Y', 'B', 'R'] },
+            { indices: [51, 44, 15], colors: ['Y', 'B', 'O'] },
+            { indices: [45, 24, 17], colors: ['Y', 'G', 'O'] }
+        ];
+
+        return cornerPositions.every(corner => {
+            const colors = corner.indices.map(i => state[i]);
+            return colors.sort().join('') === [...corner.colors].sort().join('');
+        });
     }
 
     // 更新状态并获取当前指南信息
