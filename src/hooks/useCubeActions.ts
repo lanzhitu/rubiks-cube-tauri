@@ -117,12 +117,6 @@ export function useCubeActions({
             } catch (e) { alert("重置失败"); }
         },
         changeAnimationSpeed: setAnimationSpeed,
-        currentStageIndex,
-        setStageIndex: (index: number) => {
-            if (index >= 0 && index < 7) {  // 7 stages total
-                setCurrentStageIndex(index);
-                setCurrentHints([]); // Clear hints when changing stage
-            }
-        }
+        currentStageIndex
     };
 }

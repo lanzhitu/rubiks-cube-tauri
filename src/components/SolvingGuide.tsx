@@ -9,7 +9,6 @@ interface SolvingGuideProps {
   stageName: string;
   stageDescription: string;
   algorithms: string[];
-  setStageIndex?: (index: number) => void;
 }
 
 export function SolvingGuide({
@@ -20,7 +19,6 @@ export function SolvingGuide({
   stageName,
   stageDescription,
   algorithms,
-  setStageIndex,
 }: SolvingGuideProps) {
   return (
     <div
@@ -221,35 +219,6 @@ export function SolvingGuide({
           borderRadius: "0 0 20px 20px",
         }}
       >
-        {/* Temporary stage navigation for testing */}
-        {setStageIndex && (
-          <div style={{ 
-            display: "flex", 
-            gap: 8, 
-            marginBottom: 16,
-            flexWrap: "wrap",
-            justifyContent: "center"
-          }}>
-            {["白十字", "白角", "中间层", "黄十字", "黄棱", "黄角位", "黄角向"].map((name, index) => (
-              <button
-                key={index}
-                onClick={() => setStageIndex(index)}
-                style={{
-                  background: currentStageIndex === index ? theme.primary : theme.surface,
-                  color: currentStageIndex === index ? theme.background : theme.textSecondary,
-                  border: `1px solid ${theme.border}`,
-                  borderRadius: 6,
-                  padding: "6px 12px",
-                  fontSize: 12,
-                  cursor: "pointer",
-                  fontWeight: currentStageIndex === index ? 600 : 400,
-                }}
-              >
-                {index + 1}. {name}
-              </button>
-            ))}
-          </div>
-        )}
         <button
           className="algorithm-btn"
           onClick={onAlgorithmClick}
