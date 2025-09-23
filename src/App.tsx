@@ -27,6 +27,7 @@ function App() {
     currentStageIndex,
     solveCurrentStageWithAnimation,
     solveCurrentStageStep,
+    setStageIndex,
   } = useCubeActions({
     cube3DRef,
     solvingManager,
@@ -51,6 +52,7 @@ function App() {
             stageName={currentStage.name}
             stageDescription={currentStage.description}
             algorithms={currentStage.algorithm || []}
+            setStageIndex={setStageIndex}
           />
         );
       })()}
