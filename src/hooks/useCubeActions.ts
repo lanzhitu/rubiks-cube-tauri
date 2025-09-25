@@ -87,7 +87,7 @@ export function useCubeActions({
             setIsAnimating(true);
             for (const m of moves) await executeMove(m);
             setIsAnimating(false);
-            syncAndUpdate();
+            // syncAndUpdate();
         },
         randomize: async () => {
             if (cube3DRef.current?.isAnimating) return;
@@ -104,7 +104,7 @@ export function useCubeActions({
             const faces = ["U", "R", "F", "D", "L", "B"];
             const modifiers = ["", "'"];
 
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 30; i++) {
                 let availableFaces = faces;
 
                 // 避免连续操作同一面
