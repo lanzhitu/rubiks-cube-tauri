@@ -11,16 +11,11 @@ export function useCubeActions({
     cube3DRef,
     solvingManager,
     setIsAnimating,
-    setCurrentProgress,
-    setCurrentHints,
     setAnimationSpeed,
 }: {
     cube3DRef: React.RefObject<any>;
     solvingManager: React.RefObject<any>;
     setIsAnimating: (v: boolean) => void;
-    setCurrentProgress: (v: number) => void;
-    setCurrentHints: (v: string[]) => void;
-    animationSpeed: number;
     setAnimationSpeed: (v: number) => void;
 }) {
     // --- 状态 ---
@@ -46,9 +41,7 @@ export function useCubeActions({
         if (!cube3DRef.current?.getCubeState) return;
         const state = cube3DRef.current.getCubeState();
         solvingManager.current.updateProgress({ raw: state, isSolved: state === SOLVED_STATE });
-        setCurrentProgress(solvingManager.current.getProgress());
-        setCurrentHints(solvingManager.current.getCurrentHints());
-    }, [cube3DRef, solvingManager, setCurrentProgress, setCurrentHints]);
+    }, [cube3DRef, solvingManager]);
 
     // --- 通用动作执行 ---
     const executeMove = useCallback(async (move: string) => {
@@ -103,7 +96,6 @@ export function useCubeActions({
             solvingManager.current?.reset();
             solvingManager.current?.setState(ManagerState.SCRAMBLING);
             setMoveIndex(0);
-            setCurrentProgress(0);
             setCurrentStageIndex(0);
             setFullSolution([]);
 

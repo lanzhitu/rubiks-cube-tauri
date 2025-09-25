@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ControlPanel } from "./components/ControlPanel";
 import { useCubeActions } from "./hooks/useCubeActions";
 import Cube3D from "./components/Cube3D";
@@ -15,8 +15,7 @@ function App() {
 
   const [isAnimating, setIsAnimating] = useState(false);
   const [animationSpeed, setAnimationSpeed] = useState(1);
-  const [currentProgress, setCurrentProgress] = useState(0);
-  const [currentHints, setCurrentHints] = useState<string[]>([]);
+  const [stageIdx, setStageIdx] = useState(0);
 
   const {
     handleMoves,
@@ -31,29 +30,37 @@ function App() {
     cube3DRef,
     solvingManager,
     setIsAnimating,
-    setCurrentProgress,
-    setCurrentHints,
-    animationSpeed,
     setAnimationSpeed,
   });
 
+  // 只维护阶段索引，其他都从 SOLVING_STAGES 派生
+  const totalStages = SOLVING_STAGES.length;
+  const currentStage = SOLVING_STAGES[stageIdx] || SOLVING_STAGES[0];
+
+  const handleAlgorithmClick = () => {
+    solveCurrentStageWithAnimation();
+  };
+
+  // 动画结束后UI自动跟随魔方实际进度
+  useEffect(() => {
+    if (!isAnimating) {
+      setStageIdx(currentStageIndex);
+    }
+  }, [isAnimating, currentStageIndex]);
+
   return (
     <div className="app-container">
-      {(() => {
-        const currentStage =
-          SOLVING_STAGES[currentStageIndex] || SOLVING_STAGES[0];
-        return (
-          <SolvingGuide
-            currentStageIndex={currentStageIndex}
-            progress={currentProgress}
-            hints={currentHints}
-            onAlgorithmClick={solveCurrentStageWithAnimation}
-            stageName={currentStage.name}
-            stageDescription={currentStage.description}
-            algorithms={currentStage.algorithm || []}
-          />
-        );
-      })()}
+      <SolvingGuide
+        currentStageIndex={stageIdx}
+        progress={Math.floor((stageIdx / totalStages) * 100)}
+        hints={currentStage.hints || []}
+        onAlgorithmClick={handleAlgorithmClick}
+        stageName={currentStage.name}
+        stageDescription={currentStage.description}
+        algorithms={currentStage.algorithm || []}
+        onStageChange={setStageIdx}
+        totalStages={totalStages}
+      />
       <div className="cube-container">
         <Cube3D ref={cube3DRef} animationSpeed={animationSpeed} />
       </div>

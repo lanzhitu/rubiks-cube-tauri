@@ -9,6 +9,8 @@ interface SolvingGuideProps {
   stageName: string;
   stageDescription: string;
   algorithms: string[];
+  onStageChange: (idx: number) => void;
+  totalStages: number;
 }
 
 export function SolvingGuide({
@@ -19,7 +21,25 @@ export function SolvingGuide({
   stageName,
   stageDescription,
   algorithms,
+  onStageChange,
+  totalStages,
 }: SolvingGuideProps) {
+  // 按钮配置
+  const navButtons = [
+    {
+      label: "上一步",
+      onClick: () => onStageChange(currentStageIndex - 1),
+      disabled: currentStageIndex <= 0,
+      primary: false,
+    },
+    {
+      label: "下一步",
+      onClick: () => onStageChange(currentStageIndex + 1),
+      disabled: currentStageIndex >= totalStages - 1,
+      primary: true,
+    },
+  ];
+
   return (
     <div
       className="solving-guide"
@@ -40,7 +60,7 @@ export function SolvingGuide({
       }}
     >
       <div style={{ flex: 1, overflowY: "auto", padding: "32px 32px 0 32px" }}>
-        {/* 进度部分 */}
+        {/* 进度部分 + 手动切换按钮 */}
         <div
           style={{
             background: theme.surface,
@@ -91,6 +111,43 @@ export function SolvingGuide({
             <span style={{ color: theme.primary, fontWeight: 600 }}>
               {currentStageIndex + 1}
             </span>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              gap: 12,
+              marginTop: 12,
+              width: "100%",
+              justifyContent: "space-between",
+            }}
+          >
+            {navButtons.map((btn) => (
+              <button
+                key={btn.label}
+                onClick={btn.onClick}
+                disabled={btn.disabled}
+                style={{
+                  flex: 1,
+                  background: btn.primary ? theme.primary : theme.surface,
+                  color: btn.primary ? theme.background : theme.textSecondary,
+                  border: `1px solid ${
+                    btn.primary ? theme.primary : theme.border
+                  }`,
+                  borderRadius: 8,
+                  padding: "8px 0",
+                  fontWeight: 600,
+                  fontSize: 16,
+                  cursor: btn.disabled ? "not-allowed" : "pointer",
+                  opacity: btn.disabled ? 0.5 : 1,
+                  boxShadow: btn.primary
+                    ? `0 1px 4px ${theme.primary}44`
+                    : `0 1px 4px ${theme.border}`,
+                  transition: "background 0.2s, color 0.2s, opacity 0.2s",
+                }}
+              >
+                {btn.label}
+              </button>
+            ))}
           </div>
         </div>
 
