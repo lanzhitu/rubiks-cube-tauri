@@ -84,14 +84,11 @@ export function getAnimatedCubies(move: string | null, cubieList: CubieType[]): 
 // --- 魔方状态字符串生成 ---
 export function getCubeStateFromCubies(
   cubies: CubieType[],
-  orientation: 'default' | 'flipped' = 'default'
 ): string {
-  const FACE_ORDER_DEFAULT = ['U', 'L', 'F', 'R', 'B', 'D'];
-  const FACE_ORDER_FLIPPED = ['D', 'R', 'B', 'L', 'F', 'U'];
-  const faceOrder = orientation === 'flipped' ? FACE_ORDER_FLIPPED : FACE_ORDER_DEFAULT;
+  const FACE_ORDER = ['U', 'L', 'F', 'R', 'B', 'D'];
 
   let state = "";
-  for (const face of faceOrder) {
+  for (const face of FACE_ORDER) {
     const positions = STICKER_MAP.filter((s) => s.f === face).map((s) => s.p);
     for (const pos of positions) {
       const cubie = cubies.find(
@@ -132,7 +129,7 @@ export function getCubeStateFromCubies(
   }
   // faceMap映射
   let mappedState = "";
-  for (let i = 0; i < faceOrder.length; i++) {
+  for (let i = 0; i < FACE_ORDER.length; i++) {
     mappedState += state
       .slice(i * 9, i * 9 + 9)
       .split("")
