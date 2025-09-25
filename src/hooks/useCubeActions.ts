@@ -11,16 +11,11 @@ export function useCubeActions({
     cube3DRef,
     solvingManager,
     setIsAnimating,
-    setCurrentProgress,
-    setCurrentHints,
     setAnimationSpeed,
 }: {
     cube3DRef: React.RefObject<any>;
     solvingManager: React.RefObject<any>;
     setIsAnimating: (v: boolean) => void;
-    setCurrentProgress: (v: number) => void;
-    setCurrentHints: (v: string[]) => void;
-    animationSpeed: number;
     setAnimationSpeed: (v: number) => void;
 }) {
     // --- 状态 ---
@@ -46,9 +41,7 @@ export function useCubeActions({
         if (!cube3DRef.current?.getCubeState) return;
         const state = cube3DRef.current.getCubeState();
         solvingManager.current.updateProgress({ raw: state, isSolved: state === SOLVED_STATE });
-        setCurrentProgress(solvingManager.current.getProgress());
-        setCurrentHints(solvingManager.current.getCurrentHints());
-    }, [cube3DRef, solvingManager, setCurrentProgress, setCurrentHints]);
+    }, [cube3DRef, solvingManager]);
 
     // --- 通用动作执行 ---
     const executeMove = useCallback(async (move: string) => {
@@ -90,21 +83,46 @@ export function useCubeActions({
         solveFullWithAnimation: () => runSolution("full"),
         solveCurrentStageWithAnimation: () => runSolution("stage"),
         solveCurrentStageStep: () => runSolution("step"),
-        handleMoves: async (moves: string[]) => { setIsAnimating(true); for (const m of moves) await executeMove(m); setIsAnimating(false); },
+        handleMoves: async (moves: string[]) => {
+            setIsAnimating(true);
+            for (const m of moves) await executeMove(m);
+            setIsAnimating(false);
+            syncAndUpdate();
+        },
         randomize: async () => {
             if (cube3DRef.current?.isAnimating) return;
+
+            // 重置状态
             solvingManager.current?.reset();
             solvingManager.current?.setState(ManagerState.SCRAMBLING);
             setMoveIndex(0);
-            setCurrentProgress(0);
             setCurrentStageIndex(0);
             setFullSolution([]);
-            const moves = [];
-            const possibleMoves = ["U", "U'", "R", "R'", "F", "F'", "D", "D'", "L", "L'", "B", "B'"];
-            for (let i = 0; i < 20; i++) moves.push(possibleMoves[Math.floor(Math.random() * possibleMoves.length)]);
+
+            // 简洁的打乱算法
+            const moves: string[] = [];
+            const faces = ["U", "R", "F", "D", "L", "B"];
+            const modifiers = ["", "'"];
+
+            for (let i = 0; i < 20; i++) {
+                let availableFaces = faces;
+
+                // 避免连续操作同一面
+                if (moves.length > 0) {
+                    const lastFace = moves[moves.length - 1][0];
+                    availableFaces = faces.filter(face => face !== lastFace);
+                }
+
+                const face = availableFaces[Math.floor(Math.random() * availableFaces.length)];
+                const modifier = modifiers[Math.floor(Math.random() * modifiers.length)];
+                moves.push(face + modifier);
+            }
+
+            // 执行打乱
             for (const move of moves) {
                 await executeMove(move);
             }
+
             solvingManager.current?.setState(ManagerState.SOLVING);
         },
         reset: async () => {
