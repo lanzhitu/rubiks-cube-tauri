@@ -293,7 +293,7 @@ export function SolvingGuide({
             textTransform: "uppercase",
           }}
         >
-          执行下一步
+          执行当前阶段
         </button>
       </div>
     </div>
