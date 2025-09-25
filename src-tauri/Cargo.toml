@@ -1,6 +1,6 @@
 [package]
 name = "rubiks-cube-tauri"
-version = "1.0.1"
+version = "1.0.2"
 description = "A cross-platform Rubik's Cube desktop app built with Tauri, React, and Python FastAPI."
 authors = ["ZhouFung"]
 license = "MIT"
