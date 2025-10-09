@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>魔方求解教程 - 层先法完全指南</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        padding: 40px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .header .subtitle {
+        font-size: 1.2em;
+        opacity: 0.9;
+      }
+
+      .nav {
+        background: #2c3e50;
+        padding: 20px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .nav ul {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+      }
+
+      .nav a {
+        color: #ecf0f1;
+        text-decoration: none;
+        padding: 10px 15px;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .nav a:hover {
+        background: #3498db;
+        transform: translateY(-2px);
+      }
+
+      .content {
+        padding: 40px;
+      }
+
+      .step {
+        margin-bottom: 60px;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+
+      .step:hover {
+        transform: translateY(-5px);
+      }
+
+      .step:nth-child(odd) {
+        background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+      }
+
+      .step:nth-child(even) {
+        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+      }
+
+      .step h2 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+        font-size: 2em;
+        position: relative;
+      }
+
+      .step h2::before {
+        content: "🧩";
+        margin-right: 10px;
+      }
+
+      .algorithm {
+        background: #34495e;
+        color: #ecf0f1;
+        padding: 15px 20px;
+        border-radius: 10px;
+        font-family: "Courier New", monospace;
+        font-size: 1.2em;
+        margin: 15px 0;
+        text-align: center;
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+
+      .memory-tip {
+        background: #f39c12;
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        margin: 15px 0;
+        border-left: 5px solid #e67e22;
+      }
+
+      .memory-tip::before {
+        content: "💡 ";
+        font-size: 1.2em;
+      }
+
+      .strategy-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .strategy-table th {
+        background: #3498db;
+        color: white;
+        padding: 15px;
+        text-align: center;
+      }
+
+      .strategy-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ecf0f1;
+        text-align: center;
+      }
+
+      .strategy-table tr:nth-child(even) {
+        background: #f8f9fa;
+      }
+
+      .strategy-table tr:hover {
+        background: #e3f2fd;
+      }
+
+      .flow-chart {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px 0;
+        text-align: center;
+        border: 2px dashed #3498db;
+      }
+
+      .flow-step {
+        display: inline-block;
+        background: #3498db;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 25px;
+        margin: 5px;
+        position: relative;
+      }
+
+      .flow-step::after {
+        content: "→";
+        position: absolute;
+        right: -20px;
+        color: #3498db;
+      }
+
+      .flow-step:last-child::after {
+        display: none;
+      }
+
+      .cube-pattern {
+        font-family: "Courier New", monospace;
+        background: #2c3e50;
+        color: #ecf0f1;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        margin: 20px 0;
+        letter-spacing: 2px;
+      }
+
+      .progress-indicator {
+        background: linear-gradient(
+          90deg,
+          #00c851 0%,
+          #ffbb33 50%,
+          #ff4444 100%
+        );
+        height: 10px;
+        border-radius: 5px;
+        margin: 20px 0;
+        position: relative;
+      }
+
+      .final-celebration {
+        background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+        color: white;
+        padding: 40px;
+        border-radius: 15px;
+        text-align: center;
+        margin-top: 40px;
+      }
+
+      .emoji-large {
+        font-size: 3em;
+        margin: 20px 0;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          margin: 0;
+          border-radius: 0;
+        }
+
+        .content {
+          padding: 20px;
+        }
+
+        .step {
+          padding: 20px;
+        }
+
+        .nav ul {
+          flex-direction: column;
+          align-items: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <h1>🧩 魔方求解教程</h1>
+        <p class="subtitle">层先法完全指南 - 从零基础到熟练掌握</p>
+      </header>
+
+      <nav class="nav">
+        <ul>
+          <li><a href="#step1">白色十字</a></li>
+          <li><a href="#step2">白色角块</a></li>
+          <li><a href="#step3">中间层</a></li>
+          <li><a href="#step4">黄色十字</a></li>
+          <li><a href="#step5">黄色棱块</a></li>
+          <li><a href="#step6">角块定位</a></li>
+          <li><a href="#step7">角块朝向</a></li>
+        </ul>
+      </nav>
+
+      <main class="content">
+        <section class="step">
+          <h2>🎯 总体策略</h2>
+          <p>魔方求解遵循"层先法"（Layer by Layer），分7个阶段依次完成：</p>
+
+          <div class="flow-chart">
+            <div class="flow-step">第1-2步：白色在顶部</div>
+            <div class="flow-step">翻转魔方</div>
+            <div class="flow-step">第3-7步：白色在底部</div>
+          </div>
+
+          <div class="memory-tip">
+            <strong>记忆口诀：</strong>"白十白角中间层，黄十黄棱黄角向"
+            <br />白十→白角→中间层→黄十→黄棱→黄角定位→黄角朝向 <br /><strong
+              >🎵 韵律记忆：</strong
+            >
+            <br />"<em>小白回家十字归，四角安居翻转杯；</em> <br /><em
+              >中层不黄要入位，黄十出现如花蕊；</em
+            >
+            <br /><em>棱块对齐邻居美，角位角向皆无悔。</em>"
+          </div>
+        </section>
+
+        <section id="step1" class="step">
+          <h2>第一步：白色十字</h2>
+          <p>
+            <strong>目标：</strong
+            >保持白色面在【顶部】，黄色面在【底部】，在白色面形成白色十字，且每个白色棱块的侧面颜色与相邻中心块匹配。
+          </p>
+
+          <div class="memory-tip">
+            <strong>记忆要点：</strong>"白十字，侧对中" -
+            不仅要有十字形状，更要侧色对齐
+          </div>
+
+          <table class="strategy-table">
+            <thead>
+              <tr>
+                <th>情况</th>
+                <th>棱块位置</th>
+                <th>解决方案</th>
+                <th>公式</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>🔄</td>
+                <td>顶层翻转错误</td>
+                <td>翻正该棱</td>
+                <td class="algorithm">F U' R U</td>
+              </tr>
+              <tr>
+                <td>⬆️</td>
+                <td>前层直接插入会翻错</td>
+                <td>先移出再插入</td>
+                <td class="algorithm">F2 → F U' R U</td>
+              </tr>
+              <tr>
+                <td>🔀</td>
+                <td>中层</td>
+                <td>顶出到顶层</td>
+                <td class="algorithm">U' R U 或 U L' U'</td>
+              </tr>
+              <tr>
+                <td>⬇️</td>
+                <td>底层</td>
+                <td>转到目标下方</td>
+                <td class="algorithm">D/D' → 按上述方法</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="memory-tip">
+            <strong>巧记技巧：</strong>"F-U'-R-U"
+            像是在说"扶我入"（扶我进入正确位置） <br /><strong
+              >🎵 音律记忆：</strong
+            >"福-乌-儿-乌"，像小鸟回巢的叫声 <br /><strong>💭 故事记忆：</strong
+            >小白棋想回家，需要"扶着我进入"正确的家门
+          </div>
+        </section>
+
+        <section id="step2" class="step">
+          <h2>第二步：白色角块</h2>
+          <p>
+            <strong>目标：</strong
+            >继续保持白色面在【顶部】，黄色面在【底部】，完成白色顶层的四个角块，使整个顶层（白色面+侧面第一圈）完全对齐。完成后将整体翻转魔方（白色到底，黄色到顶）。
+          </p>
+
+          <table class="strategy-table">
+            <thead>
+              <tr>
+                <th>朝向</th>
+                <th>记忆词</th>
+                <th>公式</th>
+                <th>动作想象</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>👉 朝右</td>
+                <td>"右进右出"</td>
+                <td class="algorithm">R' D' R</td>
+                <td>右手门：开门-下楼-关门</td>
+              </tr>
+              <tr>
+                <td>👆 朝前</td>
+                <td>"前推前拉"</td>
+                <td class="algorithm">F D F'</td>
+                <td>前推门：推开-下去-拉回</td>
+              </tr>
+              <tr>
+                <td>👇 朝下</td>
+                <td>"复杂舞步"</td>
+                <td class="algorithm">R' D2 R D R' D' R</td>
+                <td>右右左右的复杂舞蹈</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="memory-tip">
+            <strong>超级记忆法：</strong>
+            <br />• 右手开门法：R' D' R = 开门→下楼→关门 <br />• 前门推拉法：F D
+            F' = 推门→下去→拉回 <br />• 万能钥匙：不确定时用 R' D' R D 重复执行
+            <br /><strong>💭 联想记忆：</strong
+            >右手开自己家门，下楼取快递，再回来关门 <br /><strong
+              >🤲 身体记忆：</strong
+            >用手势模拟开门动作，形成肌肉记忆
+          </div>
+        </section>
+
+        <section id="step3" class="step">
+          <h2>第三步：中间层</h2>
+          <p>
+            <strong>目标：</strong
+            >翻转后（白色在底、黄色在顶），插入四个不含黄色的棱块，完成前两层(F2L)。
+          </p>
+
+          <div class="memory-tip">
+            <strong>双公式记忆：</strong>左右对称，轻松记忆！
+          </div>
+
+          <table class="strategy-table">
+            <thead>
+              <tr>
+                <th>插入方向</th>
+                <th>公式</th>
+                <th>记忆口诀</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>🔄 右侧插入</td>
+                <td class="algorithm">U R U' R' U' F' U F</td>
+                <td>"右上右下，下前上前"</td>
+              </tr>
+              <tr>
+                <td>🔄 左侧插入</td>
+                <td class="algorithm">U' L' U L U F U' F'</td>
+                <td>"左上左下，上前下前"</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="flow-chart">
+            <div class="flow-step">顶层棱块(无黄色)</div>
+            <div class="flow-step">与前中心对齐形成"竖线"</div>
+            <div class="flow-step">判断目标位置</div>
+            <div class="flow-step">选择对应公式</div>
+          </div>
+
+          <div class="memory-tip">
+            <strong>记忆技巧：</strong>
+            <br />• "竖线法则"：先形成前面的颜色竖线（像门框的竖条） <br />•
+            "左右镜像"：两个公式完全对称，学会一个等于学会两个 <br /><strong
+              >🎵 节奏记忆：</strong
+            >配合音乐节拍"哒哒-哒哒-哒哒-哒哒"练习 <br /><strong
+              >💭 故事记忆：</strong
+            >工人修理左右两台对称的机器，动作完全镜像
+          </div>
+        </section>
+
+        <section id="step4" class="step">
+          <h2>第四步：黄色十字</h2>
+          <p>
+            <strong>目标：</strong>在黄色顶面形成黄色十字（暂不要求侧色对齐）。
+          </p>
+
+          <div class="memory-tip">
+            <strong>形态进化记忆：</strong>一个公式走天下！
+          </div>
+
+          <div class="cube-pattern">点(·) → L形(⌐) → 直线(—) → 十字(+)</div>
+
+          <div class="algorithm">F R U R' U' F'</div>
+          <p style="text-align: center; margin-top: 10px">
+            <strong>记忆口诀：</strong>"前右上右下前"
+          </p>
+
+          <table class="strategy-table">
+            <thead>
+              <tr>
+                <th>当前形态</th>
+                <th>摆放方向</th>
+                <th>执行次数</th>
+                <th>结果</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>• 点</td>
+                <td>任意</td>
+                <td>3次</td>
+                <td>L形</td>
+              </tr>
+              <tr>
+                <td>⌐ L形</td>
+                <td>左上角 "┘"</td>
+                <td>2次</td>
+                <td>直线</td>
+              </tr>
+              <tr>
+                <td>— 直线</td>
+                <td>水平</td>
+                <td>1次</td>
+                <td>十字</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="memory-tip">
+            <strong>进阶技巧：</strong>
+            <br />• 快捷公式：L形直接到十字 F U R U' R' F' <br />• 🌸
+            花朵绽放记忆："FRUUF"读作"芙蕊芙"，像花朵绽放 <br />• 🤲
+            手势舞蹈：配合公式做手势，像在表演花朵绽放的舞蹈 <br />• 💭
+            魔法咒语："芙蕊乌芙"是让黄色十字出现的魔法咒语
+          </div>
+        </section>
+
+        <section id="step5" class="step">
+          <h2>第五步：黄色棱块定位</h2>
+          <p>
+            <strong>目标：</strong>使黄色十字的四个棱块侧色与相邻中心块对齐。
+          </p>
+
+          <div class="memory-tip">
+            <strong>策略记忆：</strong>"邻居法则" - 找到相邻的好邻居！
+          </div>
+
+          <div class="algorithm">R U R' U R U2 R' U</div>
+          <p style="text-align: center; margin-top: 10px">
+            <strong>记忆口诀：</strong>"右上右下右上双右下"
+          </p>
+
+          <table class="strategy-table">
+            <thead>
+              <tr>
+                <th>对齐情况</th>
+                <th>操作方法</th>
+                <th>说明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2个相邻对齐</td>
+                <td>放在背面+右侧</td>
+                <td>执行1次公式</td>
+              </tr>
+              <tr>
+                <td>1个或0个对齐</td>
+                <td>对齐的放背面</td>
+                <td>执行后重新评估</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="memory-tip">
+            <strong>记忆技巧：</strong>
+            <br />• "好邻居"：相邻对齐的就是好邻居，让他们在后面"看戏" <br />•
+            "U2加速"：中间的U2像是给魔方"加速" <br /><strong
+              >🎵 节奏记忆：</strong
+            >"右上右下右上双双右下"配合节拍 <br /><strong>💭 故事记忆：</strong
+            >右边的邻居很忙碌，上下上下，最后连续两次加速工作
+          </div>
+        </section>
+
+        <section id="step6" class="step">
+          <h2>第六步：黄色角块定位</h2>
+          <p>
+            <strong>目标：</strong
+            >调整顶层四个角块的位置（不管朝向），使颜色组合正确。
+          </p>
+
+          <div class="memory-tip">
+            <strong>循环记忆：</strong>"三角轮转" - 固定一个，转动三个！
+          </div>
+
+          <div class="algorithm">U R U' L' U R' U' L</div>
+          <p style="text-align: center; margin-top: 10px">
+            <strong>记忆口诀：</strong>"上右上左，上右上左"
+          </p>
+
+          <table class="strategy-table">
+            <thead>
+              <tr>
+                <th>角色</th>
+                <th>位置</th>
+                <th>作用</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>🏠 固定角</td>
+                <td>右前顶</td>
+                <td>始终不动的"房东"</td>
+              </tr>
+              <tr>
+                <td>🔄 流动角</td>
+                <td>其他三个</td>
+                <td>相互轮换的"房客"</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="memory-tip">
+            <strong>记忆技巧：</strong>
+            <br />• "房东不动"：找到正确的角当"房东"，放右前顶 <br />•
+            "三房客轮换"：其他三个角像房客一样轮换位置 <br /><strong
+              >💭 故事记忆：</strong
+            >房东站在阳台看风景（右前顶不动），三个房客在楼下搬家（相互轮换）
+            <br /><strong>💃 舞蹈记忆：</strong>像在跳"上右上左上右上左"的方块舞
+          </div>
+        </section>
+
+        <section id="step7" class="step">
+          <h2>第七步：黄色角块朝向</h2>
+          <p>
+            <strong>目标：</strong>使所有黄色角块的黄色面朝上，完成整个魔方。
+          </p>
+
+          <div class="memory-tip">
+            <strong>单点突破：</strong>"专注一角" - 一次只处理一个角！
+          </div>
+
+          <div class="algorithm">R' D' R D</div>
+          <p style="text-align: center; margin-top: 10px">
+            <strong>记忆口诀：</strong>"右出下出右进下进"
+          </p>
+
+          <div class="flow-chart">
+            <div class="flow-step">选角：未朝上的黄角放右前顶</div>
+            <div class="flow-step">专注：对这个角重复2-4次公式</div>
+            <div class="flow-step">转换：只用U转到下一个未好的角</div>
+            <div class="flow-step">重复：直到全部角朝上</div>
+          </div>
+
+          <div class="memory-tip">
+            <strong>终极技巧：</strong>
+            <br />• "门把手"：R'D'RD 像转动门把手的动作
+            （右手抓门把手向后拉，向下压，向前推，向上提）<br />•
+            "耐心法则"：可能需要2次或4次，像坏掉的门把手需要多试几次 <br />•
+            "只转U"：切换角时只能转U，就像只能"选择"不同的门 <br /><strong
+              >💪 肌肉记忆：</strong
+            >第1次慢动作体验，第2次建立节奏，第3-4次闭眼都能完成 <br /><strong
+              >💭 数数记忆：</strong
+            >"1拉2压3推4提"，配合数数节奏
+          </div>
+        </section>
+
+        <section class="final-celebration">
+          <div class="emoji-large">🎉</div>
+          <h2>🏆 完成庆祝</h2>
+          <p>当你看到这个完美的魔方时：</p>
+          <div class="cube-pattern">
+            🟨🟨🟨 🟦🟦🟦 🟩🟩🟩 🟥🟥🟥 🟧🟧🟧<br />
+            🟨🟨🟨 🟦🟦🟦 🟩🟩🟩 🟥🟥🟥 🟧🟧🟧<br />
+            🟨🟨🟨 🟦🟦🟦 🟩🟩🟩 🟥🟥🟥 🟧🟧🟧
+          </div>
+          <h3>恭喜你！你已经掌握了魔方的基本解法！</h3>
+          <div class="emoji-large">🧩✨</div>
+
+          <div
+            style="
+              background: rgba(255, 255, 255, 0.2);
+              padding: 20px;
+              border-radius: 10px;
+              margin-top: 30px;
+            "
+          >
+            <h3>🚀 进阶路径</h3>
+            <ol style="text-align: left; max-width: 600px; margin: 0 auto">
+              <li><strong>熟练度提升：</strong>反复练习每个步骤</li>
+              <li><strong>速度优化：</strong>记忆所有公式的肌肉记忆</li>
+              <li><strong>高级方法：</strong>学习F2L、OLL、PLL等速解方法</li>
+            </ol>
+
+            <h3 style="margin-top: 20px">🎯 练习重点</h3>
+            <ul style="text-align: left; max-width: 600px; margin: 0 auto">
+              <li><strong>第一遍：</strong>理解每步逻辑</li>
+              <li><strong>第二遍：</strong>记住所有公式</li>
+              <li><strong>第三遍：</strong>形成肌肉记忆</li>
+              <li><strong>第四遍：</strong>追求速度和流畅度</li>
+            </ul>
+          </div>
+
+          <p style="margin-top: 30px; font-style: italic">
+            <strong>记住：魔方不仅是智力游戏，更是毅力和耐心的体现！</strong>
+          </p>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
