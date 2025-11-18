@@ -1,6 +1,6 @@
 {
   "name": "rubiks-cube-tauri",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "- `src-tauri/`：Tauri 后端与配置\r   - `python_service/`：Python 微服务，魔方算法\r   - `icons/`：各平台图标\r - `src/`：前端 TypeScript + Three.js\r   - `components/`：3D 魔方组件\r   - `services/`：前后端通信\r - `public/`：静态资源\r - `scripts/`：部署与打包脚本",
   "main": "index.js",
   "type": "module",
