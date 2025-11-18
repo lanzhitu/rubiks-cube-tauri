@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import { useSpring } from "@react-spring/three";
 import { getDefaultCubies, getAnimatedCubies } from "../utils/cubeUtils";
 import { rotateCubies, getRotationParams } from "../utils/cubeAnimationUtils";
@@ -15,14 +15,19 @@ export function useCubeAnimation(animationSpeed: number = 1) {
         config: { duration: 300 / animationSpeed },
         onRest: () => {
             setIsAnimating(false);
-            setCurrentMove(null);
-            api.set({ rotation: [0, 0, 0] });
             if (onEndRef.current) {
                 onEndRef.current();
                 onEndRef.current = null;
             }
+            setCurrentMove(null);
         },
     }), [animationSpeed]);
+
+    useEffect(() => {
+        if (!currentMove) {
+            api.set({ rotation: [0, 0, 0] });
+        }
+    }, [currentMove, api]);
 
     const triggerRotate = (move: string, onEnd?: () => void) => {
         if (isAnimating) return onEnd?.();
