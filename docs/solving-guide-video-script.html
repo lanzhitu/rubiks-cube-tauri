@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>魔方层先法视频脚本（经理风格）</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+          "Inter", sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: #1a1a1a;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: #ffffff;
+        min-height: 100vh;
+        box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        color: white;
+        padding: 3rem 2rem;
+        margin: 0;
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-align: center;
+        letter-spacing: -0.025em;
+      }
+
+      h2 {
+        color: #1e40af;
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin: 0 0 1.5rem 0;
+        padding-bottom: 0.75rem;
+        border-bottom: 3px solid #e5e7eb;
+        position: relative;
+      }
+
+      h2::after {
+        content: "";
+        position: absolute;
+        bottom: -3px;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+      }
+
+      .stage {
+        margin: 0;
+        padding: 2.5rem;
+        border-bottom: 1px solid #f1f5f9;
+        position: relative;
+      }
+
+      .stage:nth-child(even) {
+        background: #f8fafc;
+      }
+
+      .scene {
+        font-weight: 700;
+        color: #374151;
+        margin-bottom: 0.75rem;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .dialogue {
+        margin-bottom: 1.5rem;
+        line-height: 1.8;
+        font-size: 1.05rem;
+        color: #374151;
+      }
+
+      .tip {
+        background: linear-gradient(135deg, #eff6ff, #dbeafe);
+        border: none;
+        border-left: 4px solid #3b82f6;
+        padding: 1.25rem 1.5rem;
+        border-radius: 8px;
+        margin: 1.5rem 0;
+        color: #1e40af;
+        font-size: 0.95rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+
+      .formula {
+        background: #1f2937;
+        color: #10b981;
+        font-family: "Fira Code", "SF Mono", "Monaco", "Inconsolata",
+          "Roboto Mono", monospace;
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
+        display: inline-block;
+        margin: 0 0.25rem;
+        font-weight: 600;
+        letter-spacing: 0.025em;
+        border: 1px solid #374151;
+      }
+
+      .mnemonic {
+        background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+        color: #166534;
+        border: none;
+        border-left: 4px solid #10b981;
+        padding: 0.75rem 1rem;
+        border-radius: 6px;
+        margin: 0 0.25rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: inline-block;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      }
+
+      .music {
+        color: #7c3aed;
+        font-weight: 600;
+        margin-top: 1.5rem;
+        font-size: 0.95rem;
+        background: #faf5ff;
+        padding: 0.75rem 1rem;
+        border-radius: 6px;
+        border-left: 4px solid #8b5cf6;
+      }
+
+      .footer {
+        background: linear-gradient(135deg, #1f2937, #111827);
+        color: white;
+        text-align: center;
+        padding: 3rem 2rem;
+        margin: 0;
+        font-size: 1.1rem;
+      }
+
+      .footer strong {
+        color: #60a5fa;
+        font-size: 1.3rem;
+        display: block;
+        margin-bottom: 1rem;
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2rem;
+          padding: 2rem 1rem;
+        }
+
+        .stage {
+          padding: 1.5rem 1rem;
+        }
+
+        .container {
+          margin: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>魔方层先法视频脚本（教学版）</h1>
+      <div class="stage">
+        <h2>片头：欢迎与目标</h2>
+        <div class="scene">画面：</div>
+        <div class="dialogue">公司LOGO，魔方缓慢旋转，老师/经理微笑出场。</div>
+        <div class="scene">台词：</div>
+        <div class="dialogue">
+          大家好，欢迎来到魔方教学。今天我们将用最系统、最易记的方法，带你一步步复原魔方。跟着我，魔方不再难！
+        </div>
+        <div class="music">配乐建议：现代感电子乐，简洁大气。</div>
+      </div>
+
+      <div class="stage">
+        <h2>第一步：白色十字</h2>
+        <div class="scene">画面：</div>
+        <div class="dialogue">魔方六面展示，聚焦白色面，演示棱块各种位置。</div>
+        <div class="scene">目标与口诀：</div>
+        <div class="dialogue">
+          目标是在白色面做出十字，并让每个白色棱块的侧色与中心块对齐。口诀：<span
+            class="mnemonic"
+            >“白十字，侧对中”</span
+          >、<span class="mnemonic">“扶我入”</span>、<span class="mnemonic"
+            >“福乌儿乌”</span
+          >。
+        </div>
+        <div class="tip">
+          操作细节：
+          <ul>
+            <li>
+              顶层但翻转错误：用<span class="formula">F U' R U</span
+              >（“扶我入”/“福乌儿乌”）翻正棱块。
+            </li>
+            <li>
+              前层直接插入会翻错：先<span class="formula">F2</span>，再<span
+                class="formula"
+                >F U' R U</span
+              >。
+            </li>
+            <li>
+              中层：用<span class="formula">U' R U</span>或<span class="formula"
+                >U L' U'</span
+              >把棱块顶到顶层，再按侧色对齐插入。
+            </li>
+            <li>
+              底层：用<span class="formula">D/D'</span
+              >把棱块转到目标位置正下方，然后按上述方法插入。
+            </li>
+            <li>每放好一条白棱都检查侧色是否与中心对齐，直到完成4条。</li>
+          </ul>
+        </div>
+        <div class="music">配乐建议：节奏明快，突出“起步”氛围。</div>
+      </div>
+
+      <div class="stage">
+        <h2>第二步：白色角块</h2>
+        <div class="scene">画面：</div>
+        <div class="dialogue">顶面十字已成，聚焦四个角块，演示三种朝向。</div>
+        <div class="scene">目标与口诀：</div>
+        <div class="dialogue">
+          目标是将四个白色角块归位，顶层和侧面一圈全部对齐。口诀：<span
+            class="mnemonic"
+            >“右进右出”</span
+          >、<span class="mnemonic">“前推前拉”</span>、<span class="mnemonic"
+            >“复杂舞步”</span
+          >。万能钥匙法：<span class="formula">R' D' R D</span
+          >反复执行直到归位。
+        </div>
+        <div class="tip">
+          操作细节：
+          <ul>
+            <li>
+              选一个未就位的白角，通过<span class="formula">D/D'</span
+              >转到底层，放到目标位置正下方（右前下角）。
+            </li>
+            <li>
+              观察白色贴纸朝向：朝右用<span class="formula">R' D' R</span
+              >，朝前用<span class="formula">F D F'</span>，朝底用<span
+                class="formula"
+                >R' D2 R D R' D' R</span
+              >。
+            </li>
+            <li>
+              如果朝向不符，反复用<span class="formula">R' D' R D</span
+              >直到归位。
+            </li>
+            <li>每插入一个角块都检查三面颜色是否匹配。</li>
+            <li>四角完成后整体翻转魔方（白底黄顶）。</li>
+          </ul>
+        </div>
+        <div class="music">配乐建议：轻快钢琴，突出“归位”主题。</div>
+      </div>
+
+      <div class="stage">
+        <h2>第三步：中间层棱块</h2>
+        <div class="scene">画面：</div>
+        <div class="dialogue">魔方翻转，白色到底，黄色到顶，演示棱块插入。</div>
+        <div class="scene">目标与口诀：</div>
+        <div class="dialogue">
+          目标是插入四个不含黄色的棱块，完成前两层。口诀：<span class="mnemonic"
+            >“右上右下，下前上前”</span
+          >（右公式），<span class="mnemonic">“左上左下，上前下前”</span
+          >（左公式），记住“竖线法则”。
+        </div>
+        <div class="tip">
+          操作细节：
+          <ul>
+            <li>顶层找不含黄色的棱块，与前中心对齐形成“竖线”。</li>
+            <li>
+              判断目标在右还是左，右侧用<span class="formula"
+                >U R U' R' U' F' U F</span
+              >，左侧用<span class="formula">U' L' U L U F U' F'</span>。
+            </li>
+            <li>如果棱块在中层但方向错误，用公式执行两次顶出再重插。</li>
+            <li>插入后检查底层和中层是否被破坏。</li>
+          </ul>
+        </div>
+        <div class="music">配乐建议：节奏感电子乐，突出“进阶”氛围。</div>
+      </div>
+
+      <div class="stage">
+        <h2>第四步：黄色十字</h2>
+        <div class="scene">画面：</div>
+        <div class="dialogue">顶面黄色，展示点、L形、直线、十字的变化。</div>
+        <div class="scene">目标与口诀：</div>
+        <div class="dialogue">
+          目标是在黄色顶面做出黄色十字。口诀：<span class="mnemonic"
+            >“前右上右下前”</span
+          >，形态进化：点→L形→直线→十字。公式：<span class="formula"
+            >F R U R' U' F'</span
+          >。
+        </div>
+        <div class="tip">
+          操作细节：
+          <ul>
+            <li>观察顶面形态：点、L形、直线、十字。</li>
+            <li>
+              点：执行公式三次得L形；L形左上角，执行两次得直线；直线水平，执行一次得十字。
+            </li>
+            <li>出现十字后继续下一步。</li>
+          </ul>
+        </div>
+        <div class="music">配乐建议：轻盈弦乐，突出“突破”时刻。</div>
+      </div>
+
+      <div class="stage">
+        <h2>第五步：黄色棱块定位</h2>
+        <div class="scene">画面：</div>
+        <div class="dialogue">黄色十字已成，观察侧色是否对齐。</div>
+        <div class="scene">目标与口诀：</div>
+        <div class="dialogue">
+          目标是让黄色十字的四个棱块侧色全部对齐。口诀：<span class="mnemonic"
+            >“好邻居”</span
+          >、<span class="mnemonic">“右上右下右上双右下”</span
+          >，记住“U2加速法”。公式：<span class="formula"
+            >R U R' U R U2 R' U</span
+          >。
+        </div>
+        <div class="tip">
+          操作细节：
+          <ul>
+            <li>观察十字四个棱与侧面中心的匹配情况。</li>
+            <li>有两个相邻对齐，放在背面+右侧，执行公式一次。</li>
+            <li>只有一个或没有对齐，直接执行公式再重新评估。</li>
+            <li>反复执行直到四个棱全部对齐。</li>
+          </ul>
+        </div>
+        <div class="music">配乐建议：节奏加快，突出“冲刺”氛围。</div>
+      </div>
+
+      <div class="stage">
+        <h2>第六步：黄色角块定位</h2>
+        <div class="scene">画面：</div>
+        <div class="dialogue">顶层四角，观察颜色组合。</div>
+        <div class="scene">目标与口诀：</div>
+        <div class="dialogue">
+          目标是只调整顶层四个黄色角块的位置（不管朝向），颜色组合正确。口诀：<span
+            class="mnemonic"
+            >“房东”</span
+          >、<span class="mnemonic">“三房客轮换”</span>、<span class="mnemonic"
+            >“上右上左，上右上左”</span
+          >。公式：<span class="formula">U R U' L' U R' U' L</span>。
+        </div>
+        <div class="tip">
+          操作细节：
+          <ul>
+            <li>寻找已在正确位置的角块（不看朝向），放右前顶角作为“房东”。</li>
+            <li>执行公式，循环其余三个角，房东始终不动。</li>
+            <li>无正确角，先执行一次公式再查找。</li>
+            <li>重复直到四个角位置都正确。</li>
+          </ul>
+        </div>
+        <div class="music">配乐建议：轻快舞曲，突出“轮换”节奏。</div>
+      </div>
+
+      <div class="stage">
+        <h2>第七步：黄色角块朝向</h2>
+        <div class="scene">画面：</div>
+        <div class="dialogue">顶层角块，黄色面是否朝上。</div>
+        <div class="scene">目标与口诀：</div>
+        <div class="dialogue">
+          目标是让所有黄色角块的黄色面都朝上。口诀：<span class="mnemonic"
+            >“门把手”</span
+          >、<span class="mnemonic">“右出下出右进下进”</span>、<span
+            class="mnemonic"
+            >“专注一角，耐心法则”</span
+          >。公式：<span class="formula">R' D' R D</span>。
+        </div>
+        <div class="tip">
+          操作细节：
+          <ul>
+            <li>选一个未朝上的黄角放右前顶。</li>
+            <li>对这个角重复2-4次公式，直到黄色朝上。</li>
+            <li>只用U转到下一个未好的角，重复操作。</li>
+            <li>过程中不要转动整块或中下两层。</li>
+          </ul>
+        </div>
+        <div class="music">配乐建议：节奏缓慢，突出“收官”氛围。</div>
+      </div>
+
+      <div class="footer">
+        <strong>结语：</strong>
+        恭喜你，魔方已经复原！魔方不仅是智力游戏，更是毅力和耐心的体现。欢迎关注XX公司，获取更多魔方技巧。
+      </div>
+    </div>
+  </body>
+</html>
